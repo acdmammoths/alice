@@ -1,0 +1,35 @@
+{
+  "runtimeStats": {
+    "caterpillars.samplers.NaiveBJDMSampler": {
+      "c90StepTime": 0,
+      "q3StepTime": 0,
+      "setupTime": 41,
+      "maxStepTime": 3,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
+    },
+    "caterpillars.samplers.CurveballBJDMSampler": {
+      "c90StepTime": 0,
+      "q3StepTime": 0,
+      "setupTime": 14,
+      "maxStepTime": 6,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
+    },
+    "diffusr.samplers.GmmtSampler": {
+      "c90StepTime": 1,
+      "q3StepTime": 1,
+      "setupTime": 597,
+      "maxStepTime": 13,
+      "minStepTime": 0,
+      "q1StepTime": 1,
+      "medianStepTime": 1,
+      "c10StepTime": 1
+    }
+  },
+  "runInfo": {"timestamp": "2022-06-07T03:39:41.404"}
+}

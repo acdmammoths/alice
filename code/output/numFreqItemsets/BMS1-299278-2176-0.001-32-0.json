@@ -1,0 +1,100 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          343,
+          343,
+          343,
+          343,
+          343
+        ],
+        "2": [
+          1112,
+          1143,
+          1150,
+          1158,
+          1191
+        ],
+        "3": [
+          428,
+          470,
+          482,
+          495,
+          551
+        ],
+        "4": [
+          10,
+          20,
+          23,
+          26,
+          46
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        1923,
+        1983,
+        1999,
+        2015,
+        2064
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "caterpillars.samplers.NaiveBJDMSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          343,
+          343,
+          343,
+          343,
+          343
+        ],
+        "2": [
+          1094,
+          1124,
+          1132,
+          1139,
+          1174
+        ],
+        "3": [
+          99,
+          122,
+          129,
+          135,
+          167
+        ],
+        "4": [
+          5,
+          5,
+          5,
+          5,
+          6
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        1562,
+        1598,
+        1609,
+        1618,
+        1659
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "caterpillars.samplers.CurveballBJDMSampler"
+    }
+  ],
+  "runInfo": {
+    "freqItemsetLenToCount": {
+      "1": 343,
+      "2": 1573,
+      "3": 1492,
+      "4": 522,
+      "5": 59,
+      "6": 2
+    },
+    "numFreqItemsets": 3991,
+    "timestamp": "2022-05-20T19:30:34.451"
+  }
+}
