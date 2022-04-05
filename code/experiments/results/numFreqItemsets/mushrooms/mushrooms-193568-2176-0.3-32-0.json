@@ -1,0 +1,218 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          27,
+          27,
+          27,
+          27,
+          27
+        ],
+        "2": [
+          142,
+          145,
+          145,
+          146,
+          147
+        ],
+        "3": [
+          315,
+          321,
+          322,
+          323,
+          329
+        ],
+        "4": [
+          327,
+          337,
+          339,
+          341,
+          349
+        ],
+        "5": [
+          159,
+          168,
+          170,
+          172,
+          179
+        ],
+        "6": [
+          31,
+          33,
+          34,
+          36,
+          40
+        ],
+        "7": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        1013,
+        1035,
+        1039,
+        1043,
+        1065
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "NaiveSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          27,
+          27,
+          27,
+          27,
+          27
+        ],
+        "2": [
+          142,
+          145,
+          145,
+          146,
+          147
+        ],
+        "3": [
+          316,
+          321,
+          322,
+          323,
+          327
+        ],
+        "4": [
+          327,
+          337,
+          339,
+          341,
+          348
+        ],
+        "5": [
+          159,
+          168,
+          170,
+          172,
+          179
+        ],
+        "6": [
+          31,
+          33,
+          34,
+          35,
+          39
+        ],
+        "7": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        1013,
+        1033,
+        1039,
+        1043,
+        1059
+      ],
+      "numSamples": 596,
+      "pvalue": 0.0016750418760469012,
+      "sampler": "RefinedSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          27,
+          27,
+          27,
+          27,
+          27
+        ],
+        "2": [
+          143,
+          145,
+          145,
+          146,
+          147
+        ],
+        "3": [
+          316,
+          321,
+          322,
+          323,
+          329
+        ],
+        "4": [
+          331,
+          337,
+          339,
+          341,
+          351
+        ],
+        "5": [
+          163,
+          168,
+          170,
+          172,
+          180
+        ],
+        "6": [
+          30,
+          33,
+          34,
+          36,
+          39
+        ],
+        "7": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        1019,
+        1035,
+        1039,
+        1043,
+        1067
+      ],
+      "numSamples": 1696,
+      "pvalue": 5.892751915144372E-4,
+      "sampler": "GmmtSampler"
+    }
+  ],
+  "runInfo": {
+    "args": {
+      "resultsDir": "experiments/results/numFreqItemsets/mushrooms",
+      "datasetPath": "datasets/mushrooms.txt",
+      "sampleAndMine": false,
+      "seed": 0,
+      "numSamples": 2176,
+      "numSwaps": 193568,
+      "minFreq": 0.3,
+      "numThreads": 32
+    },
+    "freqItemsetLenToCount": {
+      "1": 27,
+      "2": 162,
+      "3": 462,
+      "4": 733,
+      "5": 683,
+      "6": 376,
+      "7": 120,
+      "8": 22,
+      "9": 2
+    },
+    "numFreqItemsets": 2587,
+    "timestamp": "2022-02-08T17:37:26.195578"
+  }
+}

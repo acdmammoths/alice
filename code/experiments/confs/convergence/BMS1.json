@@ -1,0 +1,7 @@
+{
+	"datasetPath": "datasets/BMS1.txt",
+	"maxNumSwapsFactor": 5,
+	"minFreq": 0.001,
+	"seed": 0,
+	"resultsDir": "experiments/results/convergence/"
+}

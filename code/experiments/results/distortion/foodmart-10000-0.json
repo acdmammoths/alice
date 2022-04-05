@@ -1,0 +1,19 @@
+{
+  "logNumEquivMatricesStats": {
+    "minLogNumEquivMatrices": 21848.015959751556,
+    "numSamples": 10000,
+    "q3LogNumEquivMatrices": 21855.470679700917,
+    "medianLogNumEquivMatrices": 21852.985773051132,
+    "q1LogNumEquivMatrices": 21851.48169565435,
+    "maxLogNumEquivMatrices": 21861.944570397263
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/foodmart.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "saveCount": 10000,
+    "timestamp": "2022-01-30T17:00:40.829818"
+  }
+}

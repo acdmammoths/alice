@@ -1,0 +1,6 @@
+{
+	"datasetPath": "datasets/BMS2.txt",
+	"numSwaps": 10000,
+	"seed": 0,
+	"resultsDir": "experiments/results/distortion/"
+}

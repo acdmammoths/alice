@@ -1,0 +1,36 @@
+{
+  "runtimeStats": {
+    "RefinedSampler": {
+      "q3StepTime": 25,
+      "setupTime": 43411,
+      "maxStepTime": 37,
+      "minStepTime": 14,
+      "q1StepTime": 22,
+      "medianStepTime": 24
+    },
+    "GmmtSampler": {
+      "q3StepTime": 21,
+      "setupTime": 38168,
+      "maxStepTime": 51,
+      "minStepTime": 12,
+      "q1StepTime": 19,
+      "medianStepTime": 20
+    },
+    "NaiveSampler": {
+      "q3StepTime": 21,
+      "setupTime": 37683,
+      "maxStepTime": 48,
+      "minStepTime": 13,
+      "q1StepTime": 19,
+      "medianStepTime": 20
+    }
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/synthetic-10-25-0.1.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "timestamp": "2022-02-01T08:18:13.339"
+  }
+}

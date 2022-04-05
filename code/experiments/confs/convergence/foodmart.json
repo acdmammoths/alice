@@ -1,0 +1,7 @@
+{
+	"datasetPath": "datasets/foodmart.txt",
+	"maxNumSwapsFactor": 5,
+	"minFreq": 0.0003,
+	"seed": 0,
+	"resultsDir": "experiments/results/convergence/"
+}

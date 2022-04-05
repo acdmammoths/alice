@@ -1,0 +1,12 @@
+{
+	"datasetPath": "datasets/foodmart.txt",
+	"numSwaps": 18319,
+	"numEstSamples": 2048,
+	"numWySamples": 128,
+	"minFreq": 0.0003,
+	"fwer": 0.05,
+	"numThreads": 32,
+	"seed": 0,
+	"cleanup": false,
+	"resultsDir": "experiments/results/sigFreqItemsets/foodmart"
+}

@@ -1,0 +1,19 @@
+{
+  "logNumEquivMatricesStats": {
+    "minLogNumEquivMatrices": 67449.92060945006,
+    "numSamples": 10000,
+    "q3LogNumEquivMatrices": 67639.14978974247,
+    "medianLogNumEquivMatrices": 67628.05943485354,
+    "q1LogNumEquivMatrices": 67580.11449635935,
+    "maxLogNumEquivMatrices": 67649.54699745085
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/mushrooms.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "saveCount": 10000,
+    "timestamp": "2022-01-29T22:01:44.296347"
+  }
+}

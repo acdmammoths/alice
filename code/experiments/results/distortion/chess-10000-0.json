@@ -1,0 +1,19 @@
+{
+  "logNumEquivMatricesStats": {
+    "minLogNumEquivMatrices": 22589.17494536071,
+    "numSamples": 10000,
+    "q3LogNumEquivMatrices": 22598.879005888528,
+    "medianLogNumEquivMatrices": 22598.18585870797,
+    "q1LogNumEquivMatrices": 22596.106417166295,
+    "maxLogNumEquivMatrices": 22599.572153069086
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/chess.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "saveCount": 10000,
+    "timestamp": "2022-01-29T21:57:13.592820"
+  }
+}

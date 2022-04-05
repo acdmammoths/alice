@@ -1,0 +1,10 @@
+{
+	"datasetPath": "datasets/foodmart.txt",
+	"numSwaps": 18319,
+	"numSamples": 2048,
+	"minFreq": 0.0003,
+	"numThreads": 32,
+	"seed": 0,
+	"resultsDir": "experiments/results/numFreqItemsets/foodmart",
+	"sampleAndMine": true
+}

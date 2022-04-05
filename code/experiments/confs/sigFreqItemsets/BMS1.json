@@ -1,0 +1,12 @@
+{
+	"datasetPath": "datasets/BMS1.txt",
+	"numSwaps": 299278,
+	"numEstSamples": 2048,
+	"numWySamples": 128,
+	"minFreq": 0.001,
+	"fwer": 0.05,
+	"numThreads": 32,
+	"seed": 0,
+	"cleanup": false,
+	"resultsDir": "experiments/results/sigFreqItemsets/BMS1"
+}

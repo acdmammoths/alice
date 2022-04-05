@@ -1,0 +1,12 @@
+{
+	"datasetPath": "datasets/chess.txt",
+	"numSwaps": 118252,
+	"numEstSamples": 2048,
+	"numWySamples": 128,
+	"minFreq": 0.8,
+	"fwer": 0.05,
+	"numThreads": 32,
+	"seed": 0,
+	"cleanup": false,
+	"resultsDir": "experiments/results/sigFreqItemsets/chess"
+}

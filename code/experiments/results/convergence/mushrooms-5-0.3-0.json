@@ -1,0 +1,165 @@
+{
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/mushrooms.txt",
+      "seed": 0,
+      "maxNumSwapsFactor": 5,
+      "minFreq": 0.3
+    },
+    "numOnes": 193568,
+    "numFreqItemsets": 2587,
+    "timestamp": "2022-01-26T11:45:31.432975"
+  },
+  "convergenceStats": {
+    "RefinedSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.28237059758757926,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.3192754880695806,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.32745849500463947,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.3248609690028825,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.3258386628919325,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.3245840391262762,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.323712009694221,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.3271197055820753,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.32694757055726303,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.3254539939108129,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.3233490825646013,
+        "numSwapsFactor": 5
+      }
+    ],
+    "GmmtSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.28109469208745724,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.3175893337580759,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.32431267176129064,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.3259153449109908,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.3271960174279427,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.32573647169177083,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.32586091303176723,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.3259150363882776,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.3280245157159187,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.3281835284273479,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.32582792759419243,
+        "numSwapsFactor": 5
+      }
+    ],
+    "NaiveSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.28411334996844806,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.3220003542800246,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.3242308259436587,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.3245438273234343,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.3255546500156197,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.3265630018696671,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.32756498164038494,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.3273008029109356,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.3254358974164005,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.325760875178253,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.32623712260990273,
+        "numSwapsFactor": 5
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "logNumEquivMatricesStats": {
+    "minLogNumEquivMatrices": 541598.7315078515,
+    "numSamples": 10000,
+    "q3LogNumEquivMatrices": 543515.5107277234,
+    "medianLogNumEquivMatrices": 542926.8103313732,
+    "q1LogNumEquivMatrices": 542301.1909638827,
+    "maxLogNumEquivMatrices": 544058.7550199239
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/BMS2.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "saveCount": 10000,
+    "timestamp": "2022-01-29T22:30:00.723838"
+  }
+}

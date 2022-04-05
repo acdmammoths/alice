@@ -1,0 +1,36 @@
+{
+  "runtimeStats": {
+    "RefinedSampler": {
+      "q3StepTime": 2,
+      "setupTime": 1862,
+      "maxStepTime": 32,
+      "minStepTime": 1,
+      "q1StepTime": 2,
+      "medianStepTime": 2
+    },
+    "GmmtSampler": {
+      "q3StepTime": 2,
+      "setupTime": 1159,
+      "maxStepTime": 24,
+      "minStepTime": 1,
+      "q1StepTime": 1,
+      "medianStepTime": 2
+    },
+    "NaiveSampler": {
+      "q3StepTime": 2,
+      "setupTime": 1444,
+      "maxStepTime": 16,
+      "minStepTime": 0,
+      "q1StepTime": 1,
+      "medianStepTime": 2
+    }
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/foodmart.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "timestamp": "2022-01-30T21:59:49.282"
+  }
+}

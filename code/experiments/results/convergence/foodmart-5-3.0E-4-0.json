@@ -1,0 +1,165 @@
+{
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/foodmart.txt",
+      "seed": 0,
+      "maxNumSwapsFactor": 5,
+      "minFreq": 3.0E-4
+    },
+    "numOnes": 18319,
+    "numFreqItemsets": 4247,
+    "timestamp": "2022-01-30T22:18:55.755"
+  },
+  "convergenceStats": {
+    "RefinedSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.4340711090181306,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.5518797582607333,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.5968134369358764,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.6138058237187033,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.6184757868299191,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.622007691703948,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.6216937446040341,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.6231849933286241,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.6220076917039478,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.6219292049289695,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.6223608821913509,
+        "numSwapsFactor": 5
+      }
+    ],
+    "GmmtSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.432854564005965,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.5622988776391179,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.5997174476100778,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.615414802605761,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.6185150302174084,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.6205556863668472,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.6222431520288833,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.6240483478533866,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.6224393689663291,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.6220469350914373,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.6243230515658111,
+        "numSwapsFactor": 5
+      }
+    ],
+    "NaiveSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.4081900949689978,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.548367475080449,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.5981869554979986,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.6129424691939409,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.6196530884545954,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.6222431520288833,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.6230280197786673,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.6219684483164587,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.6230672631661565,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.6245585118907464,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.6229495330036889,
+        "numSwapsFactor": 5
+      }
+    ]
+  }
+}

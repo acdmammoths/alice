@@ -1,0 +1,10 @@
+{
+	"datasetPath": "datasets/chess.txt",
+	"numSwaps": 118252,
+	"numSamples": 2048,
+	"minFreq": 0.8,
+	"numThreads": 32,
+	"seed": 0,
+	"resultsDir": "experiments/results/numFreqItemsets/chess",
+	"sampleAndMine": true
+}

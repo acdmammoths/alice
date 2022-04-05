@@ -1,0 +1,10 @@
+{
+	"datasetPath": "datasets/BMS1.txt",
+	"numSwaps": 299278,
+	"numSamples": 2048,
+	"minFreq": 0.001,
+	"numThreads": 32,
+	"seed": 0,
+	"resultsDir": "experiments/results/numFreqItemsets/BMS1",
+	"sampleAndMine": true
+}

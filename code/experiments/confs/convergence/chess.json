@@ -1,0 +1,7 @@
+{
+	"datasetPath": "datasets/chess.txt",
+	"maxNumSwapsFactor": 5,
+	"minFreq": 0.8,
+	"seed": 0,
+	"resultsDir": "experiments/results/convergence/"
+}

@@ -1,0 +1,165 @@
+{
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/BMS2.txt",
+      "seed": 0,
+      "maxNumSwapsFactor": 5,
+      "minFreq": 0.002
+    },
+    "numOnes": 358278,
+    "numFreqItemsets": 3683,
+    "timestamp": "2022-01-30T07:49:46.014"
+  },
+  "convergenceStats": {
+    "RefinedSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.6314437664398016,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.7667520047383096,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.8017388823851784,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.8127899817921986,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.816071701924079,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.8182474664508519,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.8203860716674325,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.820853450409469,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.82263029152039,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.8238999899687697,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.8247263144388147,
+        "numSwapsFactor": 5
+      }
+    ],
+    "GmmtSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.6519527306840726,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.7709754943492338,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.7996364686007545,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.808334694846952,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.8103661082819849,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.8118799850217211,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.813290398636029,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.8132056712001641,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.8127789776634228,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.8126903983876458,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.811125281098834,
+        "numSwapsFactor": 5
+      }
+    ],
+    "NaiveSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.6326623946387594,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.7681227062631707,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.801563773057087,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.8127543943198007,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.8161851658333555,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.8189237213696684,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.8185478274468848,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.8206868285774399,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.8240206995399568,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.8252004483303825,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.8255335004301756,
+        "numSwapsFactor": 5
+      }
+    ]
+  }
+}

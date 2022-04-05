@@ -1,0 +1,36 @@
+{
+  "runtimeStats": {
+    "RefinedSampler": {
+      "q3StepTime": 33,
+      "setupTime": 43793,
+      "maxStepTime": 82,
+      "minStepTime": 22,
+      "q1StepTime": 28,
+      "medianStepTime": 30
+    },
+    "GmmtSampler": {
+      "q3StepTime": 10,
+      "setupTime": 11698,
+      "maxStepTime": 47,
+      "minStepTime": 7,
+      "q1StepTime": 9,
+      "medianStepTime": 9
+    },
+    "NaiveSampler": {
+      "q3StepTime": 13,
+      "setupTime": 13570,
+      "maxStepTime": 56,
+      "minStepTime": 8,
+      "q1StepTime": 12,
+      "medianStepTime": 13
+    }
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/mushrooms.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "timestamp": "2022-01-25T22:16:35.544"
+  }
+}

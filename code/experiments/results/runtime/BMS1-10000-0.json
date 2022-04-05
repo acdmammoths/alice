@@ -1,0 +1,36 @@
+{
+  "runtimeStats": {
+    "RefinedSampler": {
+      "q3StepTime": 38,
+      "setupTime": 452494,
+      "maxStepTime": 73,
+      "minStepTime": 27,
+      "q1StepTime": 31,
+      "medianStepTime": 32
+    },
+    "GmmtSampler": {
+      "q3StepTime": 27,
+      "setupTime": 260139,
+      "maxStepTime": 63,
+      "minStepTime": 19,
+      "q1StepTime": 24,
+      "medianStepTime": 25
+    },
+    "NaiveSampler": {
+      "q3StepTime": 29,
+      "setupTime": 278437,
+      "maxStepTime": 63,
+      "minStepTime": 19,
+      "q1StepTime": 25,
+      "medianStepTime": 27
+    }
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/BMS1.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "timestamp": "2022-01-25T23:19:41.857"
+  }
+}

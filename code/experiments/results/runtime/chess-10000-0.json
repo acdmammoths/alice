@@ -1,0 +1,36 @@
+{
+  "runtimeStats": {
+    "RefinedSampler": {
+      "q3StepTime": 14,
+      "setupTime": 9447,
+      "maxStepTime": 49,
+      "minStepTime": 11,
+      "q1StepTime": 13,
+      "medianStepTime": 14
+    },
+    "GmmtSampler": {
+      "q3StepTime": 5,
+      "setupTime": 2577,
+      "maxStepTime": 16,
+      "minStepTime": 3,
+      "q1StepTime": 5,
+      "medianStepTime": 5
+    },
+    "NaiveSampler": {
+      "q3StepTime": 5,
+      "setupTime": 4385,
+      "maxStepTime": 24,
+      "minStepTime": 4,
+      "q1StepTime": 5,
+      "medianStepTime": 5
+    }
+  },
+  "runInfo": {
+    "args": {
+      "datasetPath": "datasets/chess.txt",
+      "seed": 0,
+      "numSwaps": 10000
+    },
+    "timestamp": "2022-01-25T22:06:43.346"
+  }
+}

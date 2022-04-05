@@ -1,0 +1,7 @@
+{
+	"datasetPath": "datasets/mushrooms.txt",
+	"maxNumSwapsFactor": 5,
+	"minFreq": 0.3,
+	"seed": 0,
+	"resultsDir": "experiments/results/convergence/"
+}

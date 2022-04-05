@@ -1,0 +1,160 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          1559,
+          1559,
+          1559,
+          1559,
+          1559
+        ],
+        "2": [
+          575,
+          646,
+          662,
+          680,
+          751
+        ],
+        "3": [
+          1,
+          2,
+          3,
+          4,
+          12
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          5
+        ],
+        "5": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        2134,
+        2207,
+        2224,
+        2242,
+        2314
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "NaiveSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          1559,
+          1559,
+          1559,
+          1559,
+          1559
+        ],
+        "2": [
+          570,
+          646,
+          662,
+          679,
+          736
+        ],
+        "3": [
+          1,
+          2,
+          3,
+          4,
+          10
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        2130,
+        2207,
+        2223,
+        2240,
+        2302
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "RefinedSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          1559,
+          1559,
+          1559,
+          1559,
+          1559
+        ],
+        "2": [
+          577,
+          646,
+          662,
+          680,
+          760
+        ],
+        "3": [
+          1,
+          2,
+          3,
+          4,
+          10
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        2137,
+        2207,
+        2224,
+        2242,
+        2325
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "GmmtSampler"
+    }
+  ],
+  "runInfo": {
+    "args": {
+      "resultsDir": "experiments/results/numFreqItemsets/foodmart",
+      "datasetPath": "datasets/foodmart.txt",
+      "sampleAndMine": false,
+      "seed": 0,
+      "numSamples": 2176,
+      "numSwaps": 18319,
+      "minFreq": 3.0E-4,
+      "numThreads": 32
+    },
+    "freqItemsetLenToCount": {
+      "1": 1559,
+      "2": 1928,
+      "3": 488,
+      "4": 195,
+      "5": 63,
+      "6": 13,
+      "7": 1
+    },
+    "numFreqItemsets": 4247,
+    "timestamp": "2022-02-06T15:54:48.741171"
+  }
+}
