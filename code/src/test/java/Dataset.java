@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.structures.SparseMatrix;
+import caterpillars.structures.Vector;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

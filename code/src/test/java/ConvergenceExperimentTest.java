@@ -14,6 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import diffusr.test.ConvergenceExperiment;
+import caterpillars.structures.SparseMatrix;
+import caterpillars.config.Paths;
+import caterpillars.config.JsonKeys;
+import caterpillars.utils.JsonFile;
+import caterpillars.config.DatasetNames;
+import caterpillars.utils.Transformer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;

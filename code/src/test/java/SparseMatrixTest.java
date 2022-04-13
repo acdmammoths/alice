@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.structures.SparseMatrix;
+import caterpillars.structures.Vector;
 import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,18 +40,18 @@ public class SparseMatrixTest {
     };
 
     final SparseMatrix n = new SparseMatrix(a.length, a[0].length);
-    n.set(0, 0, 1);
-    n.set(0, 1, 0);
-    n.set(0, 2, 1);
-    n.set(0, 3, 1);
-    n.set(1, 0, 1);
-    n.set(1, 1, 1);
-    n.set(1, 2, 0);
-    n.set(1, 3, 0);
-    n.set(2, 0, 0);
-    n.set(2, 1, 0);
-    n.set(2, 2, 1);
-    n.set(2, 3, 0);
+    n.setInRow(0, 0, 1);
+    n.setInRow(0, 1, 0);
+    n.setInRow(0, 2, 1);
+    n.setInRow(0, 3, 1);
+    n.setInRow(1, 0, 1);
+    n.setInRow(1, 1, 1);
+    n.setInRow(1, 2, 0);
+    n.setInRow(1, 3, 0);
+    n.setInRow(2, 0, 0);
+    n.setInRow(2, 1, 0);
+    n.setInRow(2, 2, 1);
+    n.setInRow(2, 3, 0);
 
     final SparseMatrix m = new SparseMatrix(a);
 
@@ -61,7 +63,7 @@ public class SparseMatrixTest {
     final SparseMatrix m = new SparseMatrix(100, 10);
     for (int r = 0; r < m.getNumRows(); r++) {
       for (int c = 0; c < m.getNumCols(); c++) {
-        Assert.assertEquals(0, m.get(r, c));
+        Assert.assertEquals(0, m.isInRow(r, c));
       }
     }
   }
@@ -74,8 +76,8 @@ public class SparseMatrixTest {
       final int rndR = this.rnd.nextInt(m.getNumRows());
       final int rndC = this.rnd.nextInt(m.getNumCols());
       final int rndVal = this.rnd.nextInt(2);
-      m.set(rndR, rndC, rndVal);
-      Assert.assertEquals(rndVal, m.get(rndR, rndC));
+      m.setInRow(rndR, rndC, rndVal);
+      Assert.assertEquals(rndVal, m.isInRow(rndR, rndC));
     }
   }
 
@@ -85,8 +87,8 @@ public class SparseMatrixTest {
 
     for (int r = 0; r < m.getNumRows(); r++) {
       for (int c = 0; c < m.getNumCols(); c++) {
-        m.set(r, c, 0);
-        Assert.assertEquals(0, m.get(r, c));
+        m.setInRow(r, c, 0);
+        Assert.assertEquals(0, m.isInRow(r, c));
       }
     }
 
@@ -97,14 +99,14 @@ public class SparseMatrixTest {
   public void multipleGetAndSet() {
     final SparseMatrix m = new SparseMatrix(100, 10);
 
-    m.set(0, 0, 1);
-    m.set(0, 0, 0);
-    m.set(0, 0, 1);
+    m.setInRow(0, 0, 1);
+    m.setInRow(0, 0, 0);
+    m.setInRow(0, 0, 1);
 
-    m.get(0, 0);
-    m.get(0, 1);
+    m.isInRow(0, 0);
+    m.isInRow(0, 1);
 
-    Assert.assertEquals(1, m.get(0, 0));
+    Assert.assertEquals(1, m.isInRow(0, 0));
   }
 
   @Test
@@ -166,12 +168,12 @@ public class SparseMatrixTest {
             });
 
     final SparseMatrix n = new SparseMatrix(m.getNumRows(), m.getNumCols());
-    n.set(0, 0, 5);
-    n.set(1, 0, 3);
-    n.set(1, 2, 1);
-    n.set(2, 0, 8);
-    n.set(2, 1, 4);
-    n.set(2, 2, 2);
+    n.setInRow(0, 0, 5);
+    n.setInRow(1, 0, 3);
+    n.setInRow(1, 2, 1);
+    n.setInRow(2, 0, 8);
+    n.setInRow(2, 1, 4);
+    n.setInRow(2, 2, 2);
 
     Assert.assertEquals(m, n);
   }

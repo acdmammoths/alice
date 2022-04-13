@@ -14,6 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import diffusr.fpm.AlgoNegFINMod;
+import diffusr.fpm.AlgoNegFIN;
+import caterpillars.config.Paths;
+import diffusr.fpm.Itemsets;
+import caterpillars.config.DatasetNames;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;

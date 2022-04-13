@@ -14,6 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.helpers.SwappableAndNewEdges;
+import caterpillars.structures.SparseMatrix;
+import diffusr.structures.RefinedMatrix;
+import caterpillars.config.Paths;
+import caterpillars.structures.Vector;
+import caterpillars.config.DatasetNames;
+import caterpillars.structures.Edge;
+import caterpillars.structures.Matrix;
+import caterpillars.utils.Transformer;
+import diffusr.samplers.RefinedSampler;
+import caterpillars.utils.Timer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -593,7 +604,6 @@ public class RefinedSamplerTest {
     final SparseMatrix inMatrix = this.transformer.createMatrix(datasetPath);
     final RefinedMatrix matrix = new RefinedMatrix(inMatrix);
     matrix.getDegreeAndTotalNumSwapPairs(); // execute this method to initialize data structures
-
     for (int t = 0; t < 10; t++) {
       final RefinedMatrix adjMatrix = new RefinedMatrix(matrix.getMatrix());
       final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);

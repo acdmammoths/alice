@@ -1,3 +1,7 @@
+
+import caterpillars.structures.Edge;
+import caterpillars.structures.Matrix;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *

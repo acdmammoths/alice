@@ -14,6 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.config.Paths;
+import diffusr.fpm.NumFreqItemsetsExperiment;
+import caterpillars.config.JsonKeys;
+import caterpillars.utils.JsonFile;
+import caterpillars.config.DatasetNames;
+import caterpillars.config.Delimiters;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

@@ -14,6 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.config.Paths;
+import diffusr.fpm.Itemsets;
+import diffusr.fpm.FreqItemsetMiner;
+import caterpillars.config.DatasetNames;
+import caterpillars.config.Delimiters;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

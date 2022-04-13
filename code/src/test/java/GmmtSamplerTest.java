@@ -14,6 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.helpers.SwappableAndNewEdges;
+import diffusr.structures.GmmtMatrix;
+import caterpillars.structures.SparseMatrix;
+import diffusr.samplers.GmmtSampler;
+import caterpillars.config.Paths;
+import caterpillars.config.DatasetNames;
+import caterpillars.structures.Edge;
+import caterpillars.structures.Matrix;
+import caterpillars.utils.Transformer;
+import caterpillars.utils.Timer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -14,6 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import diffusr.test.Driver;
+import caterpillars.config.SamplerNames;
+import caterpillars.config.Paths;
+import caterpillars.config.DatasetNames;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

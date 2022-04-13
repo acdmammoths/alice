@@ -14,6 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import diffusr.test.DistortionExperiment;
+import caterpillars.config.Paths;
+import caterpillars.config.JsonKeys;
+import caterpillars.utils.JsonFile;
+import caterpillars.config.DatasetNames;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
