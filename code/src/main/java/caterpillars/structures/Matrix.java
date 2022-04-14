@@ -18,6 +18,7 @@ package caterpillars.structures;
  */
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class Matrix {
      * A list of the edges from the bipartite graph representation of the
      * matrix.
      */
-    public final List<Edge> edges;
+    public final Set<Edge> edges;
 
     /**
      * A map where each key is a row and the value is the number of rows equal
@@ -71,7 +72,7 @@ public class Matrix {
      * @param inMatrix a 0-1 matrix representation of the dataset
      */
     public Matrix(SparseMatrix inMatrix) {
-        this.edges = Lists.newArrayList();
+        this.edges = Sets.newHashSet();
         this.rowToNumEqRows = Maps.newHashMap();
 //        this.colToNumEqCols = Maps.newHashMap();
         this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
@@ -192,10 +193,6 @@ public class Matrix {
         return this.edges.size();
     }
 
-    public Edge getEdge(int index) {
-        return this.edges.get(index);
-    }
-
     /**
      * Samples edges from the graph representation of the matrix uniformly at
      * random.
@@ -204,6 +201,7 @@ public class Matrix {
      * @return the two sampled edges as a length two array of {@link Edge}
      */
     public Edge[] sampleEdges(Random rnd) {
+        List<Edge> edgeList = Lists.newArrayList(edges);
         final int edge1Index = rnd.nextInt(this.getNumEdges());
         int edge2Index;
 
@@ -211,8 +209,8 @@ public class Matrix {
             edge2Index = rnd.nextInt(this.getNumEdges());
         } while (edge1Index == edge2Index);
 
-        final Edge edge1 = this.getEdge(edge1Index);
-        final Edge edge2 = this.getEdge(edge2Index);
+        final Edge edge1 = edgeList.get(edge1Index);
+        final Edge edge2 = edgeList.get(edge2Index);
 
         return new Edge[]{edge1, edge2};
     }

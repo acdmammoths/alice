@@ -37,6 +37,11 @@ public class NaiveBJDMSampler implements Sampler {
             timer.start();
 
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            
+            if (sne == null) {
+                continue;
+            }
+            
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;
@@ -110,6 +115,11 @@ public class NaiveBJDMSampler implements Sampler {
             logNumEquivMatricesTracker.save(matrix, logNumEquivMatrices);
 
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            
+            if (sne == null) {
+                continue;
+            }
+            
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;

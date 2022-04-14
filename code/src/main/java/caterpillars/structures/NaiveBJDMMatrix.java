@@ -1,6 +1,7 @@
 package caterpillars.structures;
 
 import caterpillars.helpers.SwappableAndNewEdges;
+import caterpillars.helpers.SwappableLists;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.javatuples.Quartet;
 
-
 public class NaiveBJDMMatrix extends Matrix {
 
     /**
@@ -22,7 +22,7 @@ public class NaiveBJDMMatrix extends Matrix {
      * with that row sum.
      */
     private Map<Integer, Set<Vector>> rowSumToUniqueRows;
-    
+
     /**
      * A map where each key is a col sum and the value is the unique set of cols
      * with that col sum.
@@ -30,17 +30,17 @@ public class NaiveBJDMMatrix extends Matrix {
     private Map<Integer, Set<Vector>> colSumToUniqueCols;
 
     /**
-     * A map where each key is a row sum and the value is the set of rows
-     * with that row sum.
+     * A map where each key is a row sum and the value is the set of rows with
+     * that row sum.
      */
     private Map<Integer, Set<Integer>> rowSumToEqRowSumRows;
-    
+
     /**
-     * A map where each key is a col sum and the value is the set of cols
-     * with that col sum.
+     * A map where each key is a col sum and the value is the set of cols with
+     * that col sum.
      */
     private Map<Integer, Set<Integer>> colSumToEqColSumCols;
-    
+
     /**
      * Creates an instance of {@link NaiveBJDMMatrix} from a 0-1
      * {@link SparseMatrix} by initializing necessary data structures from the
@@ -75,7 +75,7 @@ public class NaiveBJDMMatrix extends Matrix {
         tmpSet.add(row);
         rowSumToEqRowSumRows.put(rowSum, tmpSet);
     }
-    
+
     private void incEqColSumCols(int colSum, int col) {
         Set<Integer> tmpSet = colSumToEqColSumCols.getOrDefault(colSum, Sets.newHashSet());
         tmpSet.add(col);
@@ -85,7 +85,7 @@ public class NaiveBJDMMatrix extends Matrix {
     public Set<Vector> getEqRowSumUniqueRows(int rowSum) {
         return this.rowSumToUniqueRows.getOrDefault(rowSum, Sets.newHashSet());
     }
-    
+
     private void addEqRowSumUniqueRow(int rowSum, Vector row) {
         Set<Vector> uniqueRows = this.getEqRowSumUniqueRows(rowSum);
         if (uniqueRows.contains(row)) {
@@ -95,11 +95,11 @@ public class NaiveBJDMMatrix extends Matrix {
         uniqueRows.add(row);
         this.rowSumToUniqueRows.put(rowSum, uniqueRows);
     }
-    
+
     public Set<Vector> getEqColSumUniqueCols(int colSum) {
         return this.colSumToUniqueCols.getOrDefault(colSum, Sets.newHashSet());
     }
-    
+
     private void addEqColSumUniqueCol(int colSum, Vector col) {
         Set<Vector> uniqueCols = this.getEqColSumUniqueCols(colSum);
         if (uniqueCols.contains(col)) {
@@ -109,7 +109,7 @@ public class NaiveBJDMMatrix extends Matrix {
         uniqueCols.add(col);
         this.colSumToUniqueCols.put(colSum, uniqueCols);
     }
-    
+
     /**
      * Gets the log of the number of matrices in the chain that are equivalent
      * to the current matrix (i.e., matrices that represent the same dataset as
@@ -202,19 +202,25 @@ public class NaiveBJDMMatrix extends Matrix {
                 - Math.log1p(this.getNumEqRows(newRow1))
                 - Math.log1p(this.getNumEqRows(newRow2));
     }
-    
+
     public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd) {
         Quartet<Integer, Integer, Integer, Integer> sampledEdges;
         int r1, r2, c1, c2;
         boolean rowBased = rnd.nextBoolean();
         if (rowBased) {
             sampledEdges = sampleEdge(rowSumToEqRowSumRows, getRows(), rowSums, rnd);
+            if (sampledEdges == null) {
+                return null;
+            }
             r1 = sampledEdges.getValue0();
             r2 = sampledEdges.getValue1();
             c1 = sampledEdges.getValue2();
             c2 = sampledEdges.getValue3();
         } else {
             sampledEdges = sampleEdge(colSumToEqColSumCols, getCols(), colSums, rnd);
+            if (sampledEdges == null) {
+                return null;
+            }
             r1 = sampledEdges.getValue2();
             r2 = sampledEdges.getValue3();
             c1 = sampledEdges.getValue0();
@@ -227,108 +233,83 @@ public class NaiveBJDMMatrix extends Matrix {
 
         return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2);
     }
-    
+
     private Quartet<Integer, Integer, Integer, Integer> sampleEdge(
-            Map<Integer, Set<Integer>> sumToEqSumElements, 
-            List<Vector> instances, 
+            Map<Integer, Set<Integer>> sumToEqSumElements,
+            List<Vector> instances,
             int[] sums,
             Random rnd) {
 
-        // we select a row to select a row sum
+        // we select a row/col to select a row/col sum
         int e1 = rnd.nextInt(instances.size());
         int s = sums[e1];
         List<Integer> cands = Lists.newArrayList(sumToEqSumElements.get(s));
-        int e2 = cands.get(rnd.nextInt(cands.size()));
+        int e2;
+        do {
+            e2 = cands.get(rnd.nextInt(cands.size()));
+        } while (e1 == e2);
         // column differences
         Set<Integer> S1 = Sets.newHashSet(instances.get(e1).getNonzeroIndices());
-        S1.retainAll(instances.get(e2).getNonzeroIndices());
+        S1.removeAll(instances.get(e2).getNonzeroIndices());
         Set<Integer> S2 = Sets.newHashSet(instances.get(e2).getNonzeroIndices());
-        S2.retainAll(instances.get(e1).getNonzeroIndices());
+        S2.removeAll(instances.get(e1).getNonzeroIndices());
         List<Integer> candC1 = Lists.newArrayList(S1);
         List<Integer> candC2 = Lists.newArrayList(S2);
-        if (Math.min(S1.size(), S2.size()) == 0) {
+        if (S1.isEmpty()) {
             // self loop
-            int f = instances.get(e1).getNonzeroIndices().iterator().next();
-            return new Quartet<>(e1, e2, f, f); 
+            return null;
         }
         int f1 = candC1.get(rnd.nextInt(candC1.size()));
         int f2 = candC2.get(rnd.nextInt(candC2.size()));
         return new Quartet<>(e1, e2, f1, f2);
     }
-    
-    public List<SwappableAndNewEdges> getSwappablesNewEdges(Random rnd) {
-        List<SwappableAndNewEdges> swappables = Lists.newArrayList();
-        List<Quartet<Integer, Integer, Integer, Integer>> edgesSampled;
+
+    public SwappableLists getSwappablesNewEdges(Random rnd) {
         boolean rowBased = rnd.nextBoolean();
         if (rowBased) {
-            edgesSampled = sampleEdges(rowSumToEqRowSumRows, getRows(), rowSums, rnd);
-            for (int i = 0; i < edgesSampled.size(); i++) {
-                Quartet<Integer, Integer, Integer, Integer> edge = edgesSampled.get(i);
-                Edge sampledEdge1 = new Edge(edge.getValue0(), edge.getValue2());
-                Edge sampledEdge2 = new Edge(edge.getValue1(), edge.getValue3());
-                Edge newEdge1 = new Edge(edge.getValue0(), edge.getValue3());
-                Edge newEdge2 = new Edge(edge.getValue1(), edge.getValue2());
-                swappables.add(new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2));
-            }
-            return swappables;
+            return sampleEdges(rowSumToEqRowSumRows, getRows(), rowSums, rnd);
         }
-        edgesSampled = sampleEdges(colSumToEqColSumCols, getCols(), colSums, rnd);
-        for (int i = 0; i < edgesSampled.size(); i++) {
-            Quartet<Integer, Integer, Integer, Integer> edge = edgesSampled.get(i);
-            Edge sampledEdge1 = new Edge(edge.getValue2(), edge.getValue0());
-            Edge sampledEdge2 = new Edge(edge.getValue3(), edge.getValue1());
-            Edge newEdge1 = new Edge(edge.getValue2(), edge.getValue1());
-            Edge newEdge2 = new Edge(edge.getValue3(), edge.getValue0());
-            swappables.add(new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2));
-        }
-        return swappables;
+        SwappableLists swappable = sampleEdges(colSumToEqColSumCols, getCols(), colSums, rnd);
+        swappable.rowBased = false;
+        return swappable;
     }
-    
-    private List<Quartet<Integer, Integer, Integer, Integer>> sampleEdges(
-            Map<Integer, Set<Integer>> sumToEqSumElements, 
-            List<Vector> instances, 
+
+    private SwappableLists sampleEdges(
+            Map<Integer, Set<Integer>> sumToEqSumElements,
+            List<Vector> instances,
             int[] sums,
             Random rnd) {
-    
-        List<Quartet<Integer, Integer, Integer, Integer>> edgesSampled = Lists.newArrayList();
-        // we select a row to select a row sum
+
+        // we select a row/col to select a row/col sum
         int e1 = rnd.nextInt(instances.size());
         int s = sums[e1];
         List<Integer> cands = Lists.newArrayList(sumToEqSumElements.get(s));
         int e2 = cands.get(rnd.nextInt(cands.size()));
-        // column differences
+        // column/row differences
         Set<Integer> S1 = Sets.newHashSet(instances.get(e1).getNonzeroIndices());
-        S1.retainAll(instances.get(e2).getNonzeroIndices());
-        List<Integer> cand1 = Lists.newArrayList(S1);
         Set<Integer> S2 = Sets.newHashSet(instances.get(e2).getNonzeroIndices());
-        S2.retainAll(instances.get(e1).getNonzeroIndices());
-        List<Integer> cand2 = Lists.newArrayList(S2);
-        int minNum = Math.min(S1.size(), S2.size());
-        if (minNum == 0) {
-            int f = instances.get(e1).getNonzeroIndices().iterator().next();
-            edgesSampled.add(new Quartet<>(e1, e2, f, f));
-            return edgesSampled;
+        Set<Integer> S12 = S1.stream().filter(i -> S2.contains(i)).collect(Collectors.toSet());
+        S1.removeAll(S12);
+        S2.removeAll(S12);
+        int num1 = S1.size();
+        if (num1 == 0) {
+            return new SwappableLists(e1, e2, Lists.newArrayList(), Lists.newArrayList(), true);
         }
-        int numEdgesToSwap = rnd.nextInt(minNum) + 1;
-        RandomSamplingCollector<Integer> collector = LiLSampling.collector(numEdgesToSwap, rnd);
-        List<Integer> subS1 = IntStream.range(0, cand1.size())
-                    .boxed()
-                    .collect(collector)
-                    .stream()
-                    .map(i -> cand1.get(i))
-                    .collect(Collectors.toList());
-        List<Integer> subS2 = IntStream.range(0, cand2.size())
-                    .boxed()
-                    .collect(collector)
-                    .stream()
-                    .map(i -> cand2.get(i))
-                    .collect(Collectors.toList());
-        for (int i = 0; i < numEdgesToSwap; i++) {
-            edgesSampled.add(new Quartet<>(e1, e2, subS1.get(i), subS2.get(i)));
-        }
-        return edgesSampled;
+        List<Integer> total = Lists.newArrayList(S1);
+        total.addAll(S2);
+        RandomSamplingCollector<Integer> collector = LiLSampling.collector(num1, rnd);
+        List<Integer> L = IntStream.range(0, total.size())
+                .boxed()
+                .collect(collector)
+                .stream()
+                .map(i -> total.get(i))
+                .collect(Collectors.toList());
+        total.removeAll(L);
+        L.addAll(S12);
+        total.addAll(S12);
+        return new SwappableLists(e1, e2, L, total, true);
     }
-    
+
     public Map<Integer, Map<Integer, Integer>> getBJDM() {
         Map<Integer, Map<Integer, Integer>> BJDM = Maps.newHashMap();
         edges.stream().forEach(edge -> {
@@ -338,15 +319,15 @@ public class NaiveBJDMMatrix extends Matrix {
         });
         return BJDM;
     }
-    
+
     public double getSamplingProb(Edge swappableEdge1, Edge swappableEdge2) {
-        
+
         double prob = 0.0;
         int rowSum1 = rowSums[swappableEdge1.row];
         int rowSum2 = rowSums[swappableEdge2.row];
         int colSum1 = colSums[swappableEdge1.col];
         int colSum2 = colSums[swappableEdge2.col];
-        
+
         if (rowSum1 == rowSum2) {
             prob += getProb(rowSumToUniqueRows, getRows(), rowSum1, swappableEdge1.row, swappableEdge2.row);
         }
@@ -355,11 +336,11 @@ public class NaiveBJDMMatrix extends Matrix {
         }
         return prob;
     }
-    
-    private double getProb(Map<Integer, Set<Vector>> sumToEqSum, 
-            List<Vector> instances, 
-            int sum, 
-            int e1, 
+
+    private double getProb(Map<Integer, Set<Vector>> sumToEqSum,
+            List<Vector> instances,
+            int sum,
+            int e1,
             int e2) {
         int size = sumToEqSum.get(sum).size();
         int dp = size * (size - 1) / 2;
@@ -369,11 +350,88 @@ public class NaiveBJDMMatrix extends Matrix {
                 .mapToInt(l -> l.size() * (l.size() - 1) / 2)
                 .sum();
         Set<Integer> S1 = Sets.newHashSet(instances.get(e1).getNonzeroIndices());
-        S1.retainAll(instances.get(e2).getNonzeroIndices());
+        S1.removeAll(instances.get(e2).getNonzeroIndices());
         Set<Integer> S2 = Sets.newHashSet(instances.get(e2).getNonzeroIndices());
-        S2.retainAll(instances.get(e1).getNonzeroIndices());
+        S2.removeAll(instances.get(e1).getNonzeroIndices());
         int H12 = S1.size() * S2.size();
         return dp / (2. * sumUniquePerSum * numPairs * H12);
     }
-    
+
+    public double getCurveBallSamplingProb(Edge swappableEdge1, Edge swappableEdge2) {
+
+//        double prob = 0.0;
+//        int rowSum1 = rowSums[swappableEdge1.row];
+//        int rowSum2 = rowSums[swappableEdge2.row];
+//        int colSum1 = colSums[swappableEdge1.col];
+//        int colSum2 = colSums[swappableEdge2.col];
+//        
+//        if (rowSum1 == rowSum2) {
+//            prob += getProb(rowSumToUniqueRows, getRows(), rowSum1, swappableEdge1.row, swappableEdge2.row);
+//        }
+//        if (colSum1 == colSum2) {
+//            prob += getProb(colSumToUniqueCols, getCols(), colSum1, swappableEdge1.col, swappableEdge2.col);
+//        }
+//        return prob;
+    }
+
+    private double getCurveBallProb(Map<Integer, Set<Vector>> sumToEqSum,
+            List<Vector> instances,
+            int sum,
+            int e1,
+            int e2,
+            int sampleSize) {
+
+//        int size = sumToEqSum.get(sum).size();
+//        int dp = size * (size - 1) / 2;
+//        double numPairs = Math.pow(size, 2);
+//        int sumUniquePerSum = sumToEqSum.values()
+//                .stream()
+//                .mapToInt(l -> l.size() * (l.size() - 1) / 2)
+//                .sum();
+//        Set<Integer> S1 = Sets.newHashSet(instances.get(e1).getNonzeroIndices());
+//        S1.removeAll(instances.get(e2).getNonzeroIndices());
+//        Set<Integer> S2 = Sets.newHashSet(instances.get(e2).getNonzeroIndices());
+//        S2.removeAll(instances.get(e1).getNonzeroIndices());
+//        int H12 = S1.size() * S2.size();
+//        return dp / (2. * sumUniquePerSum * numPairs * H12);
+    }
+
+    public void transition(SwappableLists swappables) {
+        if (swappables.rowBased) {
+            Vector swappableRow1 = getRowInstance(swappables.swappable1);
+            Vector swappableRow2 = getRowInstance(swappables.swappable2);
+            Vector newRow1 = new Vector(swappables.new1);
+            Vector newRow2 = new Vector(swappables.new2);
+            // update unique rows
+            decNumEqRows(swappableRow1);
+            decNumEqRows(swappableRow2);
+            incNumEqRows(newRow1);
+            incNumEqRows(newRow2);
+            // update edges
+            Set<Integer> removed1 = Sets.newHashSet(swappableRow1.getNonzeroIndices());
+            removed1.removeAll(newRow1.getNonzeroIndices());
+            removed1.stream().forEach(b -> edges.remove(new Edge(swappables.swappable1, b)));
+            newRow1.getNonzeroIndices().stream().forEach(b -> edges.add(new Edge(swappables.swappable1, b)));
+            Set<Integer> removed2 = Sets.newHashSet(swappableRow2.getNonzeroIndices());
+            removed2.removeAll(newRow2.getNonzeroIndices());
+            removed2.stream().forEach(b -> edges.remove(new Edge(swappables.swappable2, b)));
+            newRow2.getNonzeroIndices().stream().forEach(b -> edges.add(new Edge(swappables.swappable2, b)));
+            getMatrix().replaceRow(swappables.swappable1, newRow1);
+            getMatrix().replaceRow(swappables.swappable2, newRow2);
+            // update columns
+            removed1.stream().forEach(c -> {
+//                decNumEqCols(getColInstance(c));
+                setCol(swappables.swappable1, c, 0);
+                setCol(swappables.swappable2, c, 1);
+//                incNumEqCols(getColInstance(c));
+            });
+            removed2.stream().forEach(c -> {
+//                decNumEqCols(getColInstance(c));
+                setCol(swappables.swappable2, c, 0);
+                setCol(swappables.swappable1, c, 1);
+//                incNumEqCols(getColInstance(c));
+            });
+        }
+    }
+
 }

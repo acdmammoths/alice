@@ -109,6 +109,14 @@ public class SparseMatrix {
         this.listOfRows.get(r).set(c, value);
     }
     
+    public void replaceRow(int r, Vector row) {
+        this.listOfRows.add(r, row);
+    }
+    
+    public void replaceCol(int c, Vector col) {
+        this.listOfCols.add(c, col);
+    }
+    
     public void setInCol(int r, int c, int value) {
         this.listOfCols.get(c).set(r, value);
     }

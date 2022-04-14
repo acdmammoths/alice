@@ -16,6 +16,8 @@ package caterpillars.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import com.google.common.collect.Sets;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -37,6 +39,10 @@ public class Vector {
      */
     public Vector() {
         this.indices = new HashSet<>();
+    }
+    
+    public Vector(Collection<Integer> indices) {
+        this.indices = Sets.newHashSet(indices);
     }
 
     /**
