@@ -21,11 +21,13 @@ import caterpillars.helpers.SwappableAndNewEdges;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.helpers.LogNumEquivMatricesTracker;
 import caterpillars.helpers.SwappableLists;
-import caterpillars.structures.Vector;
 import caterpillars.structures.Edge;
+import caterpillars.structures.Vector;
 import diffusr.samplers.Sampler;
 import caterpillars.utils.Timer;
+import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class CurveballBJDMSampler implements Sampler {
@@ -55,31 +57,80 @@ public class CurveballBJDMSampler implements Sampler {
             timer.start();
 
             SwappableLists snes = matrix.getSwappablesNewEdges(rnd);
-            
-            if (snes.new1.isEmpty()) {
+
+            if (snes == null) {
                 continue;
             }
-            
-            double logNumEquivAdjMatrices = logNumEquivMatrices;
-            
-            logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(logNumEquivAdjMatrices, 
-                        swappableRow1, swappableRow2, newRows[0], newRows[1]);
 
-            double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
-//            frac *= something;
+            List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+
+            double logNumEquivAdjMatrices = logNumEquivMatrices;
+
+            if (snes.rowBased) {
+                Vector[] swappableRows = new Vector[]{
+                    matrix.getRowInstance(snes.swappable1),
+                    matrix.getRowInstance(snes.swappable2)};
+                for (SwappableAndNewEdges swappable : swappables) {
+                    Vector[] newRows = matrix.getNewRows(swappableRows[0], swappableRows[1],
+                            swappable.newEdge1, swappable.newEdge2);
+                    logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
+                            logNumEquivAdjMatrices,
+                            swappableRows[0],
+                            swappableRows[1],
+                            newRows[0],
+                            newRows[1]);
+                    swappableRows = newRows;
+                }
+            } else {
+                Map<Vector, Integer> rowToEqRows = matrix.getRowToNumEqRowsMap();
+                List<Vector> instances = Lists.newArrayList();
+                for (Vector row : matrix.getRows()) {
+                    instances.add(row.copy());
+                }
+                for (SwappableAndNewEdges swappable : swappables) {
+                    Vector swappableRow1 = instances.get(swappable.swappableEdge1.row);
+                    Vector swappableRow2 = instances.get(swappable.swappableEdge2.row);
+                    Vector[] newRows = matrix.getNewRows(swappableRow1, swappableRow2,
+                            swappable.newEdge1, swappable.newEdge2);
+                    logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
+                            logNumEquivAdjMatrices,
+                            swappableRow1,
+                            swappableRow2,
+                            newRows[0],
+                            newRows[1],
+                            rowToEqRows);
+                    instances.add(swappable.swappableEdge1.row, newRows[0]);
+                    instances.add(swappable.swappableEdge2.row, newRows[1]);
+                    rowToEqRows.put(newRows[0], rowToEqRows.getOrDefault(newRows[0], 0) + 1);
+                    rowToEqRows.put(newRows[1], rowToEqRows.getOrDefault(newRows[1], 0) + 1);
+                    int newCount1 = rowToEqRows.getOrDefault(swappableRow1, 0) - 1;
+                    if (newCount1 <= 0) {
+                        rowToEqRows.remove(swappableRow1);
+                    } else {
+                        rowToEqRows.put(swappableRow1, newCount1);
+                    }
+                    int newCount2 = rowToEqRows.getOrDefault(swappableRow2, 0) - 1;
+                    if (newCount2 <= 0) {
+                        rowToEqRows.remove(swappableRow2);
+                    } else {
+                        rowToEqRows.put(swappableRow2, newCount2);
+                    }
+                }
+            }
+
+            double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices)
+                    * matrix.curveBallSamplingProb(snes) / matrix.curveballAdjSamplingProb(snes);
 
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
-
-                logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(logNumEquivMatrices,
-                        swappableRow1,
-                        swappableRow2,
-                        newRow1,
-                        newRow2);
-
-                matrix.transition(snes);
-
+                for (SwappableAndNewEdges swappable : swappables) {
+                    matrix.transition(
+                            swappable.swappableEdge1,
+                            swappable.swappableEdge2,
+                            swappable.newEdge1,
+                            swappable.newEdge2);
+                }
                 logNumEquivMatrices = logNumEquivAdjMatrices;
             }
             timer.stop();
@@ -118,19 +169,32 @@ public class CurveballBJDMSampler implements Sampler {
             logNumEquivMatricesTracker.save(matrix, logNumEquivMatrices);
 
             SwappableLists snes = matrix.getSwappablesNewEdges(rnd);
-            
-            if (snes.new1.isEmpty()) {
+
+            if (snes == null) {
                 continue;
             }
 
-            final double logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(logNumEquivMatrices,
-                    swappableRow1,
-                    swappableRow2,
-                    newRow1,
-                    newRow2);
+            List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            double logNumEquivAdjMatrices = logNumEquivMatrices;
 
-            matrix.transition(snes);
+            for (SwappableAndNewEdges swappable : swappables) {
 
+                Vector swappableRow1 = matrix.getRowInstance(swappable.swappableEdge1.row);
+                Vector swappableRow2 = matrix.getRowInstance(swappable.swappableEdge2.row);
+                Vector[] newRows = matrix.getNewRows(swappable.swappableEdge1,
+                        swappable.swappableEdge2,
+                        swappable.newEdge1,
+                        swappable.newEdge2);
+
+                logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
+                        logNumEquivAdjMatrices, swappableRow1, swappableRow2, newRows[0], newRows[1]);
+
+                matrix.transition(
+                        swappable.swappableEdge1,
+                        swappable.swappableEdge2,
+                        swappable.newEdge1,
+                        swappable.newEdge2);
+            }
             logNumEquivMatrices = logNumEquivAdjMatrices;
         }
     }
