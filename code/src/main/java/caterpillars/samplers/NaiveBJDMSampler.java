@@ -62,10 +62,7 @@ public class NaiveBJDMSampler implements Sampler {
                     = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
 
-//            final double samplingProb = matrix.getSamplingProb(swappableEdge1, swappableEdge2);
-//            final double adjSamplingProb = matrix.getSamplingProb(swappableEdge1, swappableEdge2);
             double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
-//            frac *= samplingProb / adjSamplingProb;
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
