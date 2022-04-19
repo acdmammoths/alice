@@ -65,7 +65,16 @@ public class CurveballBJDMSampler implements Sampler {
             List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
 
             double logNumEquivAdjMatrices = logNumEquivMatrices;
-
+            
+            // copy vectors for adj matrix
+            List<Vector> rows = Lists.newArrayList();
+            for (Vector row : matrix.getRows()) {
+                rows.add(row.copy());
+            }
+            List<Vector> cols = Lists.newArrayList();
+            for (Vector col : matrix.getCols())  {
+                cols.add(col.copy());
+            }
             if (snes.rowBased) {
                 Vector[] swappableRows = new Vector[]{
                     matrix.getRowInstance(snes.swappable1),
@@ -80,16 +89,22 @@ public class CurveballBJDMSampler implements Sampler {
                             newRows[0],
                             newRows[1]);
                     swappableRows = newRows;
+                    // update cols
+                    Vector[] newCols = matrix.getNewCols(swappable.swappableEdge1, swappable.swappableEdge2,
+                            swappable.newEdge1, swappable.newEdge2);
+                    cols.add(swappable.newEdge1.col, newCols[0]);
+                    cols.add(swappable.newEdge2.col, newCols[1]);
                 }
+                // update rows
+                Vector newRow1 = new Vector(snes.new1);
+                Vector newRow2 = new Vector(snes.new2);
+                rows.add(snes.swappable1, newRow1);
+                rows.add(snes.swappable2, newRow2);
             } else {
                 Map<Vector, Integer> rowToEqRows = matrix.getRowToNumEqRowsMap();
-                List<Vector> instances = Lists.newArrayList();
-                for (Vector row : matrix.getRows()) {
-                    instances.add(row.copy());
-                }
                 for (SwappableAndNewEdges swappable : swappables) {
-                    Vector swappableRow1 = instances.get(swappable.swappableEdge1.row);
-                    Vector swappableRow2 = instances.get(swappable.swappableEdge2.row);
+                    Vector swappableRow1 = rows.get(swappable.swappableEdge1.row);
+                    Vector swappableRow2 = rows.get(swappable.swappableEdge2.row);
                     Vector[] newRows = matrix.getNewRows(swappableRow1, swappableRow2,
                             swappable.newEdge1, swappable.newEdge2);
                     logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
@@ -99,8 +114,8 @@ public class CurveballBJDMSampler implements Sampler {
                             newRows[0],
                             newRows[1],
                             rowToEqRows);
-                    instances.add(swappable.swappableEdge1.row, newRows[0]);
-                    instances.add(swappable.swappableEdge2.row, newRows[1]);
+                    rows.add(swappable.swappableEdge1.row, newRows[0]);
+                    rows.add(swappable.swappableEdge2.row, newRows[1]);
                     rowToEqRows.put(newRows[0], rowToEqRows.getOrDefault(newRows[0], 0) + 1);
                     rowToEqRows.put(newRows[1], rowToEqRows.getOrDefault(newRows[1], 0) + 1);
                     int newCount1 = rowToEqRows.getOrDefault(swappableRow1, 0) - 1;
@@ -116,10 +131,16 @@ public class CurveballBJDMSampler implements Sampler {
                         rowToEqRows.put(swappableRow2, newCount2);
                     }
                 }
+                // update cols
+                Vector newCol1 = new Vector(snes.new1);
+                Vector newCol2 = new Vector(snes.new2);
+                cols.add(snes.swappable1, newCol1);
+                cols.add(snes.swappable2, newCol2);
             }
 
             double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices)
-                    * matrix.curveBallSamplingProb(snes) / matrix.curveballAdjSamplingProb(snes);
+                    * matrix.curveballSamplingProb(snes, matrix.getRows(), matrix.getCols()) / 
+                    matrix.curveballSamplingProb(snes, rows, cols);
 
             final double acceptanceProb = Math.min(1, frac);
 

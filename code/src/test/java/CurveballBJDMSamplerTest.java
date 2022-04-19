@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.samplers.NaiveBJDMSampler;
 import caterpillars.structures.NaiveBJDMMatrix;
 import caterpillars.helpers.SwappableAndNewEdges;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.config.Paths;
 import caterpillars.structures.Vector;
 import caterpillars.config.DatasetNames;
+import caterpillars.samplers.CurveballBJDMSampler;
 import caterpillars.structures.Edge;
 import caterpillars.utils.Transformer;
 import caterpillars.utils.Timer;
@@ -34,10 +34,10 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class NaiveBJDMSamplerTest {
+public class CurveballBJDMSamplerTest {
 
     private final Transformer transformer = new Transformer();
-    private final NaiveBJDMSampler sampler = new NaiveBJDMSampler();
+    private final CurveballBJDMSampler sampler = new CurveballBJDMSampler();
     private final Random rnd = new Random();
 
     @Test
@@ -297,7 +297,6 @@ public class NaiveBJDMSamplerTest {
     @Test
     @Ignore
     public void equalMargins() {
-        System.out.println("Equal margin..");
         final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
         final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
         final NaiveBJDMMatrix diffusrMatrix = new NaiveBJDMMatrix(matrix);
