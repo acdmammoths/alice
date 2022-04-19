@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NaiveSamplerTest {
@@ -40,6 +41,7 @@ public class NaiveSamplerTest {
   private final Random rnd = new Random();
 
   @Test
+  @Ignore
   public void getNumEquivMatrices() {
     final Map<NaiveMatrix, Integer> matrixNumEquivMatricesMap = new HashMap<>();
     matrixNumEquivMatricesMap.put(
@@ -143,6 +145,7 @@ public class NaiveSamplerTest {
   }
 
   @Test
+  @Ignore
   public void getNumEquivAdjMatrices() {
     final List<AdjMatrixTestCase> testCases = new ArrayList<>();
     // different row sums
@@ -308,6 +311,7 @@ public class NaiveSamplerTest {
   }
 
   @Test
+  @Ignore
   public void transition() {
     final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
     final SparseMatrix inMatrix = this.transformer.createMatrix(datasetPath);
@@ -346,6 +350,7 @@ public class NaiveSamplerTest {
   }
 
   @Test
+  @Ignore
   public void equalMargins() {
     final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
     final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
@@ -361,6 +366,7 @@ public class NaiveSamplerTest {
   }
 
   @Test
+  @Ignore
   public void uniformity() {
     final Map<Matrix, Integer> matrixNumStatesMap = new HashMap<Matrix, Integer>();
     matrixNumStatesMap.put(

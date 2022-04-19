@@ -257,7 +257,6 @@ public class NaiveBJDMMatrix extends Matrix {
             int[] sums,
             boolean rowSwap,
             Random rnd) {
-
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
         // column differences
@@ -340,9 +339,12 @@ public class NaiveBJDMMatrix extends Matrix {
             List<Integer> samplable,
             int[] sums,
             Random rnd) {
-        int e1 = rnd.nextInt(samplable.size());
+        int e1 = samplable.get(rnd.nextInt(samplable.size()));
         int s = sums[e1];
         List<Integer> cands = Lists.newArrayList(sumToEqSum.get(s));
+        if (cands.size() == 2) {
+            return new Pair<>(cands.get(0), cands.get(1));
+        }
         int e2;
         do {
             e2 = cands.get(rnd.nextInt(cands.size()));

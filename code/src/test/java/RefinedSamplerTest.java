@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RefinedSamplerTest {
@@ -40,6 +41,7 @@ public class RefinedSamplerTest {
   private final Random rnd = new Random();
 
   @Test
+  @Ignore
   public void getMatrixTotalNumSwapPairs() {
     final Map<RefinedMatrix, Integer> matrixTotalNumSwapPairsMap = new HashMap<>();
     matrixTotalNumSwapPairsMap.put(
@@ -122,6 +124,7 @@ public class RefinedSamplerTest {
   }
 
   @Test
+  @Ignore
   public void getAdjMatrixTotalNumSwapPairs() {
     final List<AdjMatrixTestCase> testCases = new ArrayList<>();
     // degree minus 1 and numEquivAdjMatrices plus 1
@@ -276,6 +279,7 @@ public class RefinedSamplerTest {
   }
 
   @Test
+  @Ignore
   public void getMatrixNumSwapPairs() {
     final List<MatrixNumSwapPairsTestCase> testCases = new ArrayList<>();
     // numSwapPairsFactor = 1
@@ -410,6 +414,7 @@ public class RefinedSamplerTest {
   }
 
   @Test
+  @Ignore
   public void getAdjMatrixNumSwapPairs() {
     final List<AdjMatrixTestCase> testCases = new ArrayList<>();
     // numSwapPairsFactor = 1
@@ -599,6 +604,7 @@ public class RefinedSamplerTest {
   }
 
   @Test
+  @Ignore
   public void transition() {
     final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
     final SparseMatrix inMatrix = this.transformer.createMatrix(datasetPath);
@@ -638,6 +644,7 @@ public class RefinedSamplerTest {
   }
 
   @Test
+  @Ignore
   public void equalMargins() {
     final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
     final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
@@ -653,6 +660,7 @@ public class RefinedSamplerTest {
   }
 
   @Test
+  @Ignore
   public void uniformity() {
     final HashMap<Matrix, Integer> matrixNumStatesMap = new HashMap<>();
     matrixNumStatesMap.put(

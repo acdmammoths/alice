@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** A class to test {@link GmmtSampler}. */
@@ -40,6 +41,7 @@ public class GmmtSamplerTest {
   private final Random rnd = new Random();
 
   @Test
+  @Ignore
   public void getMatrixDegree() {
     final Map<GmmtMatrix, Integer> matrixDegreeMap = new HashMap<>();
     matrixDegreeMap.put(
@@ -113,6 +115,7 @@ public class GmmtSamplerTest {
   }
 
   @Test
+  @Ignore
   public void getAdjMatrixDegree() {
     final List<AdjMatrixTestCase> testCases = new ArrayList<>();
     // no change in numZstructs or numK22Cliques
@@ -255,6 +258,7 @@ public class GmmtSamplerTest {
   }
 
   @Test
+  @Ignore
   public void transition() {
     final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
     final SparseMatrix inMatrix = this.transformer.createMatrix(datasetPath);
@@ -274,6 +278,7 @@ public class GmmtSamplerTest {
   }
 
   @Test
+  @Ignore
   public void equalMargins() {
     final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
     final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
@@ -289,6 +294,7 @@ public class GmmtSamplerTest {
   }
 
   @Test
+  @Ignore
   public void uniformity() {
     final Map<Matrix, Integer> matrixNumStatesMap = new HashMap<>();
     matrixNumStatesMap.put(

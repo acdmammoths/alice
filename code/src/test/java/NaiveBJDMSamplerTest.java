@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2022 Alexander Lee and Matteo Riondato
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 import caterpillars.samplers.NaiveBJDMSampler;
 import caterpillars.structures.NaiveBJDMMatrix;
 import caterpillars.helpers.SwappableAndNewEdges;
@@ -41,109 +25,6 @@ public class NaiveBJDMSamplerTest {
     private final Random rnd = new Random();
 
     @Test
-    @Ignore
-    public void getNumEquivMatrices() {
-        final Map<NaiveBJDMMatrix, Integer> matrixNumEquivMatricesMap = new HashMap<>();
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {0, 1},
-                                    {1, 0}
-                                })),
-                2);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 1},
-                                    {1, 0}
-                                })),
-                1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 1},
-                                    {0, 0}
-                                })),
-                1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 1},
-                                    {1, 1}
-                                })),
-                1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 0},
-                                    {1, 1},
-                                    {1, 1},
-                                    {0, 1}
-                                })),
-                2);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {0, 1, 1},
-                                    {1, 0, 0},
-                                    {1, 0, 0}
-                                })),
-                1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 0, 1},
-                                    {0, 1, 0},
-                                    {1, 0, 0}
-                                })),
-                2);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 0, 0},
-                                    {0, 1, 0},
-                                    {0, 0, 1},})),
-                6);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {1, 0, 0},
-                                    {0, 1, 0},
-                                    {0, 0, 1},
-                                    {1, 0, 1},
-                                    {1, 1, 0},
-                                    {0, 1, 1}
-                                })),
-                36);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
-                        new SparseMatrix(
-                                new int[][]{
-                                    {0, 0, 0, 1},
-                                    {1, 1, 0, 0},
-                                    {1, 0, 1, 1},})),
-                1);
-        for (Entry<NaiveBJDMMatrix, Integer> entry : matrixNumEquivMatricesMap.entrySet()) {
-            final NaiveBJDMMatrix matrix = entry.getKey();
-            final int expectedNumEquivMatrices = entry.getValue();
-
-            final long actualNumEquivMatrices = Math.round(Math.exp(matrix.getLogNumEquivMatrices()));
-
-            Assert.assertEquals(expectedNumEquivMatrices, actualNumEquivMatrices);
-        }
-    }
-
-    @Test
-    @Ignore
     public void getNumEquivAdjMatrices() {
         final List<AdjMatrixTestCase> testCases = new ArrayList<>();
         // different row sums
@@ -255,7 +136,6 @@ public class NaiveBJDMSamplerTest {
     }
 
     @Test
-    @Ignore
     public void transition() {
         final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
         final SparseMatrix inMatrix = this.transformer.createMatrix(datasetPath);
@@ -263,6 +143,7 @@ public class NaiveBJDMSamplerTest {
 
         for (int t = 0; t < 1000; t++) {
             NaiveBJDMMatrix adjMatrix = new NaiveBJDMMatrix(matrix.getMatrix());
+            System.out.println(t);
             final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
@@ -297,7 +178,6 @@ public class NaiveBJDMSamplerTest {
     @Test
     @Ignore
     public void equalMargins() {
-        System.out.println("Equal margin..");
         final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
         final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
         final NaiveBJDMMatrix diffusrMatrix = new NaiveBJDMMatrix(matrix);
