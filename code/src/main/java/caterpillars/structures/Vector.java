@@ -41,12 +41,17 @@ public class Vector {
         this.indices = new HashSet<>();
     }
     
+    /**
+     * 
+     * @param indices positions where the vector is 1
+     */
     public Vector(Collection<Integer> indices) {
         this.indices = Sets.newHashSet(indices);
     }
 
     /**
      * Initializes a vector from an array.
+     * @param array 1-0 positions of the vector
      */
     public Vector(int[] array) {
         this();
@@ -87,10 +92,21 @@ public class Vector {
         return copy;
     }
 
+    /**
+     * 
+     * @param index element id
+     * @return 1 if the element is set in the vector; 0 otherwise
+     */
     public int get(int index) {
         return this.indices.contains(index) ? 1 : 0;
     }
 
+    /**
+     * If value is 0, the index is removed from the vector; otherwise it is inserted.
+     * 
+     * @param index element id
+     * @param value new value of the element
+     */
     public void set(int index, int value) {
         if (value == 0) {
             this.indices.remove(index);
@@ -99,10 +115,18 @@ public class Vector {
         }
     }
 
+    /**
+     * 
+     * @return all the indices set in the vector
+     */
     public Set<Integer> getNonzeroIndices() {
         return this.indices;
     }
 
+    /**
+     * 
+     * @return number of elements set in the vector
+     */
     public int getNumNonzeroIndices() {
         return this.indices.size();
     }

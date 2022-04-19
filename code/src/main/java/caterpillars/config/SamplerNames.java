@@ -1,6 +1,8 @@
 package caterpillars.config;
 
 
+import caterpillars.samplers.CurveballBJDMSampler;
+import caterpillars.samplers.NaiveBJDMSampler;
 import diffusr.samplers.GmmtSampler;
 import diffusr.samplers.NaiveSampler;
 import diffusr.samplers.RefinedSampler;
@@ -29,4 +31,6 @@ public class SamplerNames {
     public static final String gmmtSampler = GmmtSampler.class.getName();
     public static final String naiveSampler = NaiveSampler.class.getName();
     public static final String refinedSampler = RefinedSampler.class.getName();
+    public static final String caterNaiveSampler = NaiveBJDMSampler.class.getName();
+    public static final String caterCurveballSampler = CurveballBJDMSampler.class.getName();
 }

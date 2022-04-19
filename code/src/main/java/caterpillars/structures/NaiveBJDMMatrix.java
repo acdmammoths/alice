@@ -40,11 +40,11 @@ public class NaiveBJDMMatrix extends Matrix {
      * A map where each key is a col sum and the value is the set of cols with
      * that col sum.
      */
-    private Map<Integer, Set<Integer>> colSumToEqColSumCols;
+    private final Map<Integer, Set<Integer>> colSumToEqColSumCols;
     
-    private List<Integer> samplableRows;
+    private final List<Integer> samplableRows;
     
-    private List<Integer> samplableCols;
+    private final List<Integer> samplableCols;
 
     /**
      * Creates an instance of {@link NaiveBJDMMatrix} from a 0-1
@@ -60,7 +60,7 @@ public class NaiveBJDMMatrix extends Matrix {
         this.rowSumToEqRowSumRows = Maps.newHashMap();
         this.colSumToEqColSumCols = Maps.newHashMap();
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
-            final Vector row = this.getRowInstance(r);
+            final Vector row = inMatrix.getRowInstance(r);
             final int rowSum = this.getRowSum(r);
             incNumEqRows(row);
             this.incEqRowSumRows(rowSum, r);

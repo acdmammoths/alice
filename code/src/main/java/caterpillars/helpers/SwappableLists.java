@@ -12,6 +12,12 @@ public class SwappableLists {
     public boolean rowBased;
 
     /**
+     * Instantiates an instance of {@link SwappableLists}.
+     * @param swappable1 id of the first vector
+     * @param swappable2 id of the second vector
+     * @param new1 new elements of the first vector
+     * @param new2 new elements of the second vector
+     * @param rowBased whether the ids refer to rows or columns
      */
     public SwappableLists(int swappable1, int swappable2, List<Integer> new1, List<Integer> new2, boolean rowBased) {
         this.swappable1 = swappable1;

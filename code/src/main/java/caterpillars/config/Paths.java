@@ -16,7 +16,6 @@ package caterpillars.config;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.config.Delimiters;
 import diffusr.samplers.Sampler;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class Paths {
     private static final String distortionDir = "distortion";
     private static final String numFreqItemsetsDir = "numFreqItemsets";
     private static final String diffusrDir = "diffusr";
-
+    
     private static final String experConfsPath = concat(experimentsDir, "confs");
     public static final String experConfsRuntimePath = concat(experConfsPath, runtimeDir);
     public static final String experConfsConvergencePath = concat(experConfsPath, convergenceDir);
