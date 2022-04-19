@@ -79,7 +79,7 @@ public class ConvergenceExperiment {
 
         System.out.println("Matrix created from dataset");
 
-        final int numOnes = new Matrix(realMatrix).getSum();
+        final int numOnes = new Matrix(realMatrix).getNumEdges();
 
         System.out.println(JsonKeys.numOnes + ": " + numOnes);
 

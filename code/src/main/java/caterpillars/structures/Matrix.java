@@ -60,12 +60,6 @@ public class Matrix {
     private final Map<Vector, Integer> rowToNumEqRows;
     
     /**
-     * A map where each key is a row and the value is the number of rows equal
-     * to that row.
-     */
-//    private final Map<Vector, Integer> colToNumEqCols;
-    
-    /**
      * Creates an instance of {@link Matrix} from a 0-1 {@link SparseMatrix} by
      * initializing necessary data structures from the matrix.
      *
@@ -74,7 +68,6 @@ public class Matrix {
     public Matrix(SparseMatrix inMatrix) {
         this.edges = Sets.newHashSet();
         this.rowToNumEqRows = Maps.newHashMap();
-//        this.colToNumEqCols = Maps.newHashMap();
         this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
         this.rowSums = new int[inMatrix.getNumRows()];
         this.colSums = new int[inMatrix.getNumCols()];
@@ -159,10 +152,6 @@ public class Matrix {
     
     public Set<Integer> getNonzeroColIndices(int col) {
         return this.matrix.getNonzeroColIndices(col);
-    }
-
-    public int getSum() {
-        return this.edges.size();
     }
 
     public int getNumRows() {
@@ -286,17 +275,9 @@ public class Matrix {
         return this.rowToNumEqRows;
     }
     
-//    public Map<Vector, Integer> getColToNumEqColsMap() {
-//        return this.colToNumEqCols;
-//    }
-    
     public int getNumEqRows(Vector row) {
         return this.rowToNumEqRows.getOrDefault(row, 0);
     }
-//    
-//    public int getNumEqCols(Vector col) {
-//        return this.colToNumEqCols.getOrDefault(col, 0);
-//    }
     
     public void setNumEqRows(Vector row, int eqRowsNum) {
         if (eqRowsNum == 0) {
@@ -311,19 +292,6 @@ public class Matrix {
         }
     }
     
-//    public void setNumEqCols(Vector col, int eqColsNum) {
-//        if (eqColsNum == 0) {
-//            this.removeNumEqCols(col);
-//        } else {
-//            // create a copy of the row only if map doesn't contain it already
-//            if (!this.colToNumEqCols.containsKey(col)) {
-//                col = col.copy();
-//            }
-//            // map won't use instance of row if it already contains one
-//            this.colToNumEqCols.put(col, eqColsNum);
-//        }
-//    }
-
     public void removeNumEqRows(Vector row) {
         this.rowToNumEqRows.remove(row);
     }
@@ -331,14 +299,6 @@ public class Matrix {
     public void incNumEqRows(Vector row) {
         this.setNumEqRows(row, getNumEqRows(row) + 1);
     }
-//    
-//    public void removeNumEqCols(Vector col) {
-//        this.colToNumEqCols.remove(col);
-//    }
-//
-//    public void incNumEqCols(Vector col) {
-//        this.setNumEqRows(col, getNumEqCols(col) + 1);
-//    }
 
     /**
      * Decrement the number of equal rows for the input row by 1.
@@ -355,15 +315,6 @@ public class Matrix {
         }
         this.setNumEqRows(row, num - 1);
     }
-    
-//    public void decNumEqCols(Vector col) {
-//        final int num = getNumEqCols(col);
-//        if (num <= 0) {
-//            throw new IllegalArgumentException(
-//                    "The number of rows equal to col " + col + " is " + num + ", which is non positive.");
-//        }
-//        this.setNumEqCols(col, num - 1);
-//    }
     
     /**
      * Transitions to the next state in the chain by updating the current matrix
@@ -420,52 +371,4 @@ public class Matrix {
         this.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
     }
     
-    /**
-     * Transitions to the next state in the chain by updating the current matrix
-     * to the adjacent matrix and the rowToNumEqRows map.
-     *
-     * @param swappableEdge1 the first swappable edge that transitions to the
-     * adjacent matrix
-     * @param swappableEdge2 the second swappable edge that transitions to the
-     * adjacent matrix
-     * @param newEdge1 the first new edge that transitions to the adjacent
-     * matrix
-     * @param newEdge2 the second new edge that transitions to the adjacent
-     * matrix
-     * @param swappableRow1 the first swappable row of the matrix
-     * @param swappableRow2 the second swappable row of the matrix
-     * @param swappableCol1 the first swappable col of the matrix
-     * @param swappableCol2 the second swappable col of the matrix
-     * @param newRow1 the first new row of the adjacent matrix
-     * @param newRow2 the second new row of the adjacent matrix
-     * @param newCol1 the first new col of the adjacent matrix
-     * @param newCol2 the second new col of the adjacent matrix
-     */
-    public void transition(
-            Edge swappableEdge1,
-            Edge swappableEdge2,
-            Edge newEdge1,
-            Edge newEdge2,
-            Vector swappableRow1,
-            Vector swappableRow2,
-            Vector swappableCol1,
-            Vector swappableCol2,
-            Vector newRow1,
-            Vector newRow2,
-            Vector newCol1,
-            Vector newCol2) {
-        // update number of equal rows
-        this.decNumEqRows(swappableRow1);
-        this.decNumEqRows(swappableRow2);
-//        this.decNumEqCols(swappableCol1);
-//        this.decNumEqCols(swappableCol2);
-        this.incNumEqRows(newRow1);
-        this.incNumEqRows(newRow2);
-//        this.incNumEqCols(newCol1);
-//        this.incNumEqCols(newCol2);
-
-        // update matrix and edges
-        // call this last so that the swap doesn't update the Vector instances first
-        this.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
-    }
 }

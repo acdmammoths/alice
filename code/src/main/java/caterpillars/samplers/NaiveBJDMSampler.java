@@ -46,17 +46,11 @@ public class NaiveBJDMSampler implements Sampler {
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;
             final Edge newEdge2 = sne.newEdge2;
-
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
-            final Vector swappableCol1 = matrix.getColInstance(swappableEdge1.col);
-            final Vector swappableCol2 = matrix.getColInstance(swappableEdge2.col);
             final Vector[] newRows = matrix.getNewRows(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
-            final Vector[] newCols = matrix.getNewCols(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
-            final Vector newCol1 = newCols[0];
-            final Vector newCol2 = newCols[1];
 
             final double logNumEquivAdjMatrices
                     = matrix.getLogNumEquivAdjMatrices(
@@ -66,12 +60,11 @@ public class NaiveBJDMSampler implements Sampler {
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
-                matrix.transition(swappableEdge1, swappableEdge2,
+                matrix.transition(
+                        swappableEdge1, swappableEdge2,
                         newEdge1, newEdge2,
                         swappableRow1, swappableRow2,
-                        swappableCol1, swappableCol2,
-                        newRow1, newRow2,
-                        newCol1, newCol2);
+                        newRow1, newRow2);
 
                 logNumEquivMatrices = logNumEquivAdjMatrices;
             }
@@ -121,36 +114,21 @@ public class NaiveBJDMSampler implements Sampler {
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;
             final Edge newEdge2 = sne.newEdge2;
-
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
-            final Vector swappableCol1 = matrix.getColInstance(swappableEdge1.col);
-            final Vector swappableCol2 = matrix.getColInstance(swappableEdge2.col);
-            
             final Vector[] newRows = matrix.getNewRows(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
-            final Vector[] newCols = matrix.getNewCols(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
-            final Vector newCol1 = newCols[0];
-            final Vector newCol2 = newCols[1];
 
             final double logNumEquivAdjMatrices
                     = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
 
             matrix.transition(
-                    swappableEdge1,
-                    swappableEdge2,
-                    newEdge1,
-                    newEdge2,
-                    swappableRow1,
-                    swappableRow2,
-                    swappableCol1,
-                        swappableCol2,
-                        newRow1,
-                        newRow2,
-                        newCol1,
-                        newCol2);
+                    swappableEdge1, swappableEdge2,
+                    newEdge1, newEdge2,
+                    swappableRow1, swappableRow2,
+                    newRow1, newRow2);
 
             logNumEquivMatrices = logNumEquivAdjMatrices;
         }

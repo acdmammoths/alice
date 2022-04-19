@@ -419,7 +419,7 @@ public class NaiveSamplerTest {
       final Matrix matrix = entry.getKey();
       final int numStates = entry.getValue();
       final int numSamples = numStates * 10_000;
-      final int numSwaps = 2 * matrix.getSum(); // as per our experiments
+      final int numSwaps = 2 * matrix.getNumEdges(); // as per our experiments
       final Map<Dataset, Integer> datasetCounts = new HashMap<>();
 
       for (int i = 0; i < numSamples; i++) {
