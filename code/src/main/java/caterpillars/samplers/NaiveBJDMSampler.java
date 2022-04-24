@@ -1,6 +1,6 @@
 package caterpillars.samplers;
 
-import caterpillars.structures.NaiveBJDMMatrix;
+import caterpillars.structures.BJDMMatrix;
 import caterpillars.helpers.SwappableAndNewEdges;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.helpers.LogNumEquivMatricesTracker;
@@ -24,7 +24,7 @@ public class NaiveBJDMSampler implements Sampler {
     public SparseMatrix sample(SparseMatrix inMatrix, int numSwaps, long seed, Timer timer) {
         final long setupTimeStart = System.currentTimeMillis();
 
-        final NaiveBJDMMatrix matrix = new NaiveBJDMMatrix(inMatrix);
+        final BJDMMatrix matrix = new BJDMMatrix(inMatrix);
 
         final Random rnd = new Random(seed);
 
@@ -95,7 +95,7 @@ public class NaiveBJDMSampler implements Sampler {
             long seed,
             LogNumEquivMatricesTracker logNumEquivMatricesTracker) {
         
-        final NaiveBJDMMatrix matrix = new NaiveBJDMMatrix(inMatrix);
+        final BJDMMatrix matrix = new BJDMMatrix(inMatrix);
 
         final Random rnd = new Random(seed);
 

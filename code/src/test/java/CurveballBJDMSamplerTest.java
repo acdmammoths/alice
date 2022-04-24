@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.NaiveBJDMMatrix;
+import caterpillars.structures.BJDMMatrix;
 import caterpillars.helpers.SwappableAndNewEdges;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.config.Paths;
@@ -22,6 +22,7 @@ import caterpillars.structures.Vector;
 import caterpillars.config.DatasetNames;
 import caterpillars.samplers.CurveballBJDMSampler;
 import caterpillars.structures.Edge;
+import caterpillars.utils.Config;
 import caterpillars.utils.Transformer;
 import caterpillars.utils.Timer;
 import java.util.ArrayList;
@@ -43,41 +44,36 @@ public class CurveballBJDMSamplerTest {
     @Test
     @Ignore
     public void getNumEquivMatrices() {
-        final Map<NaiveBJDMMatrix, Integer> matrixNumEquivMatricesMap = new HashMap<>();
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        final Map<BJDMMatrix, Integer> matrixNumEquivMatricesMap = new HashMap<>();
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {0, 1},
                                     {1, 0}
                                 })),
                 2);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 1},
                                     {1, 0}
                                 })),
                 1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 1},
                                     {0, 0}
                                 })),
                 1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 1},
                                     {1, 1}
                                 })),
                 1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 0},
@@ -86,8 +82,7 @@ public class CurveballBJDMSamplerTest {
                                     {0, 1}
                                 })),
                 2);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {0, 1, 1},
@@ -95,8 +90,7 @@ public class CurveballBJDMSamplerTest {
                                     {1, 0, 0}
                                 })),
                 1);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 0, 1},
@@ -104,16 +98,14 @@ public class CurveballBJDMSamplerTest {
                                     {1, 0, 0}
                                 })),
                 2);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 0, 0},
                                     {0, 1, 0},
                                     {0, 0, 1},})),
                 6);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {1, 0, 0},
@@ -124,16 +116,15 @@ public class CurveballBJDMSamplerTest {
                                     {0, 1, 1}
                                 })),
                 36);
-        matrixNumEquivMatricesMap.put(
-                new NaiveBJDMMatrix(
+        matrixNumEquivMatricesMap.put(new BJDMMatrix(
                         new SparseMatrix(
                                 new int[][]{
                                     {0, 0, 0, 1},
                                     {1, 1, 0, 0},
                                     {1, 0, 1, 1},})),
                 1);
-        for (Entry<NaiveBJDMMatrix, Integer> entry : matrixNumEquivMatricesMap.entrySet()) {
-            final NaiveBJDMMatrix matrix = entry.getKey();
+        for (Entry<BJDMMatrix, Integer> entry : matrixNumEquivMatricesMap.entrySet()) {
+            final BJDMMatrix matrix = entry.getKey();
             final int expectedNumEquivMatrices = entry.getValue();
 
             final long actualNumEquivMatrices = Math.round(Math.exp(matrix.getLogNumEquivMatrices()));
@@ -147,9 +138,8 @@ public class CurveballBJDMSamplerTest {
     public void getNumEquivAdjMatrices() {
         final List<AdjMatrixTestCase> testCases = new ArrayList<>();
         // different row sums
-        testCases.add(
-                new AdjMatrixTestCase(
-                        new NaiveBJDMMatrix(
+        testCases.add(new AdjMatrixTestCase(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 0, 0, 0},
@@ -157,7 +147,7 @@ public class CurveballBJDMSamplerTest {
                                             {0, 0, 1, 0},
                                             {0, 0, 1, 0}
                                         })),
-                        new NaiveBJDMMatrix(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {0, 0, 1, 0},
@@ -168,9 +158,8 @@ public class CurveballBJDMSamplerTest {
                         new Edge(0, 0),
                         new Edge(2, 2)));
         // different row sums
-        testCases.add(
-                new AdjMatrixTestCase(
-                        new NaiveBJDMMatrix(
+        testCases.add(new AdjMatrixTestCase(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 0, 0, 0},
@@ -178,7 +167,7 @@ public class CurveballBJDMSamplerTest {
                                             {0, 0, 1, 0},
                                             {0, 0, 1, 1}
                                         })),
-                        new NaiveBJDMMatrix(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 0, 0, 0},
@@ -189,16 +178,15 @@ public class CurveballBJDMSamplerTest {
                         new Edge(3, 2),
                         new Edge(1, 1)));
         // same dataset
-        testCases.add(
-                new AdjMatrixTestCase(
-                        new NaiveBJDMMatrix(
+        testCases.add(new AdjMatrixTestCase(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 1, 0},
                                             {0, 0, 1},
                                             {1, 0, 0}
                                         })),
-                        new NaiveBJDMMatrix(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 1, 0},
@@ -208,16 +196,15 @@ public class CurveballBJDMSamplerTest {
                         new Edge(1, 2),
                         new Edge(2, 0)));
         // same dataset
-        testCases.add(
-                new AdjMatrixTestCase(
-                        new NaiveBJDMMatrix(
+        testCases.add(new AdjMatrixTestCase(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 1, 0},
                                             {1, 0, 1},
                                             {0, 1, 0}
                                         })),
-                        new NaiveBJDMMatrix(
+                        new BJDMMatrix(
                                 new SparseMatrix(
                                         new int[][]{
                                             {1, 0, 1},
@@ -227,8 +214,8 @@ public class CurveballBJDMSamplerTest {
                         new Edge(0, 1),
                         new Edge(1, 2)));
         for (AdjMatrixTestCase testCase : testCases) {
-            final NaiveBJDMMatrix matrix = (NaiveBJDMMatrix) testCase.matrix;
-            final NaiveBJDMMatrix adjMatrix = (NaiveBJDMMatrix) testCase.adjMatrix;
+            final BJDMMatrix matrix = (BJDMMatrix) testCase.matrix;
+            final BJDMMatrix adjMatrix = (BJDMMatrix) testCase.adjMatrix;
             final Edge swappableEdge1 = testCase.swappableEdge1;
             final Edge swappableEdge2 = testCase.swappableEdge2;
             final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
@@ -257,19 +244,19 @@ public class CurveballBJDMSamplerTest {
     @Test
     @Ignore
     public void transition() {
-        final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
+        final String datasetPath = Paths.concat(Config.datasetsDir, DatasetNames.foodmart);
         final SparseMatrix inMatrix = this.transformer.createMatrix(datasetPath);
-        final NaiveBJDMMatrix matrix = new NaiveBJDMMatrix(inMatrix);
+        final BJDMMatrix matrix = new BJDMMatrix(inMatrix);
 
         for (int t = 0; t < 1000; t++) {
-            NaiveBJDMMatrix adjMatrix = new NaiveBJDMMatrix(matrix.getMatrix());
+            BJDMMatrix adjMatrix = new BJDMMatrix(matrix.getMatrix());
             final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;
             final Edge newEdge2 = sne.newEdge2;
             adjMatrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
-            adjMatrix = new NaiveBJDMMatrix(adjMatrix.getMatrix());
+            adjMatrix = new BJDMMatrix(adjMatrix.getMatrix());
 
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
@@ -297,14 +284,14 @@ public class CurveballBJDMSamplerTest {
     @Test
     @Ignore
     public void equalMargins() {
-        final String datasetPath = Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
+        final String datasetPath = Paths.concat(Config.datasetsDir, DatasetNames.foodmart);
         final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
-        final NaiveBJDMMatrix diffusrMatrix = new NaiveBJDMMatrix(matrix);
+        final BJDMMatrix diffusrMatrix = new BJDMMatrix(matrix);
         final int numSwaps = 100;
 
         final SparseMatrix sample
                 = this.sampler.sample(matrix, numSwaps, this.rnd.nextLong(), new Timer(false));
-        final NaiveBJDMMatrix diffusrSampleMatrix = new NaiveBJDMMatrix(sample);
+        final BJDMMatrix diffusrSampleMatrix = new BJDMMatrix(sample);
 
         Assert.assertArrayEquals(diffusrMatrix.getRowSums(), diffusrSampleMatrix.getRowSums());
         Assert.assertArrayEquals(diffusrMatrix.getColSums(), diffusrSampleMatrix.getColSums());

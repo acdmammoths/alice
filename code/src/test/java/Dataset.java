@@ -16,45 +16,51 @@
  */
 import caterpillars.structures.SparseMatrix;
 import caterpillars.structures.Vector;
+import com.google.common.collect.Maps;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/** A class to represent a transactional dataset. */
+/**
+ * A class to represent a transactional dataset.
+ */
 class Dataset {
-  /** A map from a transaction to the number of times it appears in the dataset. */
-  private final Map<Vector, Integer> transactionCounts;
 
-  Dataset(SparseMatrix matrix) {
-    this.transactionCounts = new HashMap<>();
-    for (int r = 0; r < matrix.getNumRows(); r++) {
-      final Vector transaction = matrix.getRowCopy(r);
-      final int count = this.transactionCounts.getOrDefault(transaction, 0) + 1;
-      this.transactionCounts.put(transaction, count);
+    /**
+     * A map from a transaction to the number of times it appears in the
+     * dataset.
+     */
+    private final Map<Vector, Integer> transactionCounts;
+
+    Dataset(SparseMatrix matrix) {
+        this.transactionCounts = Maps.newHashMap();
+        for (int r = 0; r < matrix.getNumRows(); r++) {
+            final Vector transaction = matrix.getRowCopy(r);
+            transactionCounts.put(transaction, transactionCounts.getOrDefault(transaction, 0) + 1);
+        }
     }
-  }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    } else if (o == null) {
-      return false;
-    } else if (this.getClass() != o.getClass()) {
-      return false;
-    } else {
-      final Dataset otherDataset = (Dataset) o;
-      return Objects.equals(this.transactionCounts, otherDataset.transactionCounts);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null) {
+            return false;
+        } else if (this.getClass() != o.getClass()) {
+            return false;
+        } else {
+            final Dataset otherDataset = (Dataset) o;
+            return Objects.equals(this.transactionCounts, otherDataset.transactionCounts);
+        }
     }
-  }
 
-  @Override
-  public int hashCode() {
-    return this.transactionCounts.hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return this.transactionCounts.hashCode();
+    }
 
-  @Override
-  public String toString() {
-    return this.transactionCounts.toString();
-  }
+    @Override
+    public String toString() {
+        return this.transactionCounts.toString();
+    }
 }

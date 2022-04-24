@@ -48,4 +48,9 @@ public class SwappableAndNewEdges {
         this.newEdge1 = newEdge1;
         this.newEdge2 = newEdge2;
     }
+    
+    @Override
+    public String toString() {
+        return swappableEdge1.toString() + "," + swappableEdge2.toString();
+    }
 }

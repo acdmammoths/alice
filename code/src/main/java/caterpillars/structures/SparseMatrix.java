@@ -186,13 +186,14 @@ public class SparseMatrix {
     }
 
     /**
-     * Gets the number of entries that are not equal across the two rows. The
-     * implementation of this method is preferred over iterating over all the
-     * columns in the matrix because each row in the matrix usually contains
-     * only a few nonzero entries.
+     * Gets the number of entries that are not equal across the two rows.The
+ implementation of this method is preferred over iterating over all the
+ columns in the matrix because each row in the matrix usually contains
+ only a few nonzero entries.
      *
      * @param r1 the first row index
      * @param r2 the second row index
+     * @return number of entries that are not equal across the two rows
      */
     public int getNumEntriesNeq(int r1, int r2) {
         final Set<Integer> row1NonzeroIndices = this.getNonzeroIndices(r1);
@@ -214,40 +215,16 @@ public class SparseMatrix {
     }
     
     /**
-     * Gets the number of entries that are not equal across the two cols. The
-     * implementation of this method is preferred over iterating over all the
-     * rows in the matrix because each row in the matrix usually contains
-     * only a few nonzero entries.
-     *
-     * @param r1 the first col index
-     * @param r2 the second col index
-     */
-    public int getNumColEntriesNeq(int c1, int c2) {
-        final Set<Integer> c1NonzeroIndices = getNonzeroColIndices(c1);
-        final Set<Integer> c2NonzeroIndices = getNonzeroColIndices(c2);
-
-        int numEntriesNeq = (int) c1NonzeroIndices
-                .parallelStream()
-                .filter(c -> !c2NonzeroIndices.contains(c))
-                .count();
-        numEntriesNeq += (int) c2NonzeroIndices
-                .parallelStream()
-                .filter(c -> !c1NonzeroIndices.contains(c))
-                .count();
-        return numEntriesNeq;
-    }
-
-    /**
      * Determines whether all entries are equal across the two rows, excluding
      * the entries in the specified skipped columns. The implementation of this
      * method is preferred over iterating over all the columns in the matrix
-     * because each row in the matrix usually contains only a few nonzero
-     * entries.
+     * because each row in the matrix usually contains only a few nonzero entries.
      *
      * @param r1 the first row index
      * @param r2 the second row index
      * @param skipCol1 the first column index to skip
      * @param skipCol2 the second column index to skip
+     * @return true if all entries but the skipped ones are equal across the two rows
      */
     public boolean entriesEqual(int r1, int r2, int skipCol1, int skipCol2) {
         final Set<Integer> row1NonzeroIndices = this.getNonzeroIndices(r1);
@@ -273,35 +250,4 @@ public class SparseMatrix {
         return true;
     }
     
-    /**
-     * Determines whether all entries are equal across the two cols, excluding
-     * the entries in the specified skipped rows.
-     *
-     * @param c1 the first col index
-     * @param c2 the second col index
-     * @param skip1 the first row index to skip
-     * @param skip2 the second row index to skip
-     */
-    public boolean entriesColEqual(int c1, int c2, int skip1, int skip2) {
-        final Set<Integer> c1NonzeroIndices = getNonzeroColIndices(c1);
-        final Set<Integer> c2NonzeroIndices = getNonzeroColIndices(c2);
-
-        for (int c : c1NonzeroIndices) {
-            if (c == skip1 || c == skip2) {
-                continue;
-            }
-            if (!c2NonzeroIndices.contains(c)) {
-                return false;
-            }
-        }
-        for (int c : c2NonzeroIndices) {
-            if (c == skip1 || c == skip2) {
-                continue;
-            }
-            if (!c1NonzeroIndices.contains(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

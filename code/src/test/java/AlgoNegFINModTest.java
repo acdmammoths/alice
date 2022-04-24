@@ -19,6 +19,7 @@ import diffusr.fpm.AlgoNegFIN;
 import caterpillars.config.Paths;
 import diffusr.fpm.Itemsets;
 import caterpillars.config.DatasetNames;
+import caterpillars.utils.Config;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -28,35 +29,37 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AlgoNegFINModTest {
-  private static final String datasetPath =
-      Paths.concat(Paths.datasetsDir, DatasetNames.foodmart);
-  private static final Paths paths = new Paths(datasetPath, Paths.testDir);
-  private static final double minFreq = 0.0003;
 
-  @BeforeClass
-  public static void before() {
-    Paths.makeDir(paths.freqItemsetsDirPath);
-  }
+    private static final String datasetPath = Paths.concat(Config.datasetsDir, DatasetNames.foodmart);
+    private static final Paths paths = new Paths(datasetPath, "test");
 
-  @AfterClass
-  public static void after() {
-    Paths.deleteDir(paths.resultsDir);
-  }
+    @BeforeClass
+    public static void before() {
+        Paths.makeDir("test");
+        Paths.makeDir(paths.freqItemsetsDirPath);
+        Config.datasetPath = Paths.concat(Config.datasetsDir, DatasetNames.foodmart);
+        Config.minFreq = 0.0003;
+    }
 
-  @Test
-  public void same() throws IOException {
-    final String outPath = Paths.concat(paths.freqItemsetsDirPath, paths.datasetBaseName);
-    final AlgoNegFIN negFin = new AlgoNegFIN();
-    negFin.runAlgorithm(paths.datasetPath, minFreq, outPath);
-    final Map<Set<Integer>, Integer> expectedFreqItemsetToSup =
-        Itemsets.getFreqItemsetToSupMap(outPath);
+    @AfterClass
+    public static void after() {
+        Paths.deleteDir("test");
+    }
 
-    final AlgoNegFINMod negFinMod = new AlgoNegFINMod();
-    final Map<Set<Integer>, Integer> actualFreqItemsetToSup =
-        negFinMod.runAlgorithm(paths.datasetPath, minFreq);
+    @Test
+    public void same() throws IOException {
+        final String outPath = Paths.concat(paths.freqItemsetsDirPath, paths.datasetBaseName);
+        final AlgoNegFIN negFin = new AlgoNegFIN();
+        negFin.runAlgorithm(Config.datasetPath, Config.minFreq, outPath);
+        final Map<Set<Integer>, Integer> expectedFreqItemsetToSup
+                = Itemsets.getFreqItemsetToSupMap(outPath);
 
-    Assert.assertEquals(expectedFreqItemsetToSup, actualFreqItemsetToSup);
-    // check to see if we are just comparing empty maps
-    Assert.assertTrue(actualFreqItemsetToSup.size() > 0);
-  }
+        final AlgoNegFINMod negFinMod = new AlgoNegFINMod();
+        final Map<Set<Integer>, Integer> actualFreqItemsetToSup
+                = negFinMod.runAlgorithm(Config.datasetPath, Config.minFreq);
+
+        Assert.assertEquals(expectedFreqItemsetToSup, actualFreqItemsetToSup);
+        // check to see if we are just comparing empty maps
+        Assert.assertTrue(!actualFreqItemsetToSup.isEmpty());
+    }
 }

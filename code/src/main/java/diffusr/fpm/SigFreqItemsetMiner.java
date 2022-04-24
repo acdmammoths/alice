@@ -21,6 +21,7 @@ package diffusr.fpm;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.config.Paths;
 import caterpillars.config.JsonKeys;
+import caterpillars.utils.Config;
 import caterpillars.utils.JsonFile;
 import diffusr.samplers.Sampler;
 import caterpillars.utils.Transformer;
@@ -40,7 +41,7 @@ import org.json.JSONObject;
  * A class to mine significant frequent itemsets using the Westfall-Young
  * method.
  */
-class SigFreqItemsetMiner {
+public class SigFreqItemsetMiner {
 
     /**
      * The sampler to obtain samples.
@@ -160,7 +161,7 @@ class SigFreqItemsetMiner {
      */
     private long mineSigFreqItemsetsTime = 0;
 
-    SigFreqItemsetMiner(
+    public SigFreqItemsetMiner(
             String datasetPath,
             Sampler sampler,
             int numSwaps,
@@ -188,9 +189,9 @@ class SigFreqItemsetMiner {
     /**
      * Runs the algorithm the obtain the set of significant frequent itemsets.
      */
-    void mine() {
+    public void mine() {
         System.out.println("Mining significant frequent itemset miner with arguments:");
-        System.out.println("\t" + JsonKeys.datasetPath + ": " + this.paths.datasetPath);
+        System.out.println("\t" + JsonKeys.datasetPath + ": " + Config.datasetPath);
         System.out.println("\t" + JsonKeys.sampler + ": " + this.sampler.getClass().getName());
         System.out.println("\t" + JsonKeys.numSwaps + ": " + this.numSwaps);
         System.out.println("\t" + JsonKeys.numEstSamples + ": " + this.numEstSamples);
@@ -199,7 +200,7 @@ class SigFreqItemsetMiner {
         System.out.println("\t" + JsonKeys.fwer + ": " + this.fwer);
         System.out.println("\t" + JsonKeys.numThreads + ": " + this.numThreads);
         System.out.println("\t" + JsonKeys.seed + ": " + this.seed);
-        System.out.println("\t" + JsonKeys.resultsDir + ": " + this.paths.resultsDir);
+        System.out.println("\t" + JsonKeys.resultsDir + ": " + Config.resultsDir);
         System.out.println("\t" + JsonKeys.cleanup + ": " + this.cleanup);
 
         setup();
@@ -208,7 +209,7 @@ class SigFreqItemsetMiner {
 
         System.out.println("Creating matrix from dataset");
         final long createMatrixTimeStart = System.currentTimeMillis();
-        final String datasetPath = this.paths.datasetPath;
+        final String datasetPath = Config.datasetPath;
         final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
         this.createMatrixTime = System.currentTimeMillis() - createMatrixTimeStart;
 
@@ -348,7 +349,7 @@ class SigFreqItemsetMiner {
      * Mines the set of significant frequent itemsets.
      */
     private void mineSigFreqItemsets() {
-        final String datasetPath = this.paths.datasetPath;
+        final String datasetPath = Config.datasetPath;
 
         this.freqItemsetToSup = FreqItemsetMiner.mine(datasetPath, this.minFreq);
         System.out.println("Number of frequent itemsets: " + this.freqItemsetToSup.size());
@@ -410,7 +411,7 @@ class SigFreqItemsetMiner {
 
         // create object for args
         final JSONObject args = new JSONObject();
-        args.put(JsonKeys.datasetPath, this.paths.datasetPath);
+        args.put(JsonKeys.datasetPath, Config.datasetPath);
         args.put(JsonKeys.sampler, this.sampler.getClass().getName());
         args.put(JsonKeys.numSwaps, this.numSwaps);
         args.put(JsonKeys.numEstSamples, this.numEstSamples);

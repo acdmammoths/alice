@@ -1,4 +1,4 @@
-package diffusr.fpm;
+package diffusr.test;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -20,6 +20,7 @@ import diffusr.samplers.GmmtSampler;
 import caterpillars.config.Paths;
 import caterpillars.config.JsonKeys;
 import caterpillars.utils.JsonFile;
+import diffusr.fpm.SigFreqItemsetMiner;
 import diffusr.samplers.Sampler;
 import diffusr.samplers.NaiveSampler;
 import diffusr.samplers.RefinedSampler;

@@ -17,9 +17,10 @@
 import caterpillars.structures.SparseMatrix;
 import caterpillars.config.Paths;
 import caterpillars.config.DatasetNames;
+import caterpillars.samplers.NaiveBJDMSampler;
+import caterpillars.utils.Config;
 import diffusr.samplers.Sampler;
 import caterpillars.utils.Transformer;
-import diffusr.samplers.NaiveSampler;
 import caterpillars.utils.Timer;
 import java.util.Random;
 import org.junit.AfterClass;
@@ -30,20 +31,21 @@ import org.junit.Test;
 /** A class to test {@link Transformer}. */
 public class TransformerTest {
   private final Transformer transformer = new Transformer();
-  private final Sampler sampler = new NaiveSampler();
+  private final Sampler sampler = new NaiveBJDMSampler();
   private final Random rnd = new Random();
   private static final String datasetPath =
-      Paths.concat(Paths.datasetsDir, DatasetNames.test);
-  private static final Paths paths = new Paths(datasetPath, Paths.testDir);
+      Paths.concat(Config.datasetsDir, DatasetNames.test);
+  private static final Paths paths = new Paths(datasetPath, "test");
 
   @BeforeClass
   public static void before() {
-    Paths.makeDir(new Paths("", Paths.testDir).samplesPath);
+    Paths.makeDir(new Paths("", "test").samplesPath);
+    Config.datasetPath = datasetPath;
   }
 
   @AfterClass
   public static void after() {
-    Paths.deleteDir(Paths.testDir);
+    Paths.deleteDir("test");
   }
 
   @Test
@@ -57,14 +59,13 @@ public class TransformerTest {
               {1, 0, 0, 0, 0},
             });
 
-    final SparseMatrix actualMatrix = this.transformer.createMatrix(paths.datasetPath);
-
+    final SparseMatrix actualMatrix = this.transformer.createMatrix(Config.datasetPath);
     Assert.assertEquals(expectedMatrix, actualMatrix);
   }
 
   @Test
   public void createDataset() {
-    final String inDatasetPath = paths.datasetPath;
+    final String inDatasetPath = Config.datasetPath;
     final String outDatasetPath = paths.getSamplePath("", 0);
     final SparseMatrix matrix = this.transformer.createMatrix(inDatasetPath);
     final SparseMatrix expectedMatrix =
@@ -72,7 +73,6 @@ public class TransformerTest {
 
     this.transformer.createDataset(outDatasetPath, expectedMatrix);
     final SparseMatrix actualMatrix = this.transformer.createMatrix(outDatasetPath);
-
     Assert.assertEquals(expectedMatrix, actualMatrix);
   }
 }

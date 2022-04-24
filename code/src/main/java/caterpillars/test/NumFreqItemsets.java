@@ -1,4 +1,4 @@
-package diffusr.fpm;
+package caterpillars.test;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -21,9 +21,15 @@ import caterpillars.config.Paths;
 import caterpillars.config.JsonKeys;
 import caterpillars.utils.JsonFile;
 import caterpillars.config.Delimiters;
+//import caterpillars.samplers.CurveballBJDMSampler;
+import caterpillars.samplers.NaiveBJDMSampler;
+import caterpillars.utils.CMDLineParser;
+import caterpillars.utils.Config;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import diffusr.fpm.FreqItemsetMiner;
+import diffusr.fpm.SampleAndMiner;
 import diffusr.samplers.Sampler;
-import diffusr.samplers.NaiveSampler;
-import diffusr.samplers.RefinedSampler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -46,32 +52,15 @@ import org.json.JSONObject;
  * of sets of frequent itemsets as well as measure the p-value for the number of
  * frequent itemsets in the observed dataset.
  */
-public class NumFreqItemsetsExperiment {
+public class NumFreqItemsets {
 
     public static void main(String[] args) {
-        final String confPath = args[0];
-        run(confPath);
-    }
-
-    public static void run(String confPath) {
-        System.out.println("Reading configuration file at " + confPath);
-
-        final JSONObject conf = JsonFile.read(confPath);
-        final String datasetPath = conf.getString(JsonKeys.datasetPath);
-        final int numSwaps = conf.getInt(JsonKeys.numSwaps);
-        final int numSamples = conf.getInt(JsonKeys.numSamples);
-        final double minFreq = conf.getDouble(JsonKeys.minFreq);
-        final int numThreads = conf.getInt(JsonKeys.numThreads);
-        final long seed = conf.getLong(JsonKeys.seed);
-        final String resultsDir = conf.getString(JsonKeys.resultsDir);
-        final boolean sampleAndMine = conf.getBoolean(JsonKeys.sampleAndMine);
-
-        Paths.makeDir(resultsDir);
+        
+        CMDLineParser.parse(args);
 
         System.out.println("Executing number of frequent itemsets experiment");
-
         final Set<Set<Integer>> observedFreqItemsets
-                = FreqItemsetMiner.mine(datasetPath, minFreq).keySet();
+                = FreqItemsetMiner.mine(Config.datasetPath, Config.minFreq).keySet();
 
         final int observedNumFreqItemsets = observedFreqItemsets.size();
         System.out.println(JsonKeys.numFreqItemsets + ": " + observedNumFreqItemsets);
@@ -80,7 +69,7 @@ public class NumFreqItemsetsExperiment {
                 = getFreqItemsetLenToCountMap(observedFreqItemsets);
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
 
-        final Sampler[] samplers = {new NaiveSampler(), new RefinedSampler(), new GmmtSampler()};
+        final Sampler[] samplers = {new NaiveBJDMSampler(), /*new CurveballBJDMSampler(),*/ new GmmtSampler()};
 
         // create object for numFreqItemsetsStats
         final JSONArray numFreqItemsetsStats = new JSONArray();
@@ -89,27 +78,27 @@ public class NumFreqItemsetsExperiment {
             final String samplerName = sampler.getClass().getName();
             System.out.println(JsonKeys.sampler + ": " + samplerName);
 
-            final String samplerResultsDir = Paths.concat(resultsDir, samplerName);
-            final Paths paths = new Paths(datasetPath, samplerResultsDir);
+            final String samplerResultsDir = Paths.concat(Config.resultsDir, samplerName);
+            final Paths paths = new Paths(Config.datasetPath, samplerResultsDir);
             final String freqItemsetsSamplesDir = paths.freqItemsetsDirPath;
 
-            if (sampleAndMine) {
+            if (Config.sampleAndMine) {
                 System.out.println("Sampling and mining");
                 SampleAndMiner.sampleAndMine(
-                        datasetPath,
+                        Config.datasetPath,
                         sampler,
-                        numSwaps,
-                        numSamples,
-                        minFreq,
-                        numThreads,
-                        seed,
+                        Config.numSwaps,
+                        Config.numSamples,
+                        Config.minFreq,
+                        Config.numThreads,
+                        Config.seed,
                         samplerResultsDir);
             } else {
                 System.out.println("Skipping sampling and mining");
             }
 
-            final List<Integer> numFreqItemsetsDist = new ArrayList<>();
-            final Map<Integer, List<Integer>> freqItemsetLenToCountDist = new HashMap<>();
+            final List<Integer> numFreqItemsetsDist = Lists.newArrayList();
+            final Map<Integer, List<Integer>> freqItemsetLenToCountDist = Maps.newHashMap();
             final File[] freqItemsetsSamples = new File(freqItemsetsSamplesDir).listFiles();
 
             for (File freqItemsetsSample : freqItemsetsSamples) {
@@ -147,7 +136,6 @@ public class NumFreqItemsetsExperiment {
 
         // create object for runInfo
         final JSONObject runInfo = new JSONObject();
-        runInfo.put(JsonKeys.args, conf);
         runInfo.put(JsonKeys.numFreqItemsets, observedNumFreqItemsets);
         runInfo.put(JsonKeys.freqItemsetLenToCount, observedFreqItemsetLenToCount);
         runInfo.put(JsonKeys.timestamp, LocalDateTime.now());
@@ -158,17 +146,17 @@ public class NumFreqItemsetsExperiment {
         results.put(JsonKeys.numFreqItemsetsStats, numFreqItemsetsStats);
 
         // save JSON
-        final String datasetBaseName = new Paths(datasetPath, "").datasetBaseName;
+        final String datasetBaseName = new Paths(Config.datasetPath, "").datasetBaseName;
         final String resultsBaseName
                 = String.join(
                         Delimiters.dash,
                         datasetBaseName,
-                        String.valueOf(numSwaps),
-                        String.valueOf(numSamples),
-                        String.valueOf(minFreq),
-                        String.valueOf(numThreads),
-                        String.valueOf(seed));
-        final String resultPath = Paths.getJsonFilePath(resultsDir, resultsBaseName);
+                        String.valueOf(Config.numSwaps),
+                        String.valueOf(Config.numSamples),
+                        String.valueOf(Config.minFreq),
+                        String.valueOf(Config.numThreads),
+                        String.valueOf(Config.seed));
+        final String resultPath = Paths.getJsonFilePath(Config.resultsDir, resultsBaseName);
         JsonFile.write(results, resultPath);
 
         System.out.println("Result written to " + resultPath);

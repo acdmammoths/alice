@@ -32,42 +32,13 @@ public class Paths {
     public static final String estTag = "-est";
     public static final String wyTag = "-wy";
 
-    private static final String experimentsDir = "experiments";
-    private static final String runtimeDir = "runtime";
-    private static final String convergenceDir = "convergence";
-    private static final String distortionDir = "distortion";
-    private static final String numFreqItemsetsDir = "numFreqItemsets";
-    private static final String diffusrDir = "diffusr";
-    
-    private static final String experConfsPath = concat(experimentsDir, "confs");
-    public static final String experConfsRuntimePath = concat(experConfsPath, runtimeDir);
-    public static final String experConfsConvergencePath = concat(experConfsPath, convergenceDir);
-    public static final String experConfsDistortionPath = concat(experConfsPath, distortionDir);
-    public static final String experConfsNumFreqItemsetsPath = concat(experConfsPath, numFreqItemsetsDir);
-    public static final String experConfsDiffusrPath = concat(experConfsPath, diffusrDir);
-
-    private static final String experResultsPath = concat(experimentsDir, "results");
-    public static final String experResultsRuntimePath = concat(experResultsPath, runtimeDir);
-    public static final String experResultsConvergencePath = concat(experResultsPath, convergenceDir);
-    public static final String experResultsDistortionPath = concat(experResultsPath, distortionDir);
-    public static final String experResultsNumFreqItemsetsPath
-            = concat(experResultsPath, numFreqItemsetsDir);
-    public static final String experResultsDiffusrPath = concat(experResultsPath, diffusrDir);
-
-    public static final String datasetsDir = "datasets";
-    public static final String testDir = "test";
-
-    public final String datasetPath;
     public final String datasetBaseName;
-    public final String resultsDir;
     public final String samplesPath;
     public final String freqItemsetsDirPath;
     public final String sigFreqItemsetsDirPath;
 
     public Paths(String datasetPath, String resultsDir) {
-        this.datasetPath = datasetPath;
         this.datasetBaseName = getBaseName(datasetPath);
-        this.resultsDir = resultsDir;
         this.samplesPath = concat(resultsDir, "samples");
         this.freqItemsetsDirPath = concat(resultsDir, "freqItemsets");
         this.sigFreqItemsetsDirPath = concat(resultsDir, "sigFreqItemsets");

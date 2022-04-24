@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import org.javatuples.Pair;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 
-public class NaiveBJDMMatrix extends Matrix {
+public class BJDMMatrix extends Matrix {
 
     /**
      * A map where each key is a row sum and the value is the unique set of rows
@@ -47,7 +47,7 @@ public class NaiveBJDMMatrix extends Matrix {
      *
      * @param inMatrix a 0-1 matrix representation of the dataset
      */
-    public NaiveBJDMMatrix(SparseMatrix inMatrix) {
+    public BJDMMatrix(SparseMatrix inMatrix) {
         super(inMatrix);
         this.rowSumToUniqueRows = Maps.newHashMap();
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
@@ -239,6 +239,70 @@ public class NaiveBJDMMatrix extends Matrix {
             instances = getCols();
             sums = colSums;
         }
+        if (samplable.isEmpty()) {
+            return null;
+        }
+        // we select a row/col to select a row/col sum
+        Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
+        // column/row differences
+        Set<Integer> S1 = Sets.newHashSet(instances.get(pair.getValue0()).getNonzeroIndices());
+        S1.removeAll(instances.get(pair.getValue1()).getNonzeroIndices());
+        Set<Integer> S2 = Sets.newHashSet(instances.get(pair.getValue1()).getNonzeroIndices());
+        S2.removeAll(instances.get(pair.getValue0()).getNonzeroIndices());
+        List<Integer> candC1 = Lists.newArrayList(S1);
+        List<Integer> candC2 = Lists.newArrayList(S2);
+        if (S1.isEmpty()) {
+            // self loop
+            return null;
+        }
+        // select column/row pair
+        int f1 = candC1.get(rnd.nextInt(candC1.size()));
+        int f2 = candC2.get(rnd.nextInt(candC2.size()));
+        Edge sampledEdge1;
+        Edge sampledEdge2;
+        Edge newEdge1;
+        Edge newEdge2;
+        if (rowSwap) {
+            sampledEdge1 = new Edge(pair.getValue0(), f1);
+            sampledEdge2 = new Edge(pair.getValue1(), f2);
+            newEdge1 = new Edge(pair.getValue0(), f2);
+            newEdge2 = new Edge(pair.getValue1(), f1);
+        } else {
+            sampledEdge1 = new Edge(f1, pair.getValue0());
+            sampledEdge2 = new Edge(f2, pair.getValue1());
+            newEdge1 = new Edge(f1, pair.getValue1());
+            newEdge2 = new Edge(f2, pair.getValue0()); 
+        }
+        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2);
+    }
+    
+    /**
+     * Method used for testing purposes.
+     * 
+     * @param rnd
+     * @param rowSwap whether we swap rows or columns
+     * @return 
+     */
+    public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd, boolean rowSwap) {
+        // sample rows or columns
+        Map<Integer, List<Integer>> sumToEqSumElements;
+        List<Integer> samplable;
+        List<Vector> instances;
+        int[] sums;
+        if (rowSwap) {
+            sumToEqSumElements = rowSumToEqRowSumRows;
+            samplable = samplableRows;
+            instances = getRows();
+            sums = rowSums;
+        } else {
+            sumToEqSumElements = colSumToEqColSumCols;
+            samplable = samplableCols;
+            instances = getCols();
+            sums = colSums;
+        }
+        if (samplable.isEmpty()) {
+            return null;
+        }
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
         // column/row differences
@@ -299,6 +363,9 @@ public class NaiveBJDMMatrix extends Matrix {
             samplable = samplableCols;
             instances = getCols();
             sums = colSums;
+        }
+        if (samplable.isEmpty()) {
+            return null;
         }
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
@@ -398,7 +465,7 @@ public class NaiveBJDMMatrix extends Matrix {
             Vector e2) {
         int sumSwappablePairs = sumToEqSum.values()
                 .stream()
-                .mapToInt(l -> (int) CombinatoricsUtils.binomialCoefficient(l.size(), 2))
+                .mapToInt(l -> getNumCombinations(l.size(), 2))
                 .sum();
         Set<Integer> S1 = Sets.newHashSet(e1.getNonzeroIndices());
         S1.removeAll(e2.getNonzeroIndices());
@@ -406,6 +473,13 @@ public class NaiveBJDMMatrix extends Matrix {
         S2.removeAll(e1.getNonzeroIndices());
         int H12 = S1.size() * S2.size();
         return 1. / (2. * sumSwappablePairs * H12);
+    }
+    
+    private int getNumCombinations(int n, int k) {
+        if (n < k) {
+            return 0;
+        }
+        return (int) CombinatoricsUtils.binomialCoefficient(n, k);
     }
 
     /**
@@ -469,9 +543,9 @@ public class NaiveBJDMMatrix extends Matrix {
     private double getCurveBallProb(Map<Integer, List<Integer>> sumToEqSum, int union, int l) {
         int sumSwappablePairs = sumToEqSum.values()
                 .stream()
-                .mapToInt(lst -> (int) CombinatoricsUtils.binomialCoefficient(lst.size(), 2))
+                .mapToInt(lst -> getNumCombinations(lst.size(), 2))
                 .sum();
-        int differentSubs = (int) CombinatoricsUtils.binomialCoefficient(union, l);
+        int differentSubs = getNumCombinations(union, l);
         return 1. / (2. * sumSwappablePairs * differentSubs);
     }
 

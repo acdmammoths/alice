@@ -2,7 +2,6 @@ package diffusr.fpm;
 
 
 import caterpillars.structures.SparseMatrix;
-import diffusr.fpm.FreqItemsetMiner;
 import diffusr.samplers.Sampler;
 import caterpillars.utils.Transformer;
 import caterpillars.utils.Timer;

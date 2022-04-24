@@ -15,11 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import caterpillars.config.Paths;
-import diffusr.fpm.NumFreqItemsetsExperiment;
 import caterpillars.config.JsonKeys;
 import caterpillars.utils.JsonFile;
 import caterpillars.config.DatasetNames;
 import caterpillars.config.Delimiters;
+import caterpillars.test.NumFreqItemsets;
+import caterpillars.utils.Config;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -38,33 +39,25 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class NumFreqItemsetsExperimentTest {
-  private static final String confsDir =
-      Paths.concat(Paths.testDir, Paths.experConfsNumFreqItemsetsPath);
-  private static final String resultsDir =
-      Paths.concat(Paths.testDir, Paths.experResultsNumFreqItemsetsPath);
-  private static final String datasetPath =
-      Paths.concat(Paths.datasetsDir, DatasetNames.test);
-  private static final Paths paths = new Paths(datasetPath, resultsDir);
-  private static final String confPath =
-      Paths.getJsonFilePath(confsDir, paths.datasetBaseName);
+
+    private static final String datasetPath =
+      Paths.concat(Config.datasetsDir, DatasetNames.test);
+  private static final Paths paths = new Paths(datasetPath, "test");
   private static final String freqItemsetsFilePath = paths.getFreqItemsetsPath("", 0);
 
   @BeforeClass
   public static void before() throws IOException {
-    Paths.makeDir(confsDir);
+    Paths.makeDir("test");
     Paths.makeDir(paths.freqItemsetsDirPath);
 
-    final JSONObject conf = new JSONObject();
-    conf.put(JsonKeys.datasetPath, datasetPath);
-    conf.put(JsonKeys.numSwaps, 100);
-    conf.put(JsonKeys.numSamples, 20);
-    conf.put(JsonKeys.minFreq, 0.5);
-    conf.put(JsonKeys.numThreads, 8);
-    conf.put(JsonKeys.seed, 0);
-    conf.put(JsonKeys.resultsDir, resultsDir);
-    conf.put(JsonKeys.sampleAndMine, true);
-
-    JsonFile.write(conf, confPath);
+    Config.datasetPath = datasetPath;
+    Config.numSwaps = 100;
+    Config.numSamples = 20;
+    Config.minFreq = 0.5;
+    Config.numThreads = 8;
+    Config.seed = 0;
+    Config.resultsDir = "test";
+    Config.sampleAndMine = true;
 
     final BufferedWriter bw = new BufferedWriter(new FileWriter(freqItemsetsFilePath));
     bw.write("1 2 3" + Delimiters.sup + "2");
@@ -78,13 +71,13 @@ public class NumFreqItemsetsExperimentTest {
 
   @AfterClass
   public static void after() {
-    Paths.deleteDir(Paths.testDir);
+    Paths.deleteDir("test");
   }
 
   @Test
   public void numFreqItemsetsExperiment() {
-    final String[] args = {confPath};
-    NumFreqItemsetsExperiment.main(args);
+    final String[] args = {};
+    NumFreqItemsets.main(args);
   }
 
   @Test
@@ -99,11 +92,11 @@ public class NumFreqItemsetsExperimentTest {
     expectedFreqItemsetLenToCount.put(1, 1);
 
     Map<Integer, Integer> actualFreqItemsetLenTocount =
-        NumFreqItemsetsExperiment.getFreqItemsetLenToCountMap(freqItemsets);
+        NumFreqItemsets.getFreqItemsetLenToCountMap(freqItemsets);
     Assert.assertEquals(expectedFreqItemsetLenToCount, actualFreqItemsetLenTocount);
 
     actualFreqItemsetLenTocount =
-        NumFreqItemsetsExperiment.getFreqItemsetLenToCountMap(new File(freqItemsetsFilePath));
+        NumFreqItemsets.getFreqItemsetLenToCountMap(new File(freqItemsetsFilePath));
     Assert.assertEquals(expectedFreqItemsetLenToCount, actualFreqItemsetLenTocount);
   }
 
@@ -115,12 +108,12 @@ public class NumFreqItemsetsExperimentTest {
     freqItemsets.add(new HashSet<>(Arrays.asList(1)));
 
     final Map<Integer, Integer> freqItemsetLenToCount =
-        NumFreqItemsetsExperiment.getFreqItemsetLenToCountMap(freqItemsets);
+        NumFreqItemsets.getFreqItemsetLenToCountMap(freqItemsets);
 
     final int expectedNumFreqItemsets = 3;
 
     final int actualNumFreqItemsets =
-        NumFreqItemsetsExperiment.getNumFreqItemsets(freqItemsetLenToCount);
+        NumFreqItemsets.getNumFreqItemsets(freqItemsetLenToCount);
 
     Assert.assertEquals(expectedNumFreqItemsets, actualNumFreqItemsets);
   }
@@ -144,7 +137,7 @@ public class NumFreqItemsetsExperimentTest {
     freqItemsetLenToCount.put(3, 1);
     freqItemsetLenToCount.put(4, 1);
 
-    NumFreqItemsetsExperiment.updateFreqItemsetLenToCountDist(
+    NumFreqItemsets.updateFreqItemsetLenToCountDist(
         actualFreqItemsetLenToCountDist, freqItemsetLenToCount);
 
     Assert.assertEquals(expectedFreqItemsetLenCountDist, actualFreqItemsetLenToCountDist);
@@ -163,7 +156,7 @@ public class NumFreqItemsetsExperimentTest {
     expectedFreqItemsetLenToCountQuartiles.put(1, Arrays.asList(1, 25, 50, 75, 100));
 
     Map<Integer, List<Integer>> actualFreqItemsetLenToCountQuartiles =
-        NumFreqItemsetsExperiment.getFreqItemsetLenToCountQuartiles(freqItemsetLenCountDist);
+        NumFreqItemsets.getFreqItemsetLenToCountQuartiles(freqItemsetLenCountDist);
 
     Assert.assertEquals(
         expectedFreqItemsetLenToCountQuartiles, actualFreqItemsetLenToCountQuartiles);
@@ -177,7 +170,7 @@ public class NumFreqItemsetsExperimentTest {
     for (int i = 1; i <= 100; i++) {
       numFreqItemsetsDist.add(i);
     }
-    double actualPvalue = NumFreqItemsetsExperiment.getPvalue(95, numFreqItemsetsDist);
+    double actualPvalue = NumFreqItemsets.getPvalue(95, numFreqItemsetsDist);
 
     Assert.assertEquals(expectedPvalue, actualPvalue, 0);
   }

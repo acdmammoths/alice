@@ -19,6 +19,7 @@ import diffusr.fpm.Itemsets;
 import diffusr.fpm.FreqItemsetMiner;
 import caterpillars.config.DatasetNames;
 import caterpillars.config.Delimiters;
+import caterpillars.utils.Config;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,8 +35,8 @@ import org.junit.Test;
 
 public class ItemsetsTest {
   private static final String datasetPath =
-      Paths.concat(Paths.datasetsDir, DatasetNames.test);
-  private static final Paths paths = new Paths(datasetPath, Paths.testDir);
+      Paths.concat(Config.datasetsDir, DatasetNames.test);
+  private static final Paths paths = new Paths(datasetPath, "test");
   private static final double minFreq = 0.5;
   private static final String freqItemsetsPath = paths.getFreqItemsetsPath("", 0);
   private static final String estFreqItemsetsPath0 =
@@ -45,7 +46,7 @@ public class ItemsetsTest {
 
   @BeforeClass
   public static void before() throws IOException {
-    Paths.makeDir(new Paths("", Paths.testDir).freqItemsetsDirPath);
+    Paths.makeDir(new Paths("", "test").freqItemsetsDirPath);
 
     FreqItemsetMiner.mine(datasetPath, minFreq, freqItemsetsPath);
 
@@ -72,34 +73,33 @@ public class ItemsetsTest {
 
   @AfterClass
   public static void after() {
-    Paths.deleteDir(Paths.testDir);
+    Paths.deleteDir("test");
   }
 
   @Test
   public void getFreqItemsetToSupMap() {
     // minimum itemset size of 1
     final Map<Set<Integer>, Integer> expectedFreqItemsetToSup = new HashMap<>();
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(5)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(5, 2)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(5, 4)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(5, 2, 4)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(2)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(2, 4)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(1)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<Integer>(Arrays.asList(4)), 3);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5, 2)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5, 4)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5, 2, 4)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(2)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(2, 4)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(1)), 2);
+    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(4)), 3);
 
     final Map<Set<Integer>, Integer> actualFreqItemsetToSup =
         Itemsets.getFreqItemsetToSupMap(freqItemsetsPath);
-
     Assert.assertEquals(expectedFreqItemsetToSup, actualFreqItemsetToSup);
   }
 
   @Test
   public void getFreqItemsetToSumMap() {
     final Map<Set<Integer>, Integer> expectedFreqItemsetToSum = new HashMap<>();
-    expectedFreqItemsetToSum.put(new HashSet<Integer>(Arrays.asList(5)), 2);
-    expectedFreqItemsetToSum.put(new HashSet<Integer>(Arrays.asList(2)), 1);
-    expectedFreqItemsetToSum.put(new HashSet<Integer>(Arrays.asList(5, 2, 4)), 1);
+    expectedFreqItemsetToSum.put(new HashSet<>(Arrays.asList(5)), 2);
+    expectedFreqItemsetToSum.put(new HashSet<>(Arrays.asList(2)), 1);
+    expectedFreqItemsetToSum.put(new HashSet<>(Arrays.asList(5, 2, 4)), 1);
 
     final Map<Set<Integer>, Integer> actualFreqItemsetToSum =
         Itemsets.getFreqItemsetToSumMap(paths, freqItemsetsPath, 2);

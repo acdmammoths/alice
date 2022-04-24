@@ -33,8 +33,8 @@ public class SampleAndMiner {
 
     /**
      * Samples transactional datasets using the sampler and mines the sampled
-     * datasets for frequent itemsets. The sampling and mining are done in
-     * parallel.
+     * datasets for frequent itemsets.The sampling and mining are done in
+ parallel.
      *
      * @param datasetPath the path to the dataset
      * @param sampler the sampler to use for sampling datasets
@@ -42,6 +42,7 @@ public class SampleAndMiner {
      * @param numSamples the number of samples to obtain
      * @param minFreq the minimum frequency threshold for mining frequent
      * itemsets
+     * @param numThreads
      * @param seed a random seed for replication
      * @param resultsDir the directory to store the resulting sampled datasets
      * and frequent itemsets

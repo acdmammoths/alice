@@ -15,54 +15,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import caterpillars.config.Paths;
-import diffusr.fpm.SigFreqItemsetsExperiment;
-import caterpillars.config.JsonKeys;
-import caterpillars.utils.JsonFile;
 import caterpillars.config.DatasetNames;
-import org.json.JSONObject;
+import caterpillars.test.SigFreqItemsets;
+import caterpillars.utils.Config;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SigFreqItemsetsExperimentTest {
-  private static final String confsDir =
-      Paths.concat(Paths.testDir, Paths.experConfsDiffusrPath);
-  private static final String resultsDir =
-      Paths.concat(Paths.testDir, Paths.experResultsDiffusrPath);
-  private static final String datasetPath =
-      Paths.concat(Paths.datasetsDir, DatasetNames.test);
-  private static final Paths paths = new Paths(datasetPath, "");
-  private static final String confPath =
-      Paths.getJsonFilePath(confsDir, paths.datasetBaseName);
-
+    
   @BeforeClass
   public static void before() {
-    Paths.makeDir(confsDir);
-    Paths.makeDir(resultsDir);
+      
+    Paths.makeDir("test");
 
-    final JSONObject conf = new JSONObject();
-    conf.put(JsonKeys.datasetPath, datasetPath);
-    conf.put(JsonKeys.numSwaps, 100);
-    conf.put(JsonKeys.numEstSamples, 16);
-    conf.put(JsonKeys.numWySamples, 8);
-    conf.put(JsonKeys.minFreq, 0.5);
-    conf.put(JsonKeys.fwer, 0.05);
-    conf.put(JsonKeys.numThreads, 8);
-    conf.put(JsonKeys.seed, 0);
-    conf.put(JsonKeys.resultsDir, resultsDir);
-    conf.put(JsonKeys.cleanup, false);
+    Config.datasetPath = Paths.concat(Config.datasetsDir, DatasetNames.test);
+    Config.numSwaps = 100;
+    Config.numEstSamples = 16;
+    Config.numWySamples = 8;
+    Config.minFreq = 0.5;
+    Config.fwer = 0.05;
+    Config.numThreads = 8;
+    Config.seed = 0;
+    Config.resultsDir = "test";
+    Config.cleanup = false;
 
-    JsonFile.write(conf, confPath);
   }
 
   @AfterClass
   public static void after() {
-    Paths.deleteDir(Paths.testDir);
+    Paths.deleteDir("test");
   }
 
   @Test
   public void sigFreqItemsetExperiment() {
-    final String[] args = {confPath};
-    SigFreqItemsetsExperiment.main(args);
+    final String[] args = {};
+    SigFreqItemsets.main(args);
   }
 }
