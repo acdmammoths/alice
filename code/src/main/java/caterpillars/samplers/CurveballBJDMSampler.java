@@ -41,11 +41,17 @@ public class CurveballBJDMSampler implements Sampler {
 
             SwappableLists snes = matrix.getSwappablesNewEdges(rnd);
 
+            // no feasible swap at this round
             if (snes == null) {
                 continue;
             }
 
             List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            
+            // self-loop swap
+            if (swappables.isEmpty()) {
+                continue;
+            }
 
             double logNumEquivAdjMatrices = logNumEquivMatrices;
             
@@ -58,7 +64,9 @@ public class CurveballBJDMSampler implements Sampler {
             for (Vector col : matrix.getCols())  {
                 cols.add(col.copy());
             }
+            System.out.println(swappables.size());
             if (snes.rowBased) {
+                System.out.println("rows");
                 Vector[] swappableRows = new Vector[]{
                     matrix.getRowInstance(snes.swappable1),
                     matrix.getRowInstance(snes.swappable2)};
@@ -84,6 +92,7 @@ public class CurveballBJDMSampler implements Sampler {
                 rows.add(snes.swappable1, newRow1);
                 rows.add(snes.swappable2, newRow2);
             } else {
+                System.out.println("cols");
                 Map<Vector, Integer> rowToEqRows = matrix.getRowToNumEqRowsMap();
                 for (SwappableAndNewEdges swappable : swappables) {
                     Vector swappableRow1 = rows.get(swappable.swappableEdge1.row);
@@ -120,14 +129,15 @@ public class CurveballBJDMSampler implements Sampler {
                 cols.add(snes.swappable1, newCol1);
                 cols.add(snes.swappable2, newCol2);
             }
-
+            System.out.println("Computing probability...");
             double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices)
                     * matrix.curveballSamplingProb(snes, matrix.getRows(), matrix.getCols()) / 
                     matrix.curveballSamplingProb(snes, rows, cols);
-
+            System.out.println("Probability computed");
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
+                System.out.println("Accepted");
                 for (SwappableAndNewEdges swappable : swappables) {
                     matrix.transition(
                             swappable.swappableEdge1,
@@ -179,6 +189,11 @@ public class CurveballBJDMSampler implements Sampler {
             }
 
             List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            
+            if (swappables.isEmpty()) {
+                continue;
+            }
+            
             double logNumEquivAdjMatrices = logNumEquivMatrices;
 
             for (SwappableAndNewEdges swappable : swappables) {

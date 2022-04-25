@@ -47,6 +47,11 @@ public class NaiveBJDMSamplerTest {
             for (int t = 0; t < 100; t++) {
                 boolean rowSwap = rnd.nextBoolean();
                 SwappableAndNewEdges swap = matrix.getSwappableAndNewEdges(rnd, rowSwap);
+                
+                if (swap == null) {
+                    continue;
+                }
+                
                 if (test.rowSwappable != rowSwap) {
                     Assert.assertNull(swap);
                 } else {
@@ -203,6 +208,11 @@ public class NaiveBJDMSamplerTest {
         for (int t = 0; t < 1000; t++) {
             BJDMMatrix adjMatrix = new BJDMMatrix(matrix.getMatrix());
             final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
+            
+            if (sne == null) {
+                continue;
+            }
+            
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;

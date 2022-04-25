@@ -379,8 +379,65 @@ public class BJDMMatrix extends Matrix {
         if (num1 == 0) {
             return null;
         }
-        List<Integer> total = Lists.newArrayList(S1);
-        total.addAll(S2);
+        Set<Integer> tmp = Sets.newHashSet(S1);
+        tmp.addAll(S2);
+        List<Integer> total = Lists.newArrayList(tmp);
+        RandomSamplingCollector<Integer> collector = LiLSampling.collector(num1, rnd);
+        List<Integer> L = IntStream.range(0, total.size())
+                .boxed()
+                .collect(collector)
+                .stream()
+                .map(i -> total.get(i))
+                .collect(Collectors.toList());
+        total.removeAll(L);
+        L.addAll(S12);
+        total.addAll(S12);
+        return new SwappableLists(pair.getValue0(), pair.getValue1(), L, total, rowSwap);
+    }
+    
+    /**
+     * Method used for testing purposes.
+     * 
+     * @param rnd random object
+     * @param rowSwap whether we swap rows or columns
+     * @return the two indices of the row/col sampled, and the new elements in the
+     * corresponding vectors.
+     */
+    public SwappableLists getSwappablesNewEdges(Random rnd, boolean rowSwap) {
+        // sample rows or columns
+        Map<Integer, List<Integer>> sumToEqSumElements;
+        List<Integer> samplable;
+        List<Vector> instances;
+        int[] sums;
+        if (rowSwap) {
+            sumToEqSumElements = rowSumToEqRowSumRows;
+            samplable = samplableRows;
+            instances = getRows();
+            sums = rowSums;
+        } else {
+            sumToEqSumElements = colSumToEqColSumCols;
+            samplable = samplableCols;
+            instances = getCols();
+            sums = colSums;
+        }
+        if (samplable.isEmpty()) {
+            return null;
+        }
+        // we select a row/col to select a row/col sum
+        Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
+        // column/row differences
+        Set<Integer> S1 = Sets.newHashSet(instances.get(pair.getValue0()).getNonzeroIndices());
+        Set<Integer> S2 = Sets.newHashSet(instances.get(pair.getValue1()).getNonzeroIndices());
+        Set<Integer> S12 = S1.stream().filter(i -> S2.contains(i)).collect(Collectors.toSet());
+        S1.removeAll(S12);
+        S2.removeAll(S12);
+        int num1 = S1.size();
+        if (num1 == 0) {
+            return null;
+        }
+        Set<Integer> tmp = Sets.newHashSet(S1);
+        tmp.addAll(S2);
+        List<Integer> total = Lists.newArrayList(tmp);
         RandomSamplingCollector<Integer> collector = LiLSampling.collector(num1, rnd);
         List<Integer> L = IntStream.range(0, total.size())
                 .boxed()
@@ -507,12 +564,13 @@ public class BJDMMatrix extends Matrix {
                 .filter(i -> v2.getNonzeroIndices().contains(i))
                 .collect(Collectors.toSet());
         int common = S12.size();
-        int union = swappables.new2.size() + swappables.new1.size() - common;
+        int union = swappables.new2.size() + swappables.new1.size() - 2 * common;
         int l = swappables.new1.size() - common;
+        System.out.println(common + " " + union + " " + l);
         double prob = getCurveBallProb(sumToEqSum, union, l);
         // case where |L| = 2
         if (l == 2) {
-            Set<Integer> L = Sets.newHashSet(swappables.new1.size());
+            Set<Integer> L = Sets.newHashSet(swappables.new1);
             L.removeAll(S12);
             List<Integer> pair = Lists.newArrayList(L);
             boolean equal;
@@ -550,6 +608,7 @@ public class BJDMMatrix extends Matrix {
     }
 
     /**
+     * Creates a list of SwappableAndNewEdges from a list of elements to swap.
      * 
      * @param swappables elements to swap obtained via curveball sampling
      * @return list of edges to swap obtained from the set of elements to swap
@@ -563,16 +622,10 @@ public class BJDMMatrix extends Matrix {
             v1 = getColInstance(swappables.swappable1);
             v2 = getColInstance(swappables.swappable2);
         }
-        Set<Integer> S1 = Sets.newHashSet(v1.getNonzeroIndices());
-        Set<Integer> S2 = Sets.newHashSet(v2.getNonzeroIndices());
-        Set<Integer> S12 = S1.stream().filter(i -> S2.contains(i)).collect(Collectors.toSet());
         Set<Integer> L = Sets.newHashSet(swappables.new1);
-        L.removeAll(S12);
-        L.removeAll(S1);
-        Set<Integer> U = Sets.newHashSet(S1);
-        U.addAll(S2);
-        U.removeAll(L);
-        U.removeAll(S2);
+        L.removeAll(v1.getNonzeroIndices());
+        Set<Integer> U = Sets.newHashSet(swappables.new2);
+        U.removeAll(v2.getNonzeroIndices());
         assert(U.size()==L.size());
         List<Integer> new1 = Lists.newArrayList(L);
         List<Integer> new2 = Lists.newArrayList(U);
