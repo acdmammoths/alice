@@ -241,33 +241,37 @@ public class Matrix {
     /**
      * Gets the new rows of the matrix defined by the swappable and new edges.
      *
-     * @param swappableEdge1 the first swappable edge
-     * @param swappableEdge2 the second swappable edge
      * @param newEdge1 the first new edge to be added
      * @param newEdge2 the second new edge to be added
      * @return the two new rows of the matrix
      */
-    public Vector[] getNewRows(Edge swappableEdge1, Edge swappableEdge2, Edge newEdge1, Edge newEdge2) {
+    public Vector[] getNewRows(Edge newEdge1, Edge newEdge2) {
         final Vector newRow1 = this.getRowCopy(newEdge1.row);
-        newRow1.set(swappableEdge1.col, 0);
+        newRow1.set(newEdge2.col, 0);
         newRow1.set(newEdge1.col, 1);
 
         final Vector newRow2 = this.getRowCopy(newEdge2.row);
-        newRow2.set(swappableEdge2.col, 0);
+        newRow2.set(newEdge1.col, 0);
         newRow2.set(newEdge2.col, 1);
 
         return new Vector[]{newRow1, newRow2};
     }
     
-    public Vector[] getNewCols(Edge swappableEdge1, Edge swappableEdge2, Edge newEdge1, Edge newEdge2) {
+    /**
+     * Gets the new cols of the matrix defined by the swappable and new edges.
+     *
+     * @param newEdge1 the first new edge to be added
+     * @param newEdge2 the second new edge to be added
+     * @return the two new cols of the matrix
+     */
+    public Vector[] getNewCols(Edge newEdge1, Edge newEdge2) {
         final Vector newCol1 = this.getColCopy(newEdge1.col);
-        newCol1.set(swappableEdge1.row, 0);
+        newCol1.set(newEdge2.row, 0);
         newCol1.set(newEdge1.row, 1);
 
         final Vector newCol2 = this.getColCopy(newEdge2.col);
-        newCol2.set(swappableEdge2.row, 0);
+        newCol2.set(newEdge1.row, 0);
         newCol2.set(newEdge2.row, 1);
-
         return new Vector[]{newCol1, newCol2};
     }
     

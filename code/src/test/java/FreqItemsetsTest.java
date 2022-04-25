@@ -7,7 +7,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DriverTest {
+public class FreqItemsetsTest {
 
     @BeforeClass
     public static void before() {
@@ -30,7 +30,7 @@ public class DriverTest {
     @Test
     public void driver() {
         final String[] samplerTypes = {SamplerNames.gmmtSampler, 
-            SamplerNames.caterNaiveSampler /*,  SamplerNames.caterCurveballSampler */};
+            SamplerNames.caterNaiveSampler,  SamplerNames.caterCurveballSampler};
         for (String samplerType : samplerTypes) {
             Config.samplerType = samplerType;
             final String[] args = {};

@@ -22,7 +22,7 @@ public class BJDMMatrix extends Matrix {
      * A map where each key is a row sum and the value is the unique set of rows
      * with that row sum.
      */
-    private Map<Integer, Set<Vector>> rowSumToUniqueRows;
+    private final Map<Integer, Set<Vector>> rowSumToUniqueRows;
 
     /**
      * A map where each key is a row sum and the value is the set of rows with
@@ -566,24 +566,26 @@ public class BJDMMatrix extends Matrix {
         int common = S12.size();
         int union = swappables.new2.size() + swappables.new1.size() - 2 * common;
         int l = swappables.new1.size() - common;
-        System.out.println(common + " " + union + " " + l);
         double prob = getCurveBallProb(sumToEqSum, union, l);
         // case where |L| = 2
-        if (l == 2) {
+        if (l == 1) {
             Set<Integer> L = Sets.newHashSet(swappables.new1);
+            Set<Integer> R = Sets.newHashSet(swappables.new2);
             L.removeAll(S12);
-            List<Integer> pair = Lists.newArrayList(L);
+            R.removeAll(S12);
+            int first = L.iterator().next();
+            int second = R.iterator().next();
             boolean equal;
             Vector v3, v4;
             if (swappables.rowBased) { 
-                equal = colSums[pair.get(0)] == colSums[pair.get(1)];
-                v3 = cols.get(pair.get(0));
-                v4 = cols.get(pair.get(1));
+                equal = colSums[first] == colSums[second];
+                v3 = cols.get(first);
+                v4 = cols.get(second);
                 sumToEqSum = colSumToEqColSumCols;
             } else {
-                equal = rowSums[pair.get(0)] == rowSums[pair.get(1)];
-                v3 = rows.get(pair.get(0));
-                v4 = rows.get(pair.get(1));
+                equal = rowSums[first] == rowSums[second];
+                v3 = rows.get(first);
+                v4 = rows.get(second);
                 sumToEqSum = rowSumToEqRowSumRows;
             }
             if (equal) {
@@ -639,8 +641,8 @@ public class BJDMMatrix extends Matrix {
                         new Edge(swappables.swappable2, new2.get(c))));
             } else {
                 E.add(new SwappableAndNewEdges(
-                        new Edge(new2.get(c), swappables.swappable1), 
                         new Edge(new1.get(c), swappables.swappable2),
+                        new Edge(new2.get(c), swappables.swappable1), 
                         new Edge(new1.get(c), swappables.swappable1),
                         new Edge(new2.get(c), swappables.swappable2)));
             }

@@ -48,7 +48,7 @@ public class NaiveBJDMSampler implements Sampler {
             final Edge newEdge2 = sne.newEdge2;
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
-            final Vector[] newRows = matrix.getNewRows(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+            final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
 
@@ -56,7 +56,7 @@ public class NaiveBJDMSampler implements Sampler {
                     = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
 
-            double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
+            final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
@@ -116,7 +116,7 @@ public class NaiveBJDMSampler implements Sampler {
             final Edge newEdge2 = sne.newEdge2;
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
-            final Vector[] newRows = matrix.getNewRows(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+            final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
 

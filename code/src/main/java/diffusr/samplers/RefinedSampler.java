@@ -83,7 +83,7 @@ public class RefinedSampler implements Sampler {
             final Vector swappableRow1 = matrix.getRowInstance(rowIndex1);
             final Vector swappableRow2 = matrix.getRowInstance(rowIndex2);
             final Vector[] newRows
-                    = matrix.getNewRows(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+                    = matrix.getNewRows(newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
 

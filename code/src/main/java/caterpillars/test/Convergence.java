@@ -52,7 +52,7 @@ public class Convergence {
 
         CMDLineParser.parse(args);
         
-        final Sampler[] samplers = {new NaiveBJDMSampler() /*, new CurveballBJDMSampler()*/};
+        final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler()};
 
         System.out.println("Executing convergence experiment for dataset at " + Config.datasetPath);
 

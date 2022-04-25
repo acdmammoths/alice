@@ -17,7 +17,6 @@
 import caterpillars.structures.SparseMatrix;
 import caterpillars.structures.Vector;
 import com.google.common.collect.Maps;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 

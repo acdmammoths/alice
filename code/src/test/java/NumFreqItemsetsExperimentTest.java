@@ -15,8 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import caterpillars.config.Paths;
-import caterpillars.config.JsonKeys;
-import caterpillars.utils.JsonFile;
 import caterpillars.config.DatasetNames;
 import caterpillars.config.Delimiters;
 import caterpillars.test.NumFreqItemsets;
@@ -32,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

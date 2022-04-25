@@ -20,7 +20,6 @@ import caterpillars.test.SigFreqItemsets;
 import caterpillars.utils.Config;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SigFreqItemsetsExperimentTest {

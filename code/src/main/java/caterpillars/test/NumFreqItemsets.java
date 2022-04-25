@@ -21,7 +21,7 @@ import caterpillars.config.Paths;
 import caterpillars.config.JsonKeys;
 import caterpillars.utils.JsonFile;
 import caterpillars.config.Delimiters;
-//import caterpillars.samplers.CurveballBJDMSampler;
+import caterpillars.samplers.CurveballBJDMSampler;
 import caterpillars.samplers.NaiveBJDMSampler;
 import caterpillars.utils.CMDLineParser;
 import caterpillars.utils.Config;
@@ -69,7 +69,7 @@ public class NumFreqItemsets {
                 = getFreqItemsetLenToCountMap(observedFreqItemsets);
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
 
-        final Sampler[] samplers = {new NaiveBJDMSampler(), /*new CurveballBJDMSampler(),*/ new GmmtSampler()};
+        final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler(), new GmmtSampler()};
 
         // create object for numFreqItemsetsStats
         final JSONArray numFreqItemsetsStats = new JSONArray();

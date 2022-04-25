@@ -16,7 +16,6 @@ package caterpillars.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.Vector;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;

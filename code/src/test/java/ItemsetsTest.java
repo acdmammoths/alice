@@ -111,11 +111,11 @@ public class ItemsetsTest {
   public void getFreqItemsetToPvalueMap() {
     final Map<Set<Integer>, Double> expectedFreqItemsetToPvalue = new HashMap<>();
     expectedFreqItemsetToPvalue.put(
-        new HashSet<Integer>(Arrays.asList(5)), (double) (1 + 2) / (2 + 1));
+        new HashSet<>(Arrays.asList(5)), (double) (1 + 2) / (2 + 1));
     expectedFreqItemsetToPvalue.put(
-        new HashSet<Integer>(Arrays.asList(2)), (double) (1 + 1) / (2 + 1));
+        new HashSet<>(Arrays.asList(2)), (double) (1 + 1) / (2 + 1));
     expectedFreqItemsetToPvalue.put(
-        new HashSet<Integer>(Arrays.asList(5, 2, 4)), (double) (1 + 1) / (2 + 1));
+        new HashSet<>(Arrays.asList(5, 2, 4)), (double) (1 + 1) / (2 + 1));
 
     final Map<Set<Integer>, Integer> freqItemsetToSup =
         Itemsets.getFreqItemsetToSupMap(freqItemsetsPath);

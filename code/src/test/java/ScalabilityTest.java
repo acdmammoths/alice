@@ -6,7 +6,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class RuntimeExperimentTest {
+public class ScalabilityTest {
 
     @BeforeClass
     public static void before() {

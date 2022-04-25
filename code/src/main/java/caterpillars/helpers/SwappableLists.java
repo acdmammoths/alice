@@ -9,7 +9,7 @@ public class SwappableLists {
     public final int swappable2;
     public final List<Integer> new1;
     public final List<Integer> new2;
-    public boolean rowBased;
+    public final boolean rowBased;
 
     /**
      * Instantiates an instance of {@link SwappableLists}.
@@ -25,5 +25,12 @@ public class SwappableLists {
         this.new1 = new1;
         this.new2 = new2;
         this.rowBased = rowBased;
+    }
+    
+    @Override
+    public String toString() {
+        return this.rowBased + "\t" + 
+                this.swappable1 + " -> " + this.new1.toString() + "\n" + 
+                this.swappable2 + " -> " + this.new2.toString();
     }
 }
