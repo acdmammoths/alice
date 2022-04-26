@@ -65,8 +65,8 @@ public class CurveballBJDMSampler implements Sampler {
             }
             if (snes.rowBased) {
                 Vector[] swappableRows = new Vector[]{
-                    matrix.getRowInstance(snes.swappable1),
-                    matrix.getRowInstance(snes.swappable2)};
+                    matrix.getRowCopy(snes.swappable1),
+                    matrix.getRowCopy(snes.swappable2)};
                 for (SwappableAndNewEdges swappable : swappables) {
                     final Vector[] newRows = matrix.getNewRows(
                             swappableRows[0], 
@@ -133,11 +133,10 @@ public class CurveballBJDMSampler implements Sampler {
                 cols.add(snes.swappable2, newCol2);
             }
 
-            final double firstProb = matrix.curveballSamplingProb(snes, matrix.getRows(), matrix.getCols());
-            final double secondProb = matrix.curveballSamplingProb(snes, rows, cols);
-            final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices)
-                    * firstProb / secondProb;
-//            System.out.println(firstProb + "==" + secondProb);
+//            final double firstProb = matrix.curveballSamplingProb(snes, matrix.getRows(), matrix.getCols());
+//            final double secondProb = matrix.curveballSamplingProb(snes, rows, cols);
+            final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
+//                    * firstProb / secondProb;
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {

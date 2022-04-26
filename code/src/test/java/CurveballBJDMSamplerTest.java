@@ -6,7 +6,6 @@ import caterpillars.structures.Vector;
 import caterpillars.config.DatasetNames;
 import caterpillars.helpers.SwappableLists;
 import caterpillars.samplers.CurveballBJDMSampler;
-import caterpillars.structures.Edge;
 import caterpillars.structures.Matrix;
 import caterpillars.utils.Config;
 import caterpillars.utils.Transformer;
@@ -14,15 +13,11 @@ import caterpillars.utils.Timer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CurveballBJDMSamplerTest {
@@ -146,7 +141,7 @@ public class CurveballBJDMSamplerTest {
     }
 
     @Test
-    public void uniformity() {
+    public void numStates() {
         final Map<Matrix, Integer> matrixNumStatesMap = Maps.newHashMap();
         matrixNumStatesMap.put(
                 new BJDMMatrix(
@@ -212,13 +207,6 @@ public class CurveballBJDMSamplerTest {
                 datasetCounts.put(dataset, count);
             }
             Assert.assertEquals(numStates, datasetCounts.size());
-
-//            for (int count : datasetCounts.values()) {
-//                final double expectedProb = (double) 1 / numStates;
-//                final double actualProb = (double) count / numSamples;
-//                final double delta = 0.1 * expectedProb;
-//                Assert.assertEquals(expectedProb, actualProb, delta);
-//            }
         });
     }
 }
