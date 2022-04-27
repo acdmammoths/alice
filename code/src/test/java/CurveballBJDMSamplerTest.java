@@ -82,7 +82,7 @@ public class CurveballBJDMSamplerTest {
                 continue;
             }
             
-            final double samplingProb = adjMatrix.curveballSamplingProb(snes, adjMatrix.getRows(), adjMatrix.getCols());
+//            final double samplingProb = adjMatrix.curveballSamplingProb(snes, adjMatrix.getRows(), adjMatrix.getCols());
             
             final List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
             if (swappables.isEmpty()) {
@@ -115,13 +115,13 @@ public class CurveballBJDMSamplerTest {
                             newRows[1]);
                 
             }
-            final double adjSamplingProb = matrix.curveballSamplingProb(snes, adjMatrix.getRows(), adjMatrix.getCols());
+//            final double adjSamplingProb = matrix.curveballSamplingProb(snes, adjMatrix.getRows(), adjMatrix.getCols());
             
             Assert.assertEquals("ADJ matrices not equal", adjMatrix, matrix);
             Assert.assertEquals("Edge sets not equal", adjMatrix.getEdgesSet(), matrix.getEdgesSet());
             Assert.assertEquals("Equal row maps not equal", adjMatrix.getRowToNumEqRowsMap(), matrix.getRowToNumEqRowsMap());
             Assert.assertEquals("BJDMs not equal", adjMatrix.getBJDM(), matrix.getBJDM());
-            Assert.assertEquals(samplingProb, adjSamplingProb, 0.0);
+//            Assert.assertEquals(samplingProb, adjSamplingProb, 0.0);
         }
     }
     

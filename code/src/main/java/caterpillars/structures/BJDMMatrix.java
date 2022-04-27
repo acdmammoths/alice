@@ -547,67 +547,67 @@ public class BJDMMatrix extends Matrix {
      * @return probability of selecting the adjacent matrix where the elements 
      * in swappables are swapped 
      */
-    public double curveballSamplingProb(SwappableLists swappables, 
-            List<Vector> rows, List<Vector> cols) {
-        Vector v1, v2;
-        Map<Integer, List<Integer>> sumToEqSum;
-        if (swappables.rowBased) {
-            v1 = rows.get(swappables.swappable1);
-            v2 = rows.get(swappables.swappable2);
-            sumToEqSum = rowSumToEqRowSumRows;
-        } else {
-            v1 = cols.get(swappables.swappable1);
-            v2 = cols.get(swappables.swappable2);
-            sumToEqSum = colSumToEqColSumCols;
-        }
-        Set<Integer> S12 = v1.getNonzeroIndices().stream()
-                .filter(i -> v2.getNonzeroIndices().contains(i))
-                .collect(Collectors.toSet());
-        int common = S12.size();
-        int union = swappables.new2.size() + swappables.new1.size() - 2 * common;
-        int l = swappables.new1.size() - common;
-        double prob = getCurveBallProb(sumToEqSum, union, l);
-        // case where |L| = 2
-        if (l == 1) {
-            Set<Integer> L = Sets.newHashSet(swappables.new1);
-            Set<Integer> R = Sets.newHashSet(swappables.new2);
-            L.removeAll(S12);
-            R.removeAll(S12);
-            int first = L.iterator().next();
-            int second = R.iterator().next();
-            boolean equal;
-            Vector v3, v4;
-            if (swappables.rowBased) { 
-                equal = colSums[first] == colSums[second];
-                v3 = cols.get(first);
-                v4 = cols.get(second);
-                sumToEqSum = colSumToEqColSumCols;
-            } else {
-                equal = rowSums[first] == rowSums[second];
-                v3 = rows.get(first);
-                v4 = rows.get(second);
-                sumToEqSum = rowSumToEqRowSumRows;
-            }
-            if (equal) {
-                Set<Integer> S1 = Sets.newHashSet(v3.getNonzeroIndices());
-                S1.removeAll(v4.getNonzeroIndices());
-                Set<Integer> S2 = Sets.newHashSet(v4.getNonzeroIndices());
-                S2.removeAll(v3.getNonzeroIndices());
-                union = S1.size() + S2.size();
-                prob += getCurveBallProb(sumToEqSum, union, l);
-            }
-        }
-        return prob;
-    }
+//    public double curveballSamplingProb(SwappableLists swappables, 
+//            List<Vector> rows, List<Vector> cols) {
+//        Vector v1, v2;
+//        Map<Integer, List<Integer>> sumToEqSum;
+//        if (swappables.rowBased) {
+//            v1 = rows.get(swappables.swappable1);
+//            v2 = rows.get(swappables.swappable2);
+//            sumToEqSum = rowSumToEqRowSumRows;
+//        } else {
+//            v1 = cols.get(swappables.swappable1);
+//            v2 = cols.get(swappables.swappable2);
+//            sumToEqSum = colSumToEqColSumCols;
+//        }
+//        Set<Integer> S12 = v1.getNonzeroIndices().stream()
+//                .filter(i -> v2.getNonzeroIndices().contains(i))
+//                .collect(Collectors.toSet());
+//        int common = S12.size();
+//        int union = swappables.new2.size() + swappables.new1.size() - 2 * common;
+//        int l = swappables.new1.size() - common;
+//        double prob = getCurveBallProb(sumToEqSum, union, l);
+//        // case where |L| = 2
+//        if (l == 1) {
+//            Set<Integer> L = Sets.newHashSet(swappables.new1);
+//            Set<Integer> R = Sets.newHashSet(swappables.new2);
+//            L.removeAll(S12);
+//            R.removeAll(S12);
+//            int first = L.iterator().next();
+//            int second = R.iterator().next();
+//            boolean equal;
+//            Vector v3, v4;
+//            if (swappables.rowBased) { 
+//                equal = colSums[first] == colSums[second];
+//                v3 = cols.get(first);
+//                v4 = cols.get(second);
+//                sumToEqSum = colSumToEqColSumCols;
+//            } else {
+//                equal = rowSums[first] == rowSums[second];
+//                v3 = rows.get(first);
+//                v4 = rows.get(second);
+//                sumToEqSum = rowSumToEqRowSumRows;
+//            }
+//            if (equal) {
+//                Set<Integer> S1 = Sets.newHashSet(v3.getNonzeroIndices());
+//                S1.removeAll(v4.getNonzeroIndices());
+//                Set<Integer> S2 = Sets.newHashSet(v4.getNonzeroIndices());
+//                S2.removeAll(v3.getNonzeroIndices());
+//                union = S1.size() + S2.size();
+//                prob += getCurveBallProb(sumToEqSum, union, l);
+//            }
+//        }
+//        return prob;
+//    }
 
-    private double getCurveBallProb(Map<Integer, List<Integer>> sumToEqSum, int union, int l) {
-        int sumSwappablePairs = sumToEqSum.values()
-                .stream()
-                .mapToInt(lst -> getNumCombinations(lst.size(), 2))
-                .sum();
-        int differentSubs = getNumCombinations(union, l);
-        return 1. / (2. * sumSwappablePairs * differentSubs);
-    }
+//    private double getCurveBallProb(Map<Integer, List<Integer>> sumToEqSum, int union, int l) {
+//        int sumSwappablePairs = sumToEqSum.values()
+//                .stream()
+//                .mapToInt(lst -> getNumCombinations(lst.size(), 2))
+//                .sum();
+//        int differentSubs = getNumCombinations(union, l);
+//        return 1. / (2. * sumSwappablePairs * differentSubs);
+//    }
 
     /**
      * Creates a list of SwappableAndNewEdges from a list of elements to swap.
