@@ -118,8 +118,16 @@ public class Matrix {
         this.matrix.setInRow(row, col, val);
     }
     
+    public void setRow(int id, Vector row) {
+        this.matrix.replaceRow(id, row);
+    }
+    
     public void setCol(int row, int col, int val) {
         this.matrix.setInCol(row, col, val);
+    }
+    
+    public void setCol(int id, Vector col) {
+        this.matrix.replaceCol(id, col);
     }
 
     public Vector getRowCopy(int row) {
@@ -280,28 +288,28 @@ public class Matrix {
     }
     
     public int getNumEqRows(Vector row) {
-        return this.rowToNumEqRows.getOrDefault(row, 0);
+        return rowToNumEqRows.getOrDefault(row, 0);
     }
     
-    public void setNumEqRows(Vector row, int eqRowsNum) {
+    public boolean setNumEqRows(Vector row, int eqRowsNum) {
         if (eqRowsNum == 0) {
-            this.removeNumEqRows(row);
-        } else {
-            // create a copy of the row only if map doesn't contain it already
-            if (!this.rowToNumEqRows.containsKey(row)) {
-                row = row.copy();
-            }
-            // map won't use instance of row if it already contains one
-            this.rowToNumEqRows.put(row, eqRowsNum);
+            removeNumEqRows(row);
+            return false;
         }
+        if (!rowToNumEqRows.containsKey(row)) {
+            rowToNumEqRows.put(row.copy(), eqRowsNum);
+            return true;
+        }
+        rowToNumEqRows.put(row, eqRowsNum);
+        return false;
     }
     
     public void removeNumEqRows(Vector row) {
-        this.rowToNumEqRows.remove(row);
+        rowToNumEqRows.remove(row);
     }
 
-    public void incNumEqRows(Vector row) {
-        this.setNumEqRows(row, getNumEqRows(row) + 1);
+    public boolean incNumEqRows(Vector row) {
+        return setNumEqRows(row, getNumEqRows(row) + 1);
     }
 
     /**
@@ -318,6 +326,17 @@ public class Matrix {
                     "The number of rows equal to row " + row + " is " + num + ", which is non positive.");
         }
         this.setNumEqRows(row, num - 1);
+    }
+    
+    public void replaceNumEqRows(Map<Vector, Integer> rowsToEqRows) {
+        rowsToEqRows.entrySet().stream()
+                .forEach(entry -> {
+                    if (entry.getValue() == 0) {
+                        rowToNumEqRows.remove(entry.getKey());
+                    } else {
+                        rowToNumEqRows.put(entry.getKey(), entry.getValue());
+                    }
+                });
     }
     
     /**

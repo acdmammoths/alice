@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 # Loading configurations for experiments
 echo '>> Loading config file config.cfg'

@@ -35,14 +35,15 @@ public class Edge {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o == null) {
-            return false;
-        } else if (this.getClass() != o.getClass()) {
-            return false;
-        } else {
-            final Edge otherEdge = (Edge) o;
-            return this.row == otherEdge.row && this.col == otherEdge.col;
         }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        } 
+        final Edge otherEdge = (Edge) o;
+        return this.row == otherEdge.row && this.col == otherEdge.col;
     }
 
     @Override

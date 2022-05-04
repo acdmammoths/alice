@@ -16,6 +16,7 @@ package caterpillars.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import caterpillars.config.DatasetNames;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.config.Paths;
 import diffusr.fpm.FreqItemsetMiner;
@@ -31,11 +32,10 @@ import diffusr.samplers.Sampler;
 import caterpillars.utils.Transformer;
 import caterpillars.utils.Timer;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import org.json.JSONArray;
@@ -49,7 +49,7 @@ import org.json.JSONObject;
 public class Convergence {
 
     public static void main(String[] args) {
-
+        
         CMDLineParser.parse(args);
         
         final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler()};
@@ -81,6 +81,16 @@ public class Convergence {
         }
         // create object for convergenceStats
         final JSONObject convergenceStats = new JSONObject();
+        // file to store the JSON
+        final String datasetBaseName = new Paths(Config.datasetPath, "").datasetBaseName;
+        final String resultsBaseName
+                = String.join(
+                        Delimiters.dash,
+                        datasetBaseName,
+                        String.valueOf(Config.maxNumSwapsFactor),
+                        String.valueOf(Config.minFreq),
+                        String.valueOf(Config.seed));
+        final String resultPath = Paths.getJsonFilePath(Config.resultsDir, resultsBaseName);
 
         for (Sampler sampler : samplers) {
             final String samplerName = sampler.getClass().getName();
@@ -100,13 +110,14 @@ public class Convergence {
                 System.out.println("\t\t" + JsonKeys.numSwaps + ": " + numSwaps);
 
                 System.out.println("\t\tGetting sample from matrix");
+                long start = System.currentTimeMillis();
                 final SparseMatrix sample
                         = sampler.sample(startMatrix, numSwaps, rnd.nextLong(), new Timer(false));
-
+                System.out.println("Done in " + (System.currentTimeMillis() - start) + " (ms)");
                 System.out.println("\t\tGetting sample itemset to support map");
                 final Map<Set<Integer>, Integer> sampleFreqItemsetToSup
                         = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup.keySet());
-
+                
                 // compute convergence statistics
                 final double avgRelFreqDiff = getAvgRelFreqDiff(freqItemsetToSup, sampleFreqItemsetToSup);
                 System.out.println("\t\t" + JsonKeys.avgRelFreqDiff + ": " + avgRelFreqDiff);
@@ -136,15 +147,6 @@ public class Convergence {
         results.put(JsonKeys.convergenceStats, convergenceStats);
 
         // save JSON
-        final String datasetBaseName = new Paths(Config.datasetPath, "").datasetBaseName;
-        final String resultsBaseName
-                = String.join(
-                        Delimiters.dash,
-                        datasetBaseName,
-                        String.valueOf(Config.maxNumSwapsFactor),
-                        String.valueOf(Config.minFreq),
-                        String.valueOf(Config.seed));
-        final String resultPath = Paths.getJsonFilePath(Config.resultsDir, resultsBaseName);
         JsonFile.write(results, resultPath);
         System.out.println("Result written to " + resultPath);
     }
@@ -163,17 +165,14 @@ public class Convergence {
      */
     public static Map<Set<Integer>, Integer> getSampleItemsetToSupMap(
             SparseMatrix sample, Transformer transformer, Set<Set<Integer>> freqItemsets) {
-        final Map<Set<Integer>, Integer> sampleItemsetToSup = new HashMap<>();
-
+        final Map<Set<Integer>, Integer> sampleItemsetToSup = Maps.newHashMap();
         for (int r = 0; r < sample.getNumRows(); r++) {
             for (Set<Integer> freqItemset : freqItemsets) {
                 if (isItemsetInSampleTransaction(freqItemset, sample, r, transformer.itemToColIndex)) {
-                    final int sup = sampleItemsetToSup.getOrDefault(freqItemset, 0);
-                    sampleItemsetToSup.put(freqItemset, sup + 1);
+                    sampleItemsetToSup.put(freqItemset, sampleItemsetToSup.getOrDefault(freqItemset, 0) + 1);
                 }
             }
         }
-
         return sampleItemsetToSup;
     }
 
@@ -193,13 +192,9 @@ public class Convergence {
             SparseMatrix sample,
             int rowIndex,
             Map<Integer, Integer> itemToColIndex) {
-        for (int item : itemset) {
-            final int colIndex = itemToColIndex.get(item);
-            if (sample.isInRow(rowIndex, colIndex) == 0) {
-                return false;
-            }
-        }
-        return true;
+        
+        return itemset.stream()
+                .allMatch(item -> sample.isInRow(rowIndex, itemToColIndex.get(item)) != 0);
     }
 
     /**
@@ -213,18 +208,15 @@ public class Convergence {
      * @return the average relative frequency/support difference
      */
     public static double getAvgRelFreqDiff(
-            Map<Set<Integer>, Integer> freqItemsetToSup, Map<Set<Integer>, Integer> sampleItemsetToSup) {
-        double sumRelFreqDiff = 0;
-
-        for (Entry<Set<Integer>, Integer> entry : freqItemsetToSup.entrySet()) {
-            final Set<Integer> itemset = entry.getKey();
-            final int sup = entry.getValue();
-            final int sampleSup = sampleItemsetToSup.getOrDefault(itemset, 0);
-
-            final double relFreqDiff = (double) Math.abs(sup - sampleSup) / sup;
-            sumRelFreqDiff += relFreqDiff;
-        }
-
+            Map<Set<Integer>, Integer> freqItemsetToSup, 
+            Map<Set<Integer>, Integer> sampleItemsetToSup) {
+        
+        double sumRelFreqDiff = freqItemsetToSup.entrySet()
+                .stream()
+                .mapToDouble(entry -> 
+                        Math.abs(1.*entry.getValue() - sampleItemsetToSup.getOrDefault(entry.getKey(), 0)) 
+                                / entry.getValue())
+                .sum();
         return sumRelFreqDiff / freqItemsetToSup.size();
     }
 }

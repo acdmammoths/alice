@@ -33,7 +33,7 @@ public class Vector {
      * a 0-1 vector.
      */
     private final Set<Integer> indices;
-
+    
     /**
      * Initializes an empty vector.
      */
@@ -64,14 +64,15 @@ public class Vector {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o == null) {
-            return false;
-        } else if (this.getClass() != o.getClass()) {
-            return false;
-        } else {
-            Vector otherVector = (Vector) o;
-            return Objects.equals(this.indices, otherVector.indices);
         }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+        Vector otherVector = (Vector) o;
+        return Objects.equals(this.indices, otherVector.indices);
     }
 
     @Override
@@ -85,11 +86,7 @@ public class Vector {
     }
 
     public Vector copy() {
-        final Vector copy = new Vector();
-        for (int index : this.indices) {
-            copy.set(index, 1);
-        }
-        return copy;
+        return new Vector(this.indices);
     }
 
     /**

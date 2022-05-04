@@ -1,21 +1,5 @@
 package caterpillars.config;
 
-/*
- * Copyright (C) 2022 Alexander Lee and Matteo Riondato
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 import diffusr.samplers.Sampler;
 import java.io.File;
 import java.io.IOException;
@@ -39,17 +23,17 @@ public class Paths {
 
     public Paths(String datasetPath, String resultsDir) {
         this.datasetBaseName = getBaseName(datasetPath);
-        this.samplesPath = concat(resultsDir, "samples");
-        this.freqItemsetsDirPath = concat(resultsDir, "freqItemsets");
-        this.sigFreqItemsetsDirPath = concat(resultsDir, "sigFreqItemsets");
+        this.samplesPath = resultsDir + "samples/";
+        this.freqItemsetsDirPath = resultsDir + "freqItemsets/";
+        this.sigFreqItemsetsDirPath = resultsDir + "sigFreqItemsets/";
     }
 
     public String getSamplePath(String tag, int id) {
-        return getTextFilePath(this.samplesPath, this.getSampleBaseFileName(tag, id));
+        return getTextFilePath(this.samplesPath, getSampleBaseFileName(tag, id));
     }
 
     public String getFreqItemsetsPath(String tag, int id) {
-        return getTextFilePath(this.freqItemsetsDirPath, this.getSampleBaseFileName(tag, id));
+        return getTextFilePath(this.freqItemsetsDirPath, getSampleBaseFileName(tag, id));
     }
 
     public String getSigFreqItemsetsPath(
@@ -90,15 +74,27 @@ public class Paths {
     }
 
     public static String concat(String basePath, String fullFileNameToAdd) {
-        return FilenameUtils.concat(basePath, fullFileNameToAdd);
+        String path = FilenameUtils.concat(basePath, fullFileNameToAdd);
+        if (path == null) {
+            return basePath + fullFileNameToAdd + "/";
+        }
+        return path;
     }
 
     public static String getTextFilePath(String dir, String baseFileName) {
-        return concat(dir, baseFileName + textExt);
+        String path = concat(dir, baseFileName + textExt);
+        if (path == null) {
+            return dir + baseFileName + textExt;
+        }
+        return path;
     }
 
     public static String getJsonFilePath(String dir, String baseFileName) {
-        return concat(dir, baseFileName + jsonExt);
+        String path = concat(dir, baseFileName + jsonExt);
+        if (path == null) {
+            return dir + baseFileName + jsonExt;
+        }
+        return path;
     }
 
     public static void makeDir(String dirPath) {

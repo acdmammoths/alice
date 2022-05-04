@@ -16,6 +16,7 @@ package caterpillars.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -51,6 +52,17 @@ public class SparseMatrix {
         this.listOfCols = IntStream.range(0, numCols)
                 .mapToObj(i -> new Vector())
                 .collect(Collectors.toList());
+    }
+    
+    public SparseMatrix(List<Vector> rows, List<Vector> cols) {
+        this.listOfRows = Lists.newArrayList();
+        for (Vector row : rows) {
+            this.listOfRows.add(row.copy());
+        }
+        this.listOfCols = Lists.newArrayList();
+        for (Vector col : cols) {
+            this.listOfCols.add(col.copy());
+        }
     }
 
     /**
@@ -109,11 +121,11 @@ public class SparseMatrix {
     }
     
     public void replaceRow(int r, Vector row) {
-        this.listOfRows.add(r, row);
+        this.listOfRows.set(r, row);
     }
     
     public void replaceCol(int c, Vector col) {
-        this.listOfCols.add(c, col);
+        this.listOfCols.set(c, col);
     }
     
     public void setInCol(int r, int c, int value) {
