@@ -18,7 +18,6 @@ package diffusr.structures;
  */
 import caterpillars.structures.SparseMatrix;
 import caterpillars.structures.Vector;
-import caterpillars.structures.Edge;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

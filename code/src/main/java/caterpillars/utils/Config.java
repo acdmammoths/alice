@@ -2,10 +2,6 @@ package caterpillars.utils;
 
 import caterpillars.config.DatasetNames;
 
-/**
- *
- * @author giulia
- */
 public class Config {
     
     public static String datasetsDir = "datasets";

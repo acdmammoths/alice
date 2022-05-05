@@ -1,9 +1,5 @@
 package caterpillars.utils;
 
-/**
- *
- * @author giulia
- */
 public class CMDLineParser {
     
     public static void parse(String[] args) {

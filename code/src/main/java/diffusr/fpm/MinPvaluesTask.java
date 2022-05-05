@@ -2,7 +2,6 @@ package diffusr.fpm;
 
 
 import caterpillars.config.Paths;
-import diffusr.fpm.Itemsets;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
