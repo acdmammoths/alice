@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Loading configurations for experiments
 echo '>> Loading config file config.cfg'
@@ -41,13 +41,13 @@ do
 
 		OUTPUT="$resultsDir/sigFreqItemsets"
 		mkdir -p $OUTPUT
-		OUTPUT2="${OUTPUT}/${dataset}"
+		OUTPUT2="${OUTPUT}/${dataset}/"
 		mkdir -p $OUTPUT2
 
 		echo "Running command ..."
 		echo "$JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=1$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}"
 		echo "---- `date`"
-		# $JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=1$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}
+		$JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=1$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}
 	fi
 
 	if [[ ${experiments[1]} -eq "1" ]]; then
@@ -55,13 +55,13 @@ do
 		echo '      Convergence      '
 		echo '-----------------------'
 
-		OUTPUT="$resultsDir/convergence"
+		OUTPUT="$resultsDir/convergence/"
 		mkdir -p $OUTPUT
 
 		echo "Running command ..."
 		echo "$JVM $CONV_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed maxNumSwapsFactor=$maxNumSwapsFactor minFreq=${defaults[2]}"
 		echo "---- `date`"
-		# $JVM $CONV_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed maxNumSwapsFactor=$maxNumSwapsFactor minFreq=${defaults[2]}
+		$JVM $CONV_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed maxNumSwapsFactor=$maxNumSwapsFactor minFreq=${defaults[2]}
 	fi
 
 	if [[ ${experiments[2]} -eq "1" ]]; then
@@ -69,13 +69,13 @@ do
 		echo '      Scalability      '
 		echo '-----------------------'
 
-		OUTPUT="$resultsDir/scalability"
+		OUTPUT="$resultsDir/scalability/"
 		mkdir -p $OUTPUT
 
 		echo "Running command ..."
 		echo "$JVM $SCALA_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed numSwaps=$numSwaps"
 		echo "---- `date`"
-		# $JVM $SCALA_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed numSwaps=$numSwaps
+		$JVM $SCALA_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed numSwaps=$numSwaps
 	fi
 
 	if [[ ${experiments[3]} -eq "1" ]]; then
@@ -85,13 +85,13 @@ do
 
 		OUTPUT="$resultsDir/numFreqItemsets"
 		mkdir -p $OUTPUT
-		OUTPUT2="${OUTPUT}/${dataset}"
+		OUTPUT2="${OUTPUT}/${dataset}/"
 		mkdir -p $OUTPUT2
 
 		echo "Running command ..."
 		echo "$JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=true"
 		echo "---- `date`"
-		# JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=true
+		$JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=true
 	fi
 
 done
