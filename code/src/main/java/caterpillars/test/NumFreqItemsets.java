@@ -69,7 +69,10 @@ public class NumFreqItemsets {
                 = getFreqItemsetLenToCountMap(observedFreqItemsets);
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
 
-        final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler(), new GmmtSampler()};
+        final Sampler[] samplers = {
+            new NaiveBJDMSampler(), 
+            new CurveballBJDMSampler(), 
+            new GmmtSampler()};
 
         // create object for numFreqItemsetsStats
         final JSONArray numFreqItemsetsStats = new JSONArray();

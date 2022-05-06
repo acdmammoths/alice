@@ -45,11 +45,9 @@ public class GmmtSampler implements Sampler {
     @Override
     public SparseMatrix sample(SparseMatrix inMatrix, int numSwaps, long seed, Timer timer) {
         final long setupTimeStart = System.currentTimeMillis();
-
         final GmmtMatrix matrix = new GmmtMatrix(inMatrix);
 
         final Random rnd = new Random(seed);
-
         int matrixDegree = matrix.getDegree();
 
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
@@ -57,21 +55,17 @@ public class GmmtSampler implements Sampler {
 
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
-
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             final Edge newEdge1 = sne.newEdge1;
             final Edge newEdge2 = sne.newEdge2;
-
+            
             final int adjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
-
             final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
-
             if (rnd.nextDouble() <= acceptanceProb) {
                 matrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
-
                 matrixDegree = adjMatrixDegree;
             }
 

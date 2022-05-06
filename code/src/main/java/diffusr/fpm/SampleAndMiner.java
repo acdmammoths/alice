@@ -33,8 +33,8 @@ public class SampleAndMiner {
 
     /**
      * Samples transactional datasets using the sampler and mines the sampled
-     * datasets for frequent itemsets.The sampling and mining are done in
- parallel.
+     * datasets for frequent itemsets. 
+     * The sampling and mining are done in parallel.
      *
      * @param datasetPath the path to the dataset
      * @param sampler the sampler to use for sampling datasets

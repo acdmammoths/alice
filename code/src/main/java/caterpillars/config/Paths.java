@@ -97,7 +97,7 @@ public class Paths {
         }
         return path;
     }
-
+    
     public static String getTextFilePath(String dir, String baseFileName) {
         String path = concat(dir, baseFileName + textExt);
         if (path == null) {

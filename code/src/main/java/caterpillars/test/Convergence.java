@@ -16,7 +16,6 @@ package caterpillars.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.config.DatasetNames;
 import caterpillars.structures.SparseMatrix;
 import caterpillars.config.Paths;
 import diffusr.fpm.FreqItemsetMiner;
