@@ -13,8 +13,8 @@ def get_sampler_stats(runtime_result_path):
         result = json.load(f)
         runtime_stats = result["runtimeStats"]
         gmmt_stats = runtime_stats["GmmtSampler"]
-        naive_stats = runtime_stats["NaiveSampler"]
-        refined_stats = runtime_stats["RefinedSampler"]
+        naive_stats = runtime_stats["NaiveBJDMSampler"]
+        refined_stats = runtime_stats["CurveballBJDMSampler"]
         return gmmt_stats, naive_stats, refined_stats
 
 
@@ -41,27 +41,25 @@ def to_hours(time_ms):
 
 
 def convergence_time(
-    runtime_result_path, num_ones, max_num_swaps_factor, num_of_num_swaps_factors
-):
+        runtime_result_path,
+        num_ones,
+        max_num_swaps_factor,
+        num_of_num_swaps_factors):
     """
     Prints an estimate of the total setup time and swapping time for the
     convergence experiment.
     """
 
-    gmmt_setup_time, naive_setup_time, refined_setup_time = get_setup_times(
+    gmmt_set_t, naive_set_t, ref_set_t = get_setup_times(runtime_result_path)
+
+    gmmt_med_step_t, naive_med_step_t, ref_med_step_t = get_med_step_times(
         runtime_result_path
     )
 
-    gmmt_med_step_time, naive_med_step_time, refined_med_step_time = get_med_step_times(
-        runtime_result_path
-    )
+    sum_setup_times = gmmt_set_t + naive_set_t + ref_set_t
+    sum_med_step_times = gmmt_med_step_t + naive_med_step_t + ref_med_step_t
 
-    sum_setup_times = gmmt_setup_time + naive_setup_time + refined_setup_time
-    sum_med_step_times = (
-        gmmt_med_step_time + naive_med_step_time + refined_med_step_time
-    )
-
-    # we execute the setup portion of the sampler method for every num_swaps_factor
+    # we setup the sampler for every num_swaps_factor
     total_setup_time = num_of_num_swaps_factors * sum_setup_times
     total_swap_time = max_num_swaps_factor * num_ones * sum_med_step_times
 

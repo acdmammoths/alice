@@ -28,6 +28,7 @@ import caterpillars.utils.Config;
 import diffusr.samplers.Sampler;
 import caterpillars.utils.Transformer;
 import caterpillars.utils.Timer;
+import diffusr.samplers.GmmtSampler;
 import java.time.LocalDateTime;
 import java.util.Random;
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class Scalability {
         
         CMDLineParser.parse(args);
 
-        final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler()};
+        final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler(), new GmmtSampler()};
 
         System.out.println("Executing runtime experiment for dataset at " + Config.datasetPath);
 

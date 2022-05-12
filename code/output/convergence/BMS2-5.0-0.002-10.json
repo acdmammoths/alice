@@ -1,0 +1,109 @@
+{
+  "runInfo": {
+    "numOnes": 358278,
+    "numFreqItemsets": 3683,
+    "timestamp": "2022-05-04T12:43:22.010"
+  },
+  "convergenceStats": {
+    "caterpillars.samplers.NaiveBJDMSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.16851938833133565,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.29142235316565307,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.38838090458536106,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.46015261477316605,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.5135371242595798,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.5593603239360067,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.6024665852268808,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.6338844801383041,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.7056716918933786,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.7447408667239064,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.7681728542404886,
+        "numSwapsFactor": 5
+      }
+    ],
+    "caterpillars.samplers.CurveballBJDMSampler": [
+      {
+        "avgRelFreqDiff": 0,
+        "numSwapsFactor": 0
+      },
+      {
+        "avgRelFreqDiff": 0.447734274349687,
+        "numSwapsFactor": 0.25
+      },
+      {
+        "avgRelFreqDiff": 0.641838679040569,
+        "numSwapsFactor": 0.5
+      },
+      {
+        "avgRelFreqDiff": 0.739081339344445,
+        "numSwapsFactor": 0.75
+      },
+      {
+        "avgRelFreqDiff": 0.7713984681330476,
+        "numSwapsFactor": 1
+      },
+      {
+        "avgRelFreqDiff": 0.7867593025678421,
+        "numSwapsFactor": 1.25
+      },
+      {
+        "avgRelFreqDiff": 0.794473031788835,
+        "numSwapsFactor": 1.5
+      },
+      {
+        "avgRelFreqDiff": 0.7975811733603348,
+        "numSwapsFactor": 1.75
+      },
+      {
+        "avgRelFreqDiff": 0.7995729622826678,
+        "numSwapsFactor": 2
+      },
+      {
+        "avgRelFreqDiff": 0.8030758593456665,
+        "numSwapsFactor": 3
+      },
+      {
+        "avgRelFreqDiff": 0.8027220291422958,
+        "numSwapsFactor": 4
+      },
+      {
+        "avgRelFreqDiff": 0.8025124881935087,
+        "numSwapsFactor": 5
+      }
+    ]
+  }
+}

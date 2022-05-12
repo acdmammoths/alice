@@ -71,8 +71,9 @@ public class NumFreqItemsets {
 
         final Sampler[] samplers = {
             new NaiveBJDMSampler(), 
-            new CurveballBJDMSampler(), 
-            new GmmtSampler()};
+            new CurveballBJDMSampler()
+//                , new GmmtSampler()
+        };
 
         // create object for numFreqItemsetsStats
         final JSONArray numFreqItemsetsStats = new JSONArray();
