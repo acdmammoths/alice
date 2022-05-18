@@ -13,9 +13,7 @@ def analyze(result_path_A, result_path_B):
     B_is_subset_of_A = sig_freq_itemsets_B.issubset(sig_freq_itemsets_A)
     basename_A = os.path.basename(result_path_A)
     basename_B = os.path.basename(result_path_B)
-    print(f"Jaccard index: {jaccard_index}")
-    print(f"{basename_A} is subset of {basename_B}: {A_is_subset_of_B}")
-    print(f"{basename_B} is subset of {basename_A}: {B_is_subset_of_A}")
+    return len(sig_freq_itemsets_A), len(sig_freq_itemsets_B), jaccard_index, A_is_subset_of_B, B_is_subset_of_A
 
 
 def get_sig_freq_itemsets(result_path):
