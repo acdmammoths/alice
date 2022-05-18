@@ -72,7 +72,7 @@ public class Convergence {
 
         final List<Double> numSwapsFactors = Lists.newArrayList();
         // use more granular factors at first
-        for (double i = 0; i < 2; i += 0.25) {
+        for (double i = 0; i < 2; i += 0.15) {
             numSwapsFactors.add(i);
         }
         for (double i = 2; i <= Config.maxNumSwapsFactor; i++) {
@@ -109,10 +109,21 @@ public class Convergence {
                 System.out.println("\t\t" + JsonKeys.numSwaps + ": " + numSwaps);
 
                 System.out.println("\t\tGetting sample from matrix");
-                long start = System.currentTimeMillis();
-                final SparseMatrix sample
-                        = sampler.sample(startMatrix, numSwaps, rnd.nextLong(), new Timer(false));
-                System.out.println("Done in " + (System.currentTimeMillis() - start) + " (ms)");
+                final Timer timer = new Timer(true);
+                final SparseMatrix sample = sampler.sample(startMatrix, 
+                        numSwaps, 
+                        rnd.nextLong(), 
+                        timer);
+                
+                final long setupTime = timer.getSavedTime();
+                final double minStepTime = timer.getMin();
+                final double c10StepTime = timer.getPercentile(10);
+                final double q1StepTime = timer.getPercentile(25);
+                final double medianStepTime = timer.getPercentile(50);
+                final double q3StepTime = timer.getPercentile(75);
+                final double c90StepTime = timer.getPercentile(90);
+                final double maxStepTime = timer.getMax();
+
                 System.out.println("\t\tGetting sample itemset to support map");
                 final Map<Set<Integer>, Integer> sampleFreqItemsetToSup
                         = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup.keySet());
@@ -125,6 +136,14 @@ public class Convergence {
                 final JSONObject factorConvergenceStats = new JSONObject();
                 factorConvergenceStats.put(JsonKeys.numSwapsFactor, numSwapsFactor);
                 factorConvergenceStats.put(JsonKeys.avgRelFreqDiff, avgRelFreqDiff);
+                factorConvergenceStats.put(JsonKeys.setupTime, setupTime);
+                factorConvergenceStats.put(JsonKeys.minStepTime, minStepTime);
+                factorConvergenceStats.put(JsonKeys.c10StepTime, c10StepTime);
+                factorConvergenceStats.put(JsonKeys.q1StepTime, q1StepTime);
+                factorConvergenceStats.put(JsonKeys.medianStepTime, medianStepTime);
+                factorConvergenceStats.put(JsonKeys.q3StepTime, q3StepTime);
+                factorConvergenceStats.put(JsonKeys.c90StepTime, c90StepTime);
+                factorConvergenceStats.put(JsonKeys.maxStepTime, maxStepTime);
 
                 samplerConvergenceStats.put(factorConvergenceStats);
 

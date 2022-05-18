@@ -36,9 +36,11 @@ public class JsonKeys {
     public static final String runtimeStats = "runtimeStats";
     public static final String setupTime = "setupTime";
     public static final String minStepTime = "minStepTime";
+    public static final String c10StepTime = "c10StepTime";
     public static final String q1StepTime = "q1StepTime";
     public static final String medianStepTime = "medianStepTime";
     public static final String q3StepTime = "q3StepTime";
+    public static final String c90StepTime = "c90StepTime";
     public static final String maxStepTime = "maxStepTime";
     public static final String logNumEquivMatricesStats = "logNumEquivMatricesStats";
     public static final String saveCount = "saveCount";

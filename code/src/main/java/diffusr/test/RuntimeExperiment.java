@@ -72,26 +72,32 @@ public class RuntimeExperiment {
 
             final long setupTime = timer.getSavedTime();
             final double minStepTime = timer.getMin();
+            final double c10StepTime = timer.getPercentile(10);
             final double q1StepTime = timer.getPercentile(25);
             final double medianStepTime = timer.getPercentile(50);
             final double q3StepTime = timer.getPercentile(75);
+            final double c90StepTime = timer.getPercentile(90);
             final double maxStepTime = timer.getMax();
 
             System.out.println("\t" + JsonKeys.runtimeStats + ":");
             System.out.println("\t\t" + JsonKeys.setupTime + ": " + setupTime);
             System.out.println("\t\t" + JsonKeys.minStepTime + ": " + minStepTime);
+            System.out.println("\t\t" + JsonKeys.c10StepTime + ": " + c10StepTime);
             System.out.println("\t\t" + JsonKeys.q1StepTime + ": " + q1StepTime);
             System.out.println("\t\t" + JsonKeys.medianStepTime + ": " + medianStepTime);
             System.out.println("\t\t" + JsonKeys.q3StepTime + ": " + q3StepTime);
+            System.out.println("\t\t" + JsonKeys.c90StepTime + ": " + c90StepTime);
             System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
 
             // create object for samplerRuntimeStats
             final JSONObject samplerRuntimeStats = new JSONObject();
             samplerRuntimeStats.put(JsonKeys.setupTime, setupTime);
             samplerRuntimeStats.put(JsonKeys.minStepTime, minStepTime);
+            samplerRuntimeStats.put(JsonKeys.c10StepTime, c10StepTime);
             samplerRuntimeStats.put(JsonKeys.q1StepTime, q1StepTime);
             samplerRuntimeStats.put(JsonKeys.medianStepTime, medianStepTime);
             samplerRuntimeStats.put(JsonKeys.q3StepTime, q3StepTime);
+            samplerRuntimeStats.put(JsonKeys.c90StepTime, c90StepTime);
             samplerRuntimeStats.put(JsonKeys.maxStepTime, maxStepTime);
 
             runtimeStats.put(samplerName, samplerRuntimeStats);
