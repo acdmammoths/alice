@@ -123,6 +123,14 @@ public class Convergence {
                 final double q3StepTime = timer.getPercentile(75);
                 final double c90StepTime = timer.getPercentile(90);
                 final double maxStepTime = timer.getMax();
+                
+                System.out.println("\t\t" + JsonKeys.minStepTime + ": " + minStepTime);
+                System.out.println("\t\t" + JsonKeys.c10StepTime + ": " + c10StepTime);
+                System.out.println("\t\t" + JsonKeys.q1StepTime + ": " + q1StepTime);
+                System.out.println("\t\t" + JsonKeys.medianStepTime + ": " + medianStepTime);
+                System.out.println("\t\t" + JsonKeys.q3StepTime + ": " + q3StepTime);
+                System.out.println("\t\t" + JsonKeys.c90StepTime + ": " + c90StepTime);
+                System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
 
                 System.out.println("\t\tGetting sample itemset to support map");
                 final Map<Set<Integer>, Integer> sampleFreqItemsetToSup

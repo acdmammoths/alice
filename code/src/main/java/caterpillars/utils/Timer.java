@@ -71,14 +71,26 @@ public class Timer {
     }
 
     public double getMin() {
-        return this.times.getMin();
+        double min = this.times.getMin();
+        if (Double.compare(min, Double.NaN) != 0) {
+            return min;
+        }
+        return 0.0;
     }
 
     public double getMax() {
-        return this.times.getMax();
+        double max = this.times.getMax();
+        if (Double.compare(max, Double.NaN) != 0) {
+            return max;
+        }
+        return 0.0;
     }
 
     public double getPercentile(double percentile) {
-        return this.times.getPercentile(percentile);
+        double time = this.times.getPercentile(percentile);
+        if (Double.compare(time, Double.NaN) != 0) {
+            return time;
+        }
+        return 0.0;
     }
 }
