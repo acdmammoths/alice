@@ -4,18 +4,13 @@ import os
 import sys
 import json
 import pandas as pd
+from collections import defaultdict
 
 
 naive_sampler_key = "caterpillars.samplers.NaiveBJDMSampler"
 refined_sampler_key = "caterpillars.samplers.CurveballBJDMSampler"
 gmmt_sampler_key = "diffusr.samplers.GmmtSampler"
-sampler_to_algo_name = {
-    naive_sampler_key: "Naive",
-    refined_sampler_key: "Curveball",
-    gmmt_sampler_key: "GMMT",
-}
-
-swap_num_mult_title = "Num Swap Multiplier"
+swap_num_mult_title = "Num Step Multiplier"
 arsd_title = "Avg. Rel. Support Diff."
 algo_title = "Algorithm"
 
@@ -30,17 +25,17 @@ def get_convergence_df(result_path):
             naive_stats = convergence_stats[naive_sampler_key]
             sampler_to_arfds[naive_sampler_key] = get_sampler_arfds(naive_stats)
         except:
-            print(f'{naive_sampler_key} not found in file')
+            pass
         try:
             ref_stats = convergence_stats[refined_sampler_key]
             sampler_to_arfds[refined_sampler_key] = get_sampler_arfds(ref_stats)
         except:
-            print(f'{refined_sampler_key} not found in file') 
+            pass 
         try:
             gmmt_stats = convergence_stats[gmmt_sampler_key]
             sampler_to_arfds[gmmt_sampler_key] = get_sampler_arfds(gmmt_stats)
         except:
-            print(f'{gmmt_sampler_key} not found in file') 
+            pass 
 
         num_swaps_factors = [stats["numSwapsFactor"] for stats in naive_stats]
 
@@ -59,19 +54,27 @@ def get_args_str(result):
 
 
 def get_sampler_arfds(sampler_stats):
-    return [stats["avgRelFreqDiff"] for stats in sampler_stats]
+    return [[stats["avgRelFreqDiff"], 
+             stats["setupTime"],
+             stats["medianStepTime"],
+             stats["minStepTime"],
+             stats["maxStepTime"],
+             stats["totalTime"]] for stats in sampler_stats]
 
 
 def get_data_dict(sampler_to_arfds, num_swap_factors):
-    data_dict = {
-        swap_num_mult_title: num_swap_factors * len(sampler_to_arfds.keys()),
-        arsd_title: [],
-        algo_title: [],
-    }
+    data_dict = defaultdict(list)
+    data_dict[swap_num_mult_title] = num_swap_factors * len(sampler_to_arfds.keys())
+    
     for sampler, arfds in sampler_to_arfds.items():
         for arfd in arfds:
-            data_dict[algo_title].append(sampler_to_algo_name[sampler])
-            data_dict[arsd_title].append(arfd)
+            data_dict[algo_title].append(sampler)
+            data_dict[arsd_title].append(arfd[0])
+            data_dict["Setup"].append(arfd[1])
+            data_dict["Mean"].append(arfd[2])
+            data_dict["Min"].append(arfd[3])
+            data_dict["Max"].append(arfd[4])
+            data_dict["Total"].append(arfd[5])
     return data_dict
 
 

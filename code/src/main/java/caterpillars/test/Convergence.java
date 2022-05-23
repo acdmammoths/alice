@@ -110,11 +110,12 @@ public class Convergence {
 
                 System.out.println("\t\tGetting sample from matrix");
                 final Timer timer = new Timer(true);
+                final long start = System.currentTimeMillis();
                 final SparseMatrix sample = sampler.sample(startMatrix, 
                         numSwaps, 
                         rnd.nextLong(), 
                         timer);
-                
+                final long end = System.currentTimeMillis() - start;
                 final long setupTime = timer.getSavedTime();
                 final double minStepTime = timer.getMin();
                 final double c10StepTime = timer.getPercentile(10);
@@ -152,6 +153,7 @@ public class Convergence {
                 factorConvergenceStats.put(JsonKeys.q3StepTime, q3StepTime);
                 factorConvergenceStats.put(JsonKeys.c90StepTime, c90StepTime);
                 factorConvergenceStats.put(JsonKeys.maxStepTime, maxStepTime);
+                factorConvergenceStats.put(JsonKeys.totalTime, end);
 
                 samplerConvergenceStats.put(factorConvergenceStats);
 

@@ -1,0 +1,143 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          1559,
+          1559,
+          1559,
+          1559,
+          1559
+        ],
+        "2": [
+          589,
+          652,
+          668,
+          685,
+          752
+        ],
+        "3": [
+          1,
+          2,
+          3,
+          4,
+          11
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        2149,
+        2213,
+        2230,
+        2247,
+        2316
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "caterpillars.samplers.NaiveBJDMSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          1559,
+          1559,
+          1559,
+          1559,
+          1559
+        ],
+        "2": [
+          586,
+          649,
+          666,
+          683,
+          751
+        ],
+        "3": [
+          1,
+          2,
+          3,
+          4,
+          10
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        2150,
+        2210,
+        2227,
+        2244,
+        2312
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "caterpillars.samplers.CurveballBJDMSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          1559,
+          1559,
+          1559,
+          1559,
+          1559
+        ],
+        "2": [
+          577,
+          646,
+          662,
+          680,
+          760
+        ],
+        "3": [
+          1,
+          2,
+          3,
+          4,
+          10
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        2137,
+        2207,
+        2224,
+        2242,
+        2325
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "GmmtSampler"
+    }
+  ],
+  "runInfo": {
+    "freqItemsetLenToCount": {
+      "1": 1559,
+      "2": 1928,
+      "3": 488,
+      "4": 195,
+      "5": 63,
+      "6": 13,
+      "7": 1
+    },
+    "numFreqItemsets": 4247,
+    "timestamp": "2022-05-18T05:51:43.844"
+  }
+}

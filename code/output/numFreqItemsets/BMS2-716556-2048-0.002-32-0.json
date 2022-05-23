@@ -1,0 +1,80 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          573,
+          573,
+          573,
+          573,
+          573
+        ],
+        "2": [
+          104,
+          113,
+          115,
+          117,
+          125
+        ],
+        "3": [
+          12,
+          21,
+          23,
+          26,
+          36
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        695,
+        707,
+        711,
+        715,
+        734
+      ],
+      "numSamples": 2048,
+      "pvalue": 4.880429477794046E-4,
+      "sampler": "caterpillars.samplers.NaiveBJDMSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          573,
+          573,
+          573,
+          573,
+          573
+        ],
+        "2": [
+          26,
+          30,
+          31,
+          33,
+          37
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        599,
+        603,
+        604,
+        606,
+        610
+      ],
+      "numSamples": 2048,
+      "pvalue": 4.880429477794046E-4,
+      "sampler": "caterpillars.samplers.CurveballBJDMSampler"
+    }
+  ],
+  "runInfo": {
+    "freqItemsetLenToCount": {
+      "1": 573,
+      "2": 482,
+      "3": 714,
+      "4": 938,
+      "5": 664,
+      "6": 270,
+      "7": 42
+    },
+    "numFreqItemsets": 3683,
+    "timestamp": "2022-05-22T14:17:36.716"
+  }
+}

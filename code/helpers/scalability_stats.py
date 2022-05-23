@@ -8,11 +8,10 @@ import pandas as pd
 num_trans_title = "Number of transactions"
 step_time_title = "Step time (ms)"
 algo_title = "Algorithm"
-sampler_to_algo_name = {
-    "caterpillars.samplers.NaiveBJDMSampler": "Naive",
-    "caterpillars.samplers.CurveballBJDMSampler": "Curveball",
-    "diffusr.samplers.GmmtSampler": "GMMT",
-}
+
+samplers = ["caterpillars.samplers.NaiveBJDMSampler", 
+            "caterpillars.samplers.CurveballBJDMSampler",
+            "diffusr.samplers.GmmtSampler"]
 
 
 def get_scalability_df(results_dir, result_file):
@@ -24,7 +23,7 @@ def get_step_times_df(result_path):
     data = []
     with open(result_path) as f:
         result = json.load(f)
-        for sampler_name in sampler_to_algo_name.keys():
+        for sampler_name in samplers:
             try:
                 data.append(get_sampler_data(sampler_name, result))
             except:
@@ -39,7 +38,7 @@ def get_data_dict(result_path, result_file):
     )  # number of transactions is saved in 000s
     with open(result_path) as f:
         result = json.load(f)
-        for sampler_name in sampler_to_algo_name.keys():
+        for sampler_name in samplers:
             try:
                 add_sampler_data(data_dict, sampler_name, num_trans, result)
             except:
@@ -48,7 +47,7 @@ def get_data_dict(result_path, result_file):
 
 
 def add_sampler_data(data_dict, sampler_name, num_trans, result):
-    algo_name = sampler_to_algo_name[sampler_name]
+    algo_name = sampler_name
     step_times = get_sampler_step_times(sampler_name, result)
     for step_time in step_times:
         data_dict[algo_title].append(algo_name)
@@ -57,7 +56,7 @@ def add_sampler_data(data_dict, sampler_name, num_trans, result):
 
 
 def get_sampler_data(sampler_name, result):
-    sampler_data = list([sampler_to_algo_name[sampler_name]])
+    sampler_data = list([sampler_name])
     step_times = get_sampler_step_times(sampler_name, result)
     sampler_data.extend(step_times)
     return sampler_data
@@ -67,8 +66,10 @@ def get_sampler_step_times(sampler_name, result):
     step_times = []
     sampler_stats = result["runtimeStats"][sampler_name]
     step_times.append(sampler_stats["minStepTime"])
+    step_times.append(sampler_stats["c10StepTime"])
     step_times.append(sampler_stats["q1StepTime"])
     step_times.append(sampler_stats["medianStepTime"])
     step_times.append(sampler_stats["q3StepTime"])
+    step_times.append(sampler_stats["c90StepTime"])
     step_times.append(sampler_stats["maxStepTime"])
     return step_times

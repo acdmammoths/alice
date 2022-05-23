@@ -16,7 +16,6 @@ package diffusr.fpm;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import diffusr.fpm.AlgoNegFIN;
 import caterpillars.utils.MemoryLogger;
 import java.io.IOException;
 import java.util.HashMap;

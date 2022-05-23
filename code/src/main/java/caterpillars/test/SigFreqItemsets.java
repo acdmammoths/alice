@@ -34,8 +34,10 @@ public class SigFreqItemsets {
 
         CMDLineParser.parse(args);
         
-        final Sampler[] samplers = {new NaiveBJDMSampler(), new CurveballBJDMSampler()};
-//, new GmmtSampler()};
+        final Sampler[] samplers = {
+            new NaiveBJDMSampler(), 
+            new CurveballBJDMSampler(), 
+            new GmmtSampler()};
 
         for (Sampler sampler : samplers) {
             SigFreqItemsetMiner sigFreqItemsetMiner
