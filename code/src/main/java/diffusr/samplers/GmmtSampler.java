@@ -22,6 +22,7 @@ import caterpillars.structures.SparseMatrix;
 import caterpillars.structures.Edge;
 import caterpillars.utils.Timer;
 import java.util.Random;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  * This class implements {@link Sampler} using the Metropolis-Hastings method by
@@ -72,6 +73,63 @@ public class GmmtSampler implements Sampler {
             timer.stop();
         }
 
+        return matrix.getMatrix();
+    }
+
+    /**
+     * Samples a matrix from the uniform distribution of matrices with the same
+     * row and column margins as the original matrix by using the
+     * Metropolis-Hastings method by Gionis et al.
+     *
+     * @param inMatrix a {@link SparseMatrix} representation of the dataset
+     * @param numSwaps the number of swaps to make such that the chain
+     * sufficiently mixes
+     * @param seed the random seed
+     * @param timer a timer
+     * @param stats stores stats on BJDM 
+     * @return the sampled matrix
+     */
+    @Override
+    public SparseMatrix sample(SparseMatrix inMatrix, 
+            int numSwaps, 
+            long seed, 
+            Timer timer, 
+            DescriptiveStatistics stats) {
+        
+        final long setupTimeStart = System.currentTimeMillis();
+        final GmmtMatrix matrix = new GmmtMatrix(inMatrix);
+
+        final Random rnd = new Random(seed);
+        int matrixDegree = matrix.getDegree();
+
+        final long setupTime = System.currentTimeMillis() - setupTimeStart;
+        timer.save(setupTime);
+        
+        // starting BJDM vector
+        double[] start = matrix.getBJDMVector(true);
+
+        for (int i = 0; i < numSwaps; i++) {
+            timer.start();
+            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Edge swappableEdge1 = sne.swappableEdge1;
+            final Edge swappableEdge2 = sne.swappableEdge2;
+            final Edge newEdge1 = sne.newEdge1;
+            final Edge newEdge2 = sne.newEdge2;
+            
+            final int adjMatrixDegree
+                    = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
+            final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
+            if (rnd.nextDouble() <= acceptanceProb) {
+                matrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+                matrixDegree = adjMatrixDegree;
+            }
+            timer.stop();
+            
+            if (i % 100 == 0) {
+                double distance = matrix.getDistanceFrom(start, true);
+                stats.addValue(distance);
+            } 
+        }
         return matrix.getMatrix();
     }
 }

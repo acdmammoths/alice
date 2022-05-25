@@ -23,6 +23,7 @@ import caterpillars.structures.Vector;
 import caterpillars.structures.Edge;
 import caterpillars.utils.Timer;
 import java.util.Random;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /**
  * This class implements {@link Sampler} using the DiFfuSR-R (Refined) method.
@@ -117,5 +118,10 @@ public class RefinedSampler implements Sampler {
         }
 
         return matrix.getMatrix();
+    }
+
+    @Override
+    public SparseMatrix sample(SparseMatrix inMatrix, int numSwaps, long seed, Timer timer, DescriptiveStatistics stats) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

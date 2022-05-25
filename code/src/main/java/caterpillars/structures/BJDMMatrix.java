@@ -502,20 +502,6 @@ public class BJDMMatrix extends Matrix {
 
     /**
      * 
-     * @return BJDM of bipartite graph represented by this matrix
-     */
-    public Map<Integer, Map<Integer, Integer>> getBJDM() {
-        Map<Integer, Map<Integer, Integer>> BJDM = Maps.newHashMap();
-        edges.stream().forEach(edge -> {
-            Map<Integer, Integer> entry = BJDM.getOrDefault(rowSums[edge.row], Maps.newHashMap());
-            entry.put(colSums[edge.col], entry.getOrDefault(colSums[edge.col], 0) + 1);
-            BJDM.put(rowSums[edge.row], entry);
-        });
-        return BJDM;
-    }
-
-    /**
-     * 
      * @param swappableEdge1 first edge to swap
      * @param swappableEdge2 second edge to swap
      * @return probability of sampling the adjacent matrix where the two edges are swapped.

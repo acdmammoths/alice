@@ -3,6 +3,7 @@ package diffusr.samplers;
 
 import caterpillars.structures.SparseMatrix;
 import caterpillars.utils.Timer;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -26,4 +27,10 @@ import caterpillars.utils.Timer;
 public interface Sampler {
 
     SparseMatrix sample(SparseMatrix inMatrix, int numSwaps, long seed, Timer timer);
+    
+    SparseMatrix sample(SparseMatrix inMatrix, 
+            int numSwaps, 
+            long seed, 
+            Timer timer, 
+            DescriptiveStatistics stats);
 }

@@ -19,12 +19,18 @@ package caterpillars.structures;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.IntStream;
+import org.apache.commons.math3.ml.distance.EarthMoversDistance;
+import org.javatuples.Pair;
 
 /**
  * A wrapper class around an instance of a {@link SparseMatrix} and useful data
@@ -392,6 +398,67 @@ public class Matrix {
         // update matrix and edges
         // call this last so that the swap doesn't update the Vector instances first
         this.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+    }
+    
+    /**
+     * 
+     * @return BJDM of bipartite graph represented by this matrix
+     */
+    public Map<Integer, Map<Integer, Integer>> getBJDM() {
+        Map<Integer, Map<Integer, Integer>> BJDM = Maps.newHashMap();
+        edges.stream().forEach(edge -> {
+            Map<Integer, Integer> entry = BJDM.getOrDefault(rowSums[edge.row], Maps.newHashMap());
+            entry.put(colSums[edge.col], entry.getOrDefault(colSums[edge.col], 0) + 1);
+            BJDM.put(rowSums[edge.row], entry);
+        });
+        return BJDM;
+    }
+    
+    /**
+     * 
+     * @param normalize if the BJDM matrix should be divided by edges.size()
+     * @return BJDM of bipartite graph represented by this matrix
+     */
+    public double[] getBJDMVector(boolean normalize) {
+        Map<Pair<Integer, Integer>, Integer> BJDM = Maps.newHashMap();
+        int maxRowSum = 0;
+        int maxColSum = 0;
+        for (Edge edge : edges) {
+            Pair<Integer, Integer> p = new Pair<>(rowSums[edge.row], colSums[edge.col]);
+            BJDM.put(p, BJDM.getOrDefault(p, 0) + 1);
+            maxRowSum = Math.max(maxRowSum, rowSums[edge.row]);
+            maxColSum = Math.max(maxColSum, colSums[edge.col]);
+        }
+        List<Entry<Pair<Integer, Integer>, Integer>> entries = Lists.newArrayList(BJDM.entrySet());
+        Collections.sort(entries, 
+                (Entry<Pair<Integer, Integer>, Integer> o1, Entry<Pair<Integer, Integer>, Integer> o2) -> {
+                    int compF = o1.getKey().getValue0().compareTo(o2.getKey().getValue0());
+                    if (compF != 0) {
+                        return compF;
+                    }
+                    return o1.getKey().getValue1().compareTo(o2.getKey().getValue1());
+                });
+        double[][] M = new double[maxRowSum][maxColSum];
+        IntStream.range(0, entries.size()).forEach(i -> {
+            int r = entries.get(i).getKey().getValue0();
+            int c = entries.get(i).getKey().getValue1();
+            
+            M[r-1][c-1] = entries.get(i).getValue();
+            if (normalize) {
+                M[r-1][c-1] /= 1. * edges.size();
+            }
+        });
+        double[] bjdmV = new double[maxRowSum * maxColSum];
+        for (int i = 0; i < maxRowSum; i++) {
+            System.arraycopy(M[i], 0, bjdmV, i * maxRowSum, maxColSum);
+        }
+        return bjdmV;
+    }
+    
+    public double getDistanceFrom(double[] otherBJDM, boolean normalize) {
+        double[] thisBJDM = getBJDMVector(normalize);
+        EarthMoversDistance emd = new EarthMoversDistance();
+        return emd.compute(thisBJDM, otherBJDM);
     }
     
 }

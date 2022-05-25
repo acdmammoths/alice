@@ -9,6 +9,7 @@ import caterpillars.structures.Edge;
 import diffusr.samplers.Sampler;
 import caterpillars.utils.Timer;
 import java.util.Random;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class NaiveBJDMSampler implements Sampler {
 
@@ -132,5 +133,73 @@ public class NaiveBJDMSampler implements Sampler {
 
             logNumEquivMatrices = logNumEquivAdjMatrices;
         }
+    }
+
+    @Override
+    public SparseMatrix sample(SparseMatrix inMatrix, 
+            int numSwaps, 
+            long seed, 
+            Timer timer, 
+            DescriptiveStatistics stats) {
+        
+        final long setupTimeStart = System.currentTimeMillis();
+
+        final BJDMMatrix matrix = new BJDMMatrix(inMatrix);
+
+        final Random rnd = new Random(seed);
+
+        double logNumEquivMatrices = matrix.getLogNumEquivMatrices();
+
+        final long setupTime = System.currentTimeMillis() - setupTimeStart;
+        timer.save(setupTime);
+        
+        // starting BJDM vector
+        double[] start = matrix.getBJDMVector(true);
+
+        for (int i = 0; i < numSwaps; i++) {
+            timer.start();
+
+            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            
+            if (sne == null) {
+                continue;
+            }
+            
+            final Edge swappableEdge1 = sne.swappableEdge1;
+            final Edge swappableEdge2 = sne.swappableEdge2;
+            final Edge newEdge1 = sne.newEdge1;
+            final Edge newEdge2 = sne.newEdge2;
+            final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
+            final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
+            final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
+            final Vector newRow1 = newRows[0];
+            final Vector newRow2 = newRows[1];
+
+            final double logNumEquivAdjMatrices
+                    = matrix.getLogNumEquivAdjMatrices(
+                            logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
+
+            final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
+            final double acceptanceProb = Math.min(1, frac);
+
+            if (rnd.nextDouble() <= acceptanceProb) {
+                matrix.transition(
+                        swappableEdge1, swappableEdge2,
+                        newEdge1, newEdge2,
+                        swappableRow1, swappableRow2,
+                        newRow1, newRow2);
+
+                logNumEquivMatrices = logNumEquivAdjMatrices;
+            }
+            timer.stop();
+            
+            if (i % 100 == 0) {
+                double distance = matrix.getDistanceFrom(start, true);
+                stats.addValue(distance);
+            } 
+        }
+
+        return matrix.getMatrix();
+    
     }
 }

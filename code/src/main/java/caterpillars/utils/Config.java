@@ -5,15 +5,15 @@ import caterpillars.config.DatasetNames;
 public class Config {
     
     public static String datasetsDir = "datasets";
-    public static String datasetPath = "datasets/" + DatasetNames.mushrooms;
+    public static String datasetPath = "datasets/" + "foodmart.txt";
     public static String resultsDir = "datasets";
     public static String samplerType;
-    public static int numSwaps = 193568 /*3629404*/;
+    public static int numSwaps = 18319 /*retail=193568 pumsb=3629404*/;
     public static double maxNumSwapsFactor = 5;
-    public static int numSamples = 1568;
+    public static int numSamples = 100;
     public static int numEstSamples = 1568;
     public static int numWySamples = 128;
-    public static double minFreq = 0.3 /* retail=0.002, pumsb=0.9*/;
+    public static double minFreq = 0.002 /* retail=0.002, pumsb=0.9*/;
     public static double fwer = 0.05;
     public static int numThreads = 8;
     public static long seed = 0;
