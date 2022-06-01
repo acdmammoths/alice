@@ -11,12 +11,14 @@ def analyze(result_path_A, result_path_B):
     sig_freq_itemsets_B = get_sig_freq_itemsets(result_path_B)
     if len(sig_freq_itemsets_A) > 0 or len(sig_freq_itemsets_B) > 0:
         jaccard_index = get_jaccard_index(sig_freq_itemsets_A, sig_freq_itemsets_B)
+        A_diff_B = get_disapp_index(sig_freq_itemsets_A,sig_freq_itemsets_B)
+        B_diff_A = get_disapp_index(sig_freq_itemsets_B,sig_freq_itemsets_A)
         A_is_subset_of_B = sig_freq_itemsets_A.issubset(sig_freq_itemsets_B)
         B_is_subset_of_A = sig_freq_itemsets_B.issubset(sig_freq_itemsets_A)
     else:
-        jaccard_index = 1
+        jaccard_index = B_diff_A = A_diff_B = 1
         A_is_subset_of_B = B_is_subset_of_A = True
-    return len(sig_freq_itemsets_A), len(sig_freq_itemsets_B), jaccard_index, A_is_subset_of_B, B_is_subset_of_A
+    return len(sig_freq_itemsets_A), len(sig_freq_itemsets_B), jaccard_index, A_diff_B, B_diff_A, A_is_subset_of_B, B_is_subset_of_A
 
 
 def get_sig_freq_itemsets(result_path):
@@ -49,6 +51,12 @@ def get_jaccard_index(set_A, set_B):
     intersection_size = len(set_A.intersection(set_B))
     union_size = len(set_A.union(set_B))
     return intersection_size / union_size
+
+
+def get_disapp_index(orig, sampled):
+    diff = set(orig)
+    diff_size = len(diff.difference(sampled))
+    return diff_size / len(diff)
 
 
 if __name__ == "__main__":

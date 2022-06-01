@@ -450,7 +450,7 @@ public class Matrix {
         });
         double[] bjdmV = new double[maxRowSum * maxColSum];
         for (int i = 0; i < maxRowSum; i++) {
-            System.arraycopy(M[i], 0, bjdmV, i * maxRowSum, maxColSum);
+            System.arraycopy(M[i], 0, bjdmV, i * maxColSum, maxColSum);
         }
         return bjdmV;
     }
