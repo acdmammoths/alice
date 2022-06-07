@@ -33,9 +33,11 @@ def get_step_times_df(result_path):
 
 def get_data_dict(result_path, result_file):
     data_dict = {num_trans_title: [], step_time_title: [], algo_title: []}
-    num_trans = (
-        int(result_file.split("-")[1]) * 1000
-    )  # number of transactions is saved in 000s
+    num_trans = 0
+    if 'synthetic' in result_file:
+        num_trans = (
+            int(result_file.split("-")[1]) * 1000
+        )  # number of transactions is saved in 000s
     with open(result_path) as f:
         result = json.load(f)
         for sampler_name in samplers:

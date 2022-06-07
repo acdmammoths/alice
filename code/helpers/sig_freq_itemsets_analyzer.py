@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import pandas as pd
+from collections import defaultdict
 
 
 def analyze(result_path_A, result_path_B):
@@ -27,8 +28,7 @@ def get_sig_freq_itemsets(result_path):
         result = json.load(f)
         sig_freq_itemsets_dict = result["itemsets"]["sigFreqItemsets"]
         for sig_freq_itemset_str in sig_freq_itemsets_dict.keys():
-            sig_freq_itemset_list = sig_freq_itemset_str.split()
-            sig_freq_itemset_list.sort()
+            sig_freq_itemset_list = sorted([int(x) for x in sig_freq_itemset_str.split()])
             sig_freq_itemset_tup = tuple(sig_freq_itemset_list)
             sig_freq_itemsets.add(sig_freq_itemset_tup)
     return sig_freq_itemsets
@@ -44,6 +44,28 @@ def get_freq_itemsets(result_path, db_name):
             rows.append([db_name, freq_itemset_str, freq_itemset_len, lst["sup"]])
     df = pd.DataFrame(rows)
     df.columns = ['DataSet', 'FI', 'Size', 'Support']
+    return df
+
+
+def get_itemsets_stats(result_path):
+    rows = []
+    with open(result_path) as f:
+        result = json.load(f)
+        sig_itemsets = result["itemsets"]["sigFreqItemsets"]
+        fr_itemsets = result["itemsets"]["sigFreqItemsets"]
+        
+        sups = defaultdict(list)
+        for k,v in sig_itemsets.items():
+            # itemset, size, support in samples
+            sups[k] = list([k, len(k.strip().split()), int(v['sup'])])
+        for k,v in fr_itemsets.items():
+            if k in sups:
+                sups[k].append(int(v['sup']))
+            else:
+                sups[k] = list([k, len(k.strip().split()), 0, int(v['sup'])])
+    rows = list(sups.values())    
+    df = pd.DataFrame(rows)
+    df.columns = ['Itemset', 'Size', 'SSup', 'Sup']
     return df
 
 
