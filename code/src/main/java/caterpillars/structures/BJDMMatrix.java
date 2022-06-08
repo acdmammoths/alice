@@ -36,12 +36,18 @@ public class BJDMMatrix extends Matrix {
      */
     private final Map<Integer, List<Integer>> colSumToEqColSumCols;
     
+    /**
+     * ids of rows such that there exists at least two rows with the same rowSum
+     */
     private final List<Integer> samplableRows;
     
+    /**
+     * ids of cols such that there exists at least two cols with the same colSum
+     */
     private final List<Integer> samplableCols;
 
     /**
-     * Creates an instance of {@link NaiveBJDMMatrix} from a 0-1
+     * Creates an instance of {@link BJDMMatrix} from a 0-1
      * {@link SparseMatrix} by initializing necessary data structures from the
      * matrix.
      *
@@ -56,7 +62,7 @@ public class BJDMMatrix extends Matrix {
             incNumEqRows(row);
             addEqRowSumUniqueRow(rowSum, row);
         }
-        // initialize col sum map and samplable columns
+        // initialize row sum map and samplable rows
         this.rowSumToEqRowSumRows = IntStream.range(0, rowSums.length)
                 .boxed()
                 .collect(Collectors.groupingBy(r -> rowSums[r], Collectors.toList()));
@@ -194,6 +200,20 @@ public class BJDMMatrix extends Matrix {
                 - Math.log1p(this.getNumEqRows(newRow2));
     }
     
+    /**
+     * Gets the log of the number of matrices in the chain that are equivalent
+     * to the adjacent matrix (i.e., matrices that represent the same dataset as
+     * the adjacent matrix).Reference: Section A.2 in the paper.
+     *
+     * @param logNumEquivMatrices the log of the number of equivalent matrices
+     * for the current matrix
+     * @param swappableRow1 the first swappable row
+     * @param swappableRow2 the second swappable row
+     * @param newRow1 the first new row
+     * @param newRow2 the second new row
+     * @param rowToEqRows for each row, the ids of the rows equivalent to that row
+     * @return the log of the number of equivalent adjacent matrices
+     */
     public double getLogNumEquivAdjMatrices(
             double logNumEquivMatrices,
             Vector swappableRow1,
@@ -303,7 +323,7 @@ public class BJDMMatrix extends Matrix {
      * 
      * @param rnd
      * @param rowSwap whether we swap rows or columns
-     * @return 
+     * @return the two edges to swap and the new edges after the swap
      */
     public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd, boolean rowSwap) {
         // sample rows or columns
@@ -527,6 +547,13 @@ public class BJDMMatrix extends Matrix {
         return prob;
     }
 
+    /**
+     * 
+     * @param sumToEqSum for each sum, ids of rows/cols with that sum
+     * @param e1 first row/col
+     * @param e2 second row/col
+     * @return probability of selecting e1 and e2
+     */
     private double getProb(Map<Integer, List<Integer>> sumToEqSum,
             Vector e1,
             Vector e2) {
@@ -542,6 +569,12 @@ public class BJDMMatrix extends Matrix {
         return 1. / (2. * sumSwappablePairs * H12);
     }
     
+    /**
+     * 
+     * @param n number of elements in the universe
+     * @param k number of element in the combination
+     * @return number of distinct combinations of k elements from the universe
+     */
     private int getNumCombinations(int n, int k) {
         if (n < k) {
             return 0;
@@ -610,6 +643,13 @@ public class BJDMMatrix extends Matrix {
         return prob;
     }
 
+    /**
+     * 
+     * @param sumToEqSum for each sum, ids of rows/cols with that sum
+     * @param union int
+     * @param l int
+     * @return probability of selecting l given union
+     */
     private double getCurveBallProb(Map<Integer, List<Integer>> sumToEqSum, int union, int l) {
         int sumSwappablePairs = sumToEqSum.values()
                 .stream()

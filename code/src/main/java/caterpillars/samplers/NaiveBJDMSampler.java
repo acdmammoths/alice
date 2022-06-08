@@ -11,6 +11,11 @@ import caterpillars.utils.Timer;
 import java.util.Random;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+/**
+ * ALICE-A Sampler.
+ * 
+ * @author giulia
+ */
 public class NaiveBJDMSampler implements Sampler {
 
     /**
@@ -135,6 +140,15 @@ public class NaiveBJDMSampler implements Sampler {
         }
     }
 
+    /**
+     * @param inMatrix a {@link SparseMatrix} representation of the dataset
+     * @param numSwaps the number of swaps to make such that the chain
+     * sufficiently mixes
+     * @param seed the random seed
+     * @param timer a timer
+     * @param stats stores the distances between consecutive BJDMs.
+     * @return the matrix representation of the sampled dataset
+     */
     @Override
     public SparseMatrix sample(SparseMatrix inMatrix, 
             int numSwaps, 

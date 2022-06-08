@@ -285,7 +285,7 @@ public class SigFreqItemsetMiner {
         final ExecutorService pool = Executors.newFixedThreadPool(this.numThreads);
 
         for (int i = 0; i < numSamples; i++) {
-            final long seed = rnd.nextLong();
+            final long thisSeed = rnd.nextLong();
             final String samplePath = this.paths.getSamplePath(tag, i);
             final String freqItemsetsPath = this.paths.getFreqItemsetsPath(tag, i);
             final SampleAndMineTask sampleTask
@@ -294,7 +294,7 @@ public class SigFreqItemsetMiner {
                             this.transformer,
                             matrix,
                             this.numSwaps,
-                            seed,
+                            thisSeed,
                             this.minFreq,
                             samplePath,
                             freqItemsetsPath);

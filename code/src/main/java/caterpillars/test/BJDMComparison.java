@@ -21,7 +21,6 @@ import caterpillars.config.Paths;
 import caterpillars.config.JsonKeys;
 import caterpillars.utils.JsonFile;
 import caterpillars.config.Delimiters;
-import caterpillars.samplers.CurveballBJDMSampler;
 import caterpillars.samplers.NaiveBJDMSampler;
 import caterpillars.samplers.SampleTask;
 import caterpillars.structures.SparseMatrix;
@@ -29,34 +28,19 @@ import caterpillars.utils.CMDLineParser;
 import caterpillars.utils.Config;
 import caterpillars.utils.Timer;
 import caterpillars.utils.Transformer;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import diffusr.fpm.FreqItemsetMiner;
-import diffusr.fpm.SampleAndMineTask;
-import diffusr.fpm.SampleAndMiner;
 import diffusr.samplers.Sampler;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
+ * Computes the distances between consecutive BJDM matrices in the Markov chain
  */
 public class BJDMComparison {
 

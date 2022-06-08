@@ -19,7 +19,6 @@ package caterpillars.structures;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -314,6 +313,13 @@ public class Matrix {
         rowToNumEqRows.remove(row);
     }
 
+    /**
+     * Increment the number of equal rows for the input row by 1.
+     * 
+     * @param row the input row
+     * @return true if the row was not aleady present in the map of equal rows;
+     * false otherwise
+     */
     public boolean incNumEqRows(Vector row) {
         return setNumEqRows(row, getNumEqRows(row) + 1);
     }
@@ -331,9 +337,15 @@ public class Matrix {
             throw new IllegalArgumentException(
                     "The number of rows equal to row " + row + " is " + num + ", which is non positive.");
         }
-        this.setNumEqRows(row, num - 1);
+        setNumEqRows(row, num - 1);
     }
     
+    /**
+     * Overwrites the entries of the map storing the number of equal 
+     * rows for each row, with the entries in the input map.
+     * 
+     * @param rowsToEqRows number of equal rows for each row
+     */
     public void replaceNumEqRows(Map<Vector, Integer> rowsToEqRows) {
         rowsToEqRows.entrySet().stream()
                 .forEach(entry -> {
@@ -455,6 +467,12 @@ public class Matrix {
         return bjdmV;
     }
     
+    /**
+     * 
+     * @param otherBJDM other BJDM vector
+     * @param normalize whether the BJDM vector should be normalized
+     * @return earth's mover distance between the BJDM of this matrix and the other
+     */
     public double getDistanceFrom(double[] otherBJDM, boolean normalize) {
         double[] thisBJDM = getBJDMVector(normalize);
         EarthMoversDistance emd = new EarthMoversDistance();

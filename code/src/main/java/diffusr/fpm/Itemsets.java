@@ -47,11 +47,9 @@ public class Itemsets {
         final Map<Set<Integer>, Integer> freqItemsetToSum
                 = getFreqItemsetToSumMap(paths, freqItemsetsPath, numEstSamples);
         final Collection<Integer> sums = freqItemsetToSum.values();
-        int minSum;
-        if (sums.size() != 0) {
+        int minSum = 0;
+        if (!sums.isEmpty()) {
             minSum = Collections.min(sums);
-        } else {
-            minSum = 0;
         }
         return getPvalue(minSum, numEstSamples);
     }
@@ -63,7 +61,7 @@ public class Itemsets {
      * @param paths an object to get necessary paths
      * @param freqItemsetToSup a map where each key is a frequent itemset and
      * the value is the support for the frequent itemset
-     * @param numEstSampls the number of samples used to estimate p-values
+     * @param numEstSamples the number of samples used to estimate p-values
      * @return a map where each key is a frequent itemset and the value is the
      * p-value for the frequent itemset.
      */
@@ -89,7 +87,7 @@ public class Itemsets {
      * @param paths an object to get necessary paths
      * @param freqItemsetToSup a map where each key is a frequent itemset and
      * the value is the support for the frequent itemset
-     * @param numEstSampls the number of samples used to estimate p-values
+     * @param numEstSamples the number of samples used to estimate p-values
      * @return a map where each key is a frequent itemset in the input dataset
      * and the value is the number of estimate (sampled) datasets where the
      * itemset has a support no less than its support in the input dataset
@@ -133,7 +131,7 @@ public class Itemsets {
      *
      * @param paths an object to get necessary paths
      * @param freqItemsetsPath the path to the set of frequent itemsets
-     * @param numEstSampls the number of samples used to estimate p-values
+     * @param numEstSamples the number of samples used to estimate p-values
      * @return a map where each key is a frequent itemset in the input dataset
      * and the value is the number of estimate (sampled) datasets where the
      * itemset has a support no less than its support in the input dataset
@@ -148,7 +146,7 @@ public class Itemsets {
      * Gets a map where each key is a frequent itemset and the value is the
      * support for the frequent itemset.
      *
-     * @param freqItemsetPath the path for the set of frequent itemsets
+     * @param freqItemsetsPath the path for the set of frequent itemsets
      * @return a map where each key is a frequent itemset and the value is the
      * support for the frequent itemset.
      */
@@ -181,6 +179,7 @@ public class Itemsets {
      *
      * @param sum the sum
      * @param numEstSamples the number of samples to estimate the p-value
+     * @return estimated p-value
      */
     public static double getPvalue(int sum, int numEstSamples) {
         return (double) (1 + sum) / (numEstSamples + 1);

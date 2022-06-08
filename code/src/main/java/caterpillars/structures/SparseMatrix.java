@@ -173,6 +173,7 @@ public class SparseMatrix {
      *
      * @param r1 the first row index
      * @param r2 the second row index
+     * @return dot product between the values of rows r1 and r2
      */
     public int getRowDotProd(int r1, int r2) {
         int shorter;
