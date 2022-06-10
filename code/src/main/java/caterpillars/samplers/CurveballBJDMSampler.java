@@ -41,7 +41,7 @@ public class CurveballBJDMSampler implements Sampler {
 
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
-
+        int actualSwaps = 0;
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
             final SwappableLists snes = matrix.getSwappablesNewEdges(rnd);
@@ -92,7 +92,7 @@ public class CurveballBJDMSampler implements Sampler {
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
-                
+                actualSwaps ++;
                 if (snes.rowBased) {
                     // update num equal rows
                     matrix.decNumEqRows(matrix.getRowInstance(snes.swappable1));
@@ -143,6 +143,7 @@ public class CurveballBJDMSampler implements Sampler {
             }
             timer.stop();
         }
+        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
 

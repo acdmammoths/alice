@@ -359,10 +359,13 @@ public class SigFreqItemsetMiner {
 
         for (Entry<Set<Integer>, Double> entry : freqItemsetToPvalue.entrySet()) {
             final double pvalue = entry.getValue();
+            
             if (pvalue <= this.adjustedCriticalValue) {
                 final Set<Integer> itemset = entry.getKey();
                 final int sup = this.freqItemsetToSup.get(itemset);
                 this.sigFreqItemsetToSupAndPvalue.put(itemset, new SupAndPvalue(sup, pvalue));
+            } else {
+                System.out.println(entry.getKey().toString() + " := " + pvalue + " > " +  this.adjustedCriticalValue);
             }
         }
         System.out.println(

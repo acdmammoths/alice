@@ -37,7 +37,8 @@ public class SigFreqItemsets {
         final Sampler[] samplers = {
             new NaiveBJDMSampler(), 
             new CurveballBJDMSampler(), 
-            new GmmtSampler()};
+            new GmmtSampler()
+        };
 
         for (Sampler sampler : samplers) {
             SigFreqItemsetMiner sigFreqItemsetMiner

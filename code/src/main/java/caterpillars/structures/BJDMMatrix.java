@@ -421,6 +421,11 @@ public class BJDMMatrix extends Matrix {
         if (num1 == 0) {
             return null;
         }
+//        System.out.println("RowSwap="+ rowSwap + 
+//                " , Degree=" + sums[pair.getValue0()] + 
+//                " El1=" + pair.getValue0() +
+//                " El2=" + pair.getValue1() +
+//                " |L|=" + num1);
         Set<Integer> tmp = Sets.newHashSet(S1);
         tmp.addAll(S2);
         List<Integer> total = Lists.newArrayList(tmp);
@@ -681,6 +686,7 @@ public class BJDMMatrix extends Matrix {
         assert(U.size()==L.size());
         List<Integer> new1 = Lists.newArrayList(L);
         List<Integer> new2 = Lists.newArrayList(U);
+//        System.out.println("Actual Swaps=" + new1.size());
         List<SwappableAndNewEdges> E = Lists.newArrayList();
         for (int c = 0; c < new1.size(); c++) {
             if (swappables.rowBased) {
