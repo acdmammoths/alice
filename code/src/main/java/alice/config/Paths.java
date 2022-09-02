@@ -17,7 +17,7 @@ package alice.config;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;

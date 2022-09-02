@@ -1,4 +1,4 @@
-package diffusr.structures;
+package alice.structures;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -17,9 +17,6 @@ package diffusr.structures;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import alice.helpers.SwappableAndNewEdges;
-import alice.structures.SparseMatrix;
-import alice.structures.Edge;
-import alice.structures.Matrix;
 import java.util.Random;
 
 /**

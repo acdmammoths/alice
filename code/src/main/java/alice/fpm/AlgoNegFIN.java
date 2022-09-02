@@ -1,4 +1,4 @@
-package diffusr.fpm;
+package alice.fpm;
 
 
 import alice.utils.MemoryLogger;

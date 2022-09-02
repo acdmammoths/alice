@@ -1,4 +1,4 @@
-package diffusr.samplers;
+package alice.samplers;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -17,7 +17,7 @@ package diffusr.samplers;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import alice.helpers.SwappableAndNewEdges;
-import diffusr.structures.GmmtMatrix;
+import alice.structures.GmmtMatrix;
 import alice.structures.SparseMatrix;
 import alice.structures.Edge;
 import alice.utils.Timer;

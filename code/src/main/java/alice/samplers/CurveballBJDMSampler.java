@@ -6,7 +6,6 @@ import alice.structures.SparseMatrix;
 import alice.helpers.LogNumEquivMatricesTracker;
 import alice.helpers.SwappableLists;
 import alice.structures.Vector;
-import diffusr.samplers.Sampler;
 import alice.utils.Timer;
 import com.google.common.collect.Maps;
 import java.util.List;

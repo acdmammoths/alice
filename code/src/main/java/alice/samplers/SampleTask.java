@@ -2,7 +2,6 @@ package alice.samplers;
 
 
 import alice.structures.SparseMatrix;
-import diffusr.samplers.Sampler;
 import alice.utils.Timer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 

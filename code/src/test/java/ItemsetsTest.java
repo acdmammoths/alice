@@ -1,6 +1,6 @@
 import alice.config.Paths;
-import diffusr.fpm.Itemsets;
-import diffusr.fpm.FreqItemsetMiner;
+import alice.fpm.Itemsets;
+import alice.fpm.FreqItemsetMiner;
 import alice.config.DatasetNames;
 import alice.config.Delimiters;
 import alice.utils.Config;

@@ -3,7 +3,7 @@ import alice.config.Paths;
 import alice.config.DatasetNames;
 import alice.samplers.BJDMSampler;
 import alice.utils.Config;
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 import java.util.Random;

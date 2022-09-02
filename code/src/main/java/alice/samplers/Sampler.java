@@ -1,5 +1,9 @@
-package diffusr.fpm;
+package alice.samplers;
 
+
+import alice.structures.SparseMatrix;
+import alice.utils.Timer;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -17,15 +21,16 @@ package diffusr.fpm;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+/**
+ * An interface for different dataset samplers to implement.
+ */
+public interface Sampler {
 
-/** A class to store a support and p-value pair. */
-public class SupAndPvalue {
-
-    final int sup;
-    final double pvalue;
-
-    public SupAndPvalue(int sup, double pvalue) {
-        this.sup = sup;
-        this.pvalue = pvalue;
-    }
+    SparseMatrix sample(SparseMatrix inMatrix, int numSwaps, long seed, Timer timer);
+    
+    SparseMatrix sample(SparseMatrix inMatrix, 
+            int numSwaps, 
+            long seed, 
+            Timer timer, 
+            DescriptiveStatistics stats);
 }

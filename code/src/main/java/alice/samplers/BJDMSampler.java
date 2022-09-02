@@ -6,7 +6,6 @@ import alice.structures.SparseMatrix;
 import alice.helpers.LogNumEquivMatricesTracker;
 import alice.structures.Vector;
 import alice.structures.Edge;
-import diffusr.samplers.Sampler;
 import alice.utils.Timer;
 import java.util.Random;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;

@@ -1,4 +1,4 @@
-package diffusr.fpm;
+package alice.fpm;
 
 /*
  * The DiFfuSR algorithm for mining significant frequent itemsets.
@@ -23,7 +23,7 @@ import alice.config.Paths;
 import alice.config.JsonKeys;
 import alice.utils.Config;
 import alice.utils.JsonFile;
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import alice.utils.Transformer;
 import java.time.LocalDateTime;
 import java.util.Arrays;

@@ -16,14 +16,14 @@ package alice.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import diffusr.samplers.GmmtSampler;
+import alice.samplers.GmmtSampler;
 import alice.config.Paths;
 import alice.samplers.CurveballBJDMSampler;
 import alice.samplers.BJDMSampler;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
-import diffusr.fpm.SigFreqItemsetMiner;
-import diffusr.samplers.Sampler;
+import alice.fpm.SigFreqItemsetMiner;
+import alice.samplers.Sampler;
 
 /**
  * This class runs the significant frequent itemsets experiment.

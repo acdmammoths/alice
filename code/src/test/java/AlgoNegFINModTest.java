@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import diffusr.fpm.AlgoNegFINMod;
-import diffusr.fpm.AlgoNegFIN;
+import alice.fpm.AlgoNegFINMod;
+import alice.fpm.AlgoNegFIN;
 import alice.config.Paths;
-import diffusr.fpm.Itemsets;
+import alice.fpm.Itemsets;
 import alice.config.DatasetNames;
 import alice.utils.Config;
 import java.io.IOException;

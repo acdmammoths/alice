@@ -3,7 +3,7 @@ package alice.config;
 
 import alice.samplers.CurveballBJDMSampler;
 import alice.samplers.BJDMSampler;
-import diffusr.samplers.GmmtSampler;
+import alice.samplers.GmmtSampler;
 
 /*
  * Copyright (C) 2022 Alexander Lee, Giulia Preti, and Matteo Riondato

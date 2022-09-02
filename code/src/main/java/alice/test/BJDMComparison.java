@@ -16,7 +16,7 @@ package alice.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import diffusr.samplers.GmmtSampler;
+import alice.samplers.GmmtSampler;
 import alice.config.Paths;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
@@ -29,7 +29,7 @@ import alice.utils.Config;
 import alice.utils.Timer;
 import alice.utils.Transformer;
 import com.google.common.collect.Maps;
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;

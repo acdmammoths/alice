@@ -1,4 +1,4 @@
-package diffusr.fpm;
+package alice.fpm;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato

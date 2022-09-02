@@ -1,8 +1,8 @@
-package diffusr.fpm;
+package alice.fpm;
 
 
 import alice.structures.SparseMatrix;
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 

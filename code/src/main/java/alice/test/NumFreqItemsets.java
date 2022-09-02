@@ -16,7 +16,7 @@ package alice.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import diffusr.samplers.GmmtSampler;
+import alice.samplers.GmmtSampler;
 import alice.config.Paths;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
@@ -27,9 +27,9 @@ import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import diffusr.fpm.FreqItemsetMiner;
-import diffusr.fpm.SampleAndMiner;
-import diffusr.samplers.Sampler;
+import alice.fpm.FreqItemsetMiner;
+import alice.fpm.SampleAndMiner;
+import alice.samplers.Sampler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

@@ -18,7 +18,7 @@ package alice.test;
  */
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
-import diffusr.fpm.FreqItemsetMiner;
+import alice.fpm.FreqItemsetMiner;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
 import alice.config.Delimiters;
@@ -27,7 +27,7 @@ import alice.samplers.BJDMSampler;
 import alice.structures.Matrix;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 import com.google.common.collect.Lists;

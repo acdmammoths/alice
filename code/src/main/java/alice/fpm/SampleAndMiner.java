@@ -1,4 +1,4 @@
-package diffusr.fpm;
+package alice.fpm;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -18,7 +18,7 @@ package diffusr.fpm;
  */
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
-import diffusr.samplers.Sampler;
+import alice.samplers.Sampler;
 import alice.utils.Transformer;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;

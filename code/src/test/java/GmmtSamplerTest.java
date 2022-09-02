@@ -1,7 +1,7 @@
 import alice.helpers.SwappableAndNewEdges;
-import diffusr.structures.GmmtMatrix;
+import alice.structures.GmmtMatrix;
 import alice.structures.SparseMatrix;
-import diffusr.samplers.GmmtSampler;
+import alice.samplers.GmmtSampler;
 import alice.config.Paths;
 import alice.config.DatasetNames;
 import alice.structures.Edge;
@@ -271,15 +271,15 @@ public class GmmtSamplerTest {
     public void equalMargins() {
         final String datasetPath = Paths.concat(Config.datasetsDir, DatasetNames.foodmart);
         final SparseMatrix matrix = this.transformer.createMatrix(datasetPath);
-        final Matrix diffusrMatrix = new Matrix(matrix);
+        final Matrix M = new Matrix(matrix);
         final int numSwaps = 100;
 
         final SparseMatrix sample
                 = this.sampler.sample(matrix, numSwaps, this.rnd.nextLong(), new Timer(false));
-        final Matrix diffusrSampleMatrix = new Matrix(sample);
+        final Matrix SampleMatrix = new Matrix(sample);
 
-        Assert.assertArrayEquals(diffusrMatrix.getRowSums(), diffusrSampleMatrix.getRowSums());
-        Assert.assertArrayEquals(diffusrMatrix.getColSums(), diffusrSampleMatrix.getColSums());
+        Assert.assertArrayEquals(M.getRowSums(), SampleMatrix.getRowSums());
+        Assert.assertArrayEquals(M.getColSums(), SampleMatrix.getColSums());
     }
 
     @Test
