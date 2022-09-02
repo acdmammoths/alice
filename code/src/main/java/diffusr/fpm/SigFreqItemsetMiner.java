@@ -18,13 +18,13 @@ package diffusr.fpm;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.SparseMatrix;
-import caterpillars.config.Paths;
-import caterpillars.config.JsonKeys;
-import caterpillars.utils.Config;
-import caterpillars.utils.JsonFile;
+import alice.structures.SparseMatrix;
+import alice.config.Paths;
+import alice.config.JsonKeys;
+import alice.utils.Config;
+import alice.utils.JsonFile;
 import diffusr.samplers.Sampler;
-import caterpillars.utils.Transformer;
+import alice.utils.Transformer;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;

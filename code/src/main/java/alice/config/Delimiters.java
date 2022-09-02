@@ -1,6 +1,4 @@
-
-import alice.structures.Edge;
-import alice.structures.Matrix;
+package alice.config;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -18,16 +16,11 @@ import alice.structures.Matrix;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-class AdjMatrixTestCase {
-  final Matrix matrix;
-  final Matrix adjMatrix;
-  final Edge swappableEdge1;
-  final Edge swappableEdge2;
 
-  AdjMatrixTestCase(Matrix matrix, Matrix adjMatrix, Edge swappableEdge1, Edge swappableEdge2) {
-    this.matrix = matrix;
-    this.adjMatrix = adjMatrix;
-    this.swappableEdge1 = swappableEdge1;
-    this.swappableEdge2 = swappableEdge2;
-  }
+/** A class for the delimiters we use. */
+public class Delimiters {
+
+    public static final String space = " ";
+    public static final String sup = " #SUP: ";
+    public static final String dash = "-";
 }

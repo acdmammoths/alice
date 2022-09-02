@@ -27,3 +27,6 @@ code/*.xml
 .DS_Store
 code/.DS_Store
 code/datasets/.DS_Store
+datasets/
+icdm_tests/
+

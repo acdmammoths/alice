@@ -1,3 +1,11 @@
+import alice.structures.Vector;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import org.junit.Assert;
+import org.junit.Test;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *
@@ -14,14 +22,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.Vector;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class VectorTest {
   private final Random rnd = new Random();
 

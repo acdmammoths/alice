@@ -16,10 +16,10 @@
  */
 import diffusr.fpm.AlgoNegFINMod;
 import diffusr.fpm.AlgoNegFIN;
-import caterpillars.config.Paths;
+import alice.config.Paths;
 import diffusr.fpm.Itemsets;
-import caterpillars.config.DatasetNames;
-import caterpillars.utils.Config;
+import alice.config.DatasetNames;
+import alice.utils.Config;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;

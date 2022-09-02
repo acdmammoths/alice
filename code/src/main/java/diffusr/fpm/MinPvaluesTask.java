@@ -1,7 +1,7 @@
 package diffusr.fpm;
 
 
-import caterpillars.config.Paths;
+import alice.config.Paths;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato

@@ -1,15 +1,15 @@
-import caterpillars.structures.BJDMMatrix;
-import caterpillars.helpers.SwappableAndNewEdges;
-import caterpillars.structures.SparseMatrix;
-import caterpillars.config.Paths;
-import caterpillars.structures.Vector;
-import caterpillars.config.DatasetNames;
-import caterpillars.helpers.SwappableLists;
-import caterpillars.samplers.CurveballBJDMSampler;
-import caterpillars.structures.Matrix;
-import caterpillars.utils.Config;
-import caterpillars.utils.Transformer;
-import caterpillars.utils.Timer;
+import alice.structures.BJDMMatrix;
+import alice.helpers.SwappableAndNewEdges;
+import alice.structures.SparseMatrix;
+import alice.config.Paths;
+import alice.structures.Vector;
+import alice.config.DatasetNames;
+import alice.helpers.SwappableLists;
+import alice.samplers.CurveballBJDMSampler;
+import alice.structures.Matrix;
+import alice.utils.Config;
+import alice.utils.Transformer;
+import alice.utils.Timer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -20,6 +20,22 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+/*
+ * Copyright (C) 2022 Giulia Preti
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 public class CurveballBJDMSamplerTest {
 
     private final Transformer transformer = new Transformer();

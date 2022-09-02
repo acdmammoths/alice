@@ -1,7 +1,7 @@
 package diffusr.fpm;
 
 
-import caterpillars.utils.MemoryLogger;
+import alice.utils.MemoryLogger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;

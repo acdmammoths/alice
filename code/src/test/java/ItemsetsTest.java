@@ -1,3 +1,22 @@
+import alice.config.Paths;
+import diffusr.fpm.Itemsets;
+import diffusr.fpm.FreqItemsetMiner;
+import alice.config.DatasetNames;
+import alice.config.Delimiters;
+import alice.utils.Config;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *
@@ -14,25 +33,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.config.Paths;
-import diffusr.fpm.Itemsets;
-import diffusr.fpm.FreqItemsetMiner;
-import caterpillars.config.DatasetNames;
-import caterpillars.config.Delimiters;
-import caterpillars.utils.Config;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 public class ItemsetsTest {
   private static final String datasetPath =
       Paths.concat(Config.datasetsDir, DatasetNames.test);

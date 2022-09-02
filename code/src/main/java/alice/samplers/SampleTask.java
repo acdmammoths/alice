@@ -1,10 +1,10 @@
-package diffusr.fpm;
+package alice.samplers;
 
 
 import alice.structures.SparseMatrix;
 import diffusr.samplers.Sampler;
-import alice.utils.Transformer;
 import alice.utils.Timer;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
@@ -23,20 +23,14 @@ import alice.utils.Timer;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /**
- * A class that helps sample transactional datasets and mines frequent itemsets
- * from those datasets in parallel.
+ * A class that helps sample transactional datasets in parallel.
  */
-public class SampleAndMineTask implements Runnable {
+public class SampleTask implements Runnable {
 
     /**
      * The sampler used to sample matrices.
      */
     private final Sampler sampler;
-
-    /**
-     * The transformer to create the dataset from the matrix.
-     */
-    private final Transformer transformer;
 
     /**
      * The matrix of the observed dataset.
@@ -52,50 +46,51 @@ public class SampleAndMineTask implements Runnable {
      * The random seed to use for replication.
      */
     private final long seed;
-
+    
     /**
-     * The minimum frequency threshold used to mine the set of frequent
-     * itemsets.
+     * Identifier run.
      */
-    private final double minFreq;
-
+    private final int id;
+    
     /**
-     * The path to save the sampled transactional dataset.
+     * The timer to store the step times.
      */
-    private final String samplePath;
-
+    private final Timer timer;
+    
     /**
-     * The path to save the set of frequent itemsets.
+     * The object to store BJDM distances.
      */
-    private final String freqItemsetsPath;
+    private final DescriptiveStatistics stats;
+    
 
-    public SampleAndMineTask(
+    public SampleTask(
             Sampler sampler,
-            Transformer transformer,
             SparseMatrix matrix,
             int numSwaps,
             long seed,
-            double minFreq,
-            String samplePath,
-            String freqItemsetsPath) {
+            int id,
+            Timer timer,
+            DescriptiveStatistics stats) {
         this.sampler = sampler;
-        this.transformer = transformer;
         this.matrix = matrix;
         this.numSwaps = numSwaps;
         this.seed = seed;
-        this.minFreq = minFreq;
-        this.samplePath = samplePath;
-        this.freqItemsetsPath = freqItemsetsPath;
+        this.id = id;
+        this.timer = timer;
+        this.stats = stats;
     }
 
     @Override
     public void run() {
-        final SparseMatrix sample
-                = this.sampler.sample(this.matrix, this.numSwaps, this.seed, new Timer(false));
-        this.transformer.createDataset(this.samplePath, sample);
-        System.out.println("Sample created: " + this.samplePath);
-
-        FreqItemsetMiner.mine(this.samplePath, this.minFreq, this.freqItemsetsPath);
-        System.out.println("Frequent itemsets mined: " + this.freqItemsetsPath);
+        this.sampler.sample(this.matrix, this.numSwaps, this.seed, this.timer, this.stats);
+        System.out.println(this.sampler.getClass().toString() + ": sample " + this.id + " created.");
+    }
+    
+    public DescriptiveStatistics getStats() {
+        return stats;
+    }
+    
+    public Timer getTimes() {
+        return timer;
     }
 }

@@ -1,9 +1,12 @@
+package alice.config;
 
-import alice.structures.Edge;
-import alice.structures.Matrix;
+
+import alice.samplers.CurveballBJDMSampler;
+import alice.samplers.BJDMSampler;
+import diffusr.samplers.GmmtSampler;
 
 /*
- * Copyright (C) 2022 Alexander Lee and Matteo Riondato
+ * Copyright (C) 2022 Alexander Lee, Giulia Preti, and Matteo Riondato
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +21,12 @@ import alice.structures.Matrix;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-class AdjMatrixTestCase {
-  final Matrix matrix;
-  final Matrix adjMatrix;
-  final Edge swappableEdge1;
-  final Edge swappableEdge2;
+/**
+ * A class for the names of the samplers we use.
+ */
+public class SamplerNames {
 
-  AdjMatrixTestCase(Matrix matrix, Matrix adjMatrix, Edge swappableEdge1, Edge swappableEdge2) {
-    this.matrix = matrix;
-    this.adjMatrix = adjMatrix;
-    this.swappableEdge1 = swappableEdge1;
-    this.swappableEdge2 = swappableEdge2;
-  }
+    public static final String gmmtSampler = GmmtSampler.class.getName();
+    public static final String caterSampler = BJDMSampler.class.getName();
+    public static final String caterCurveballSampler = CurveballBJDMSampler.class.getName();
 }

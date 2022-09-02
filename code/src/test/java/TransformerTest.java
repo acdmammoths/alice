@@ -1,3 +1,17 @@
+import alice.structures.SparseMatrix;
+import alice.config.Paths;
+import alice.config.DatasetNames;
+import alice.samplers.BJDMSampler;
+import alice.utils.Config;
+import diffusr.samplers.Sampler;
+import alice.utils.Transformer;
+import alice.utils.Timer;
+import java.util.Random;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *
@@ -14,24 +28,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.SparseMatrix;
-import caterpillars.config.Paths;
-import caterpillars.config.DatasetNames;
-import caterpillars.samplers.NaiveBJDMSampler;
-import caterpillars.utils.Config;
-import diffusr.samplers.Sampler;
-import caterpillars.utils.Transformer;
-import caterpillars.utils.Timer;
-import java.util.Random;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** A class to test {@link Transformer}. */
 public class TransformerTest {
   private final Transformer transformer = new Transformer();
-  private final Sampler sampler = new NaiveBJDMSampler();
+  private final Sampler sampler = new BJDMSampler();
   private final Random rnd = new Random();
   private static final String datasetPath =
       Paths.concat(Config.datasetsDir, DatasetNames.test);

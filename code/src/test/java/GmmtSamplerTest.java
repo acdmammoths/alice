@@ -1,3 +1,23 @@
+import alice.helpers.SwappableAndNewEdges;
+import diffusr.structures.GmmtMatrix;
+import alice.structures.SparseMatrix;
+import diffusr.samplers.GmmtSampler;
+import alice.config.Paths;
+import alice.config.DatasetNames;
+import alice.structures.Edge;
+import alice.structures.Matrix;
+import alice.utils.Config;
+import alice.utils.Transformer;
+import alice.utils.Timer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import org.junit.Assert;
+import org.junit.Test;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *
@@ -14,27 +34,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.helpers.SwappableAndNewEdges;
-import diffusr.structures.GmmtMatrix;
-import caterpillars.structures.SparseMatrix;
-import diffusr.samplers.GmmtSampler;
-import caterpillars.config.Paths;
-import caterpillars.config.DatasetNames;
-import caterpillars.structures.Edge;
-import caterpillars.structures.Matrix;
-import caterpillars.utils.Config;
-import caterpillars.utils.Transformer;
-import caterpillars.utils.Timer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
 /**
  * A class to test {@link GmmtSampler}.
  */

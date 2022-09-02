@@ -16,10 +16,10 @@ package diffusr.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.helpers.SwappableAndNewEdges;
-import caterpillars.structures.SparseMatrix;
-import caterpillars.structures.Edge;
-import caterpillars.structures.Matrix;
+import alice.helpers.SwappableAndNewEdges;
+import alice.structures.SparseMatrix;
+import alice.structures.Edge;
+import alice.structures.Matrix;
 import java.util.Random;
 
 /**

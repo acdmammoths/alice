@@ -1,3 +1,11 @@
+import alice.config.Paths;
+import alice.config.DatasetNames;
+import alice.test.SigFreqItemsets;
+import alice.utils.Config;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *
@@ -14,14 +22,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.config.Paths;
-import caterpillars.config.DatasetNames;
-import caterpillars.test.SigFreqItemsets;
-import caterpillars.utils.Config;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 public class SigFreqItemsetsExperimentTest {
     
   @BeforeClass

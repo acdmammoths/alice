@@ -16,8 +16,8 @@ package diffusr.fpm;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.config.Paths;
-import caterpillars.config.Delimiters;
+import alice.config.Paths;
+import alice.config.Delimiters;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

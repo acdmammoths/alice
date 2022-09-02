@@ -16,11 +16,11 @@ package diffusr.samplers;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.helpers.SwappableAndNewEdges;
+import alice.helpers.SwappableAndNewEdges;
 import diffusr.structures.GmmtMatrix;
-import caterpillars.structures.SparseMatrix;
-import caterpillars.structures.Edge;
-import caterpillars.utils.Timer;
+import alice.structures.SparseMatrix;
+import alice.structures.Edge;
+import alice.utils.Timer;
 import java.util.Random;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 

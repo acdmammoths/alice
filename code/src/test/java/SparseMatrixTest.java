@@ -1,3 +1,9 @@
+import alice.structures.SparseMatrix;
+import alice.structures.Vector;
+import java.util.Random;
+import org.junit.Assert;
+import org.junit.Test;
+
 /*
  * Copyright (C) 2022 Alexander Lee and Matteo Riondato
  *
@@ -14,12 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.SparseMatrix;
-import caterpillars.structures.Vector;
-import java.util.Random;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class SparseMatrixTest {
   private final Random rnd = new Random();
 

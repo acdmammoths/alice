@@ -1,8 +1,8 @@
 package diffusr.samplers;
 
 
-import caterpillars.structures.SparseMatrix;
-import caterpillars.utils.Timer;
+import alice.structures.SparseMatrix;
+import alice.utils.Timer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 /*

@@ -16,10 +16,10 @@ package diffusr.fpm;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import caterpillars.structures.SparseMatrix;
-import caterpillars.config.Paths;
+import alice.structures.SparseMatrix;
+import alice.config.Paths;
 import diffusr.samplers.Sampler;
-import caterpillars.utils.Transformer;
+import alice.utils.Transformer;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
