@@ -8,17 +8,23 @@ unset datasets
 declare -A datasets
 datasets[$food]=$food_defaults
 datasets[$chess]=$chess_defaults
-datasets[$mush]=$mush_defaults
+datasets[$kosarak]=$kosarak_defaults
 datasets[$BMS1]=$bms1_defaults
 datasets[$BMS2]=$bms2_defaults
+datasets[$retail]=$retail_defaults
+datasets[$dbocc]=$dbocc_defaults
+datasets[$iewiki]=$iewiki_defaults
 
 unset flags
 declare -A flags
 flags[$food]=$food_flags
 flags[$chess]=$chess_flags
-flags[$mush]=$mush_flags
+flags[$kosarak]=$kosarak_flags
 flags[$BMS1]=$bms1_flags
 flags[$BMS2]=$bms2_flags
+flags[$retail]=$retail_flags
+flags[$dbocc]=$dbocc_flags
+flags[$iewiki]=$iewiki_flags
 
 echo -e '\n\n>> Creating directories ...'
 mkdir -p $resultsDir
