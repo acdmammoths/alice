@@ -44,7 +44,7 @@ public:
   LINT seed;    // Seed to initialize the generator with before x-act generation
 
   TransPar(void)
-    : ntrans(1000000), tlen(10), nitems(100000), ascii(false), seed(-1)
+    : ntrans(1000000), tlen(10), nitems(100000), ascii(true), seed(-1)
   {}
 
   void write(ostream &fp);

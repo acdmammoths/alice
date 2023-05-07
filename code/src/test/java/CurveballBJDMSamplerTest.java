@@ -6,7 +6,9 @@ import alice.structures.Vector;
 import alice.config.DatasetNames;
 import alice.helpers.SwappableLists;
 import alice.samplers.CurveballBJDMSampler;
+import alice.structures.Edge;
 import alice.structures.Matrix;
+import alice.structures.SetMatrix;
 import alice.utils.Config;
 import alice.utils.Transformer;
 import alice.utils.Timer;
@@ -44,7 +46,7 @@ public class CurveballBJDMSamplerTest {
 
     @Test
     public void noTransitions() {
-        List<SingleSideSwappableMatrix> testCases = Lists.newArrayList();
+        List<SingleSideSwappableMatrix<SetMatrix>> testCases = Lists.newArrayList();
         List<Set<Integer>> swappables = Lists.newArrayList();
         swappables.add(Sets.newHashSet(0, 1));
         swappables.add(Sets.newHashSet(2, 3));
@@ -57,7 +59,7 @@ public class CurveballBJDMSamplerTest {
                 })),
                 true,
                 swappables));
-        for (SingleSideSwappableMatrix test : testCases) {
+        for (SingleSideSwappableMatrix<SetMatrix> test : testCases) {
             BJDMMatrix matrix = (BJDMMatrix) test.matrix;
             for (int t = 0; t < 100; t++) {
                 boolean rowSwap = rnd.nextBoolean();
@@ -106,25 +108,17 @@ public class CurveballBJDMSamplerTest {
             }
             
             for (SwappableAndNewEdges swappable : swappables) {
-                adjMatrix.transition(
-                        swappable.swappableEdge1,
-                        swappable.swappableEdge2,
-                        swappable.newEdge1,
-                        swappable.newEdge2);
+                adjMatrix.transition(swappable);
             }
             adjMatrix = new BJDMMatrix(adjMatrix.getMatrix());
             
             for (SwappableAndNewEdges swappable : swappables) {
                 final Vector swappableRow1 = matrix.getRowInstance(swappable.swappableEdge1.row);
                 final Vector swappableRow2 = matrix.getRowInstance(swappable.swappableEdge2.row);
-                final Vector[] newRows = matrix.getNewRows(
-                        swappable.newEdge1, 
-                        swappable.newEdge2);
-                matrix.transition(
-                            swappable.swappableEdge1,
-                            swappable.swappableEdge2,
-                            swappable.newEdge1,
-                            swappable.newEdge2,
+                final Edge newEdge1 = new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col);
+                final Edge newEdge2 = new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col);
+                final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
+                matrix.transition(swappable,
                             swappableRow1,
                             swappableRow2,
                             newRows[0],
@@ -158,7 +152,7 @@ public class CurveballBJDMSamplerTest {
 
     @Test
     public void numStates() {
-        final Map<Matrix, Integer> matrixNumStatesMap = Maps.newHashMap();
+        final Map<SetMatrix, Integer> matrixNumStatesMap = Maps.newHashMap();
         matrixNumStatesMap.put(
                 new BJDMMatrix(
                         new SparseMatrix(
@@ -207,7 +201,7 @@ public class CurveballBJDMSamplerTest {
                 1);
 
         matrixNumStatesMap.entrySet().stream().forEach(entry -> {
-            final Matrix matrix = entry.getKey();
+            final SetMatrix matrix = entry.getKey();
             final int numStates = entry.getValue();
             final int numSamples = numStates * 10_000;
             final int numSwaps = 2 * matrix.getNumEdges(); // as per our experiments

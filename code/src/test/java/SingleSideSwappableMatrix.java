@@ -18,13 +18,13 @@ import java.util.Set;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-class SingleSideSwappableMatrix {
+class SingleSideSwappableMatrix<T> {
 
-    final Matrix matrix;
+    final T matrix;
     final boolean rowSwappable;
     final List<Set<Integer>> swappableIndices;
 
-    SingleSideSwappableMatrix(Matrix matrix, boolean rowSwappable, List<Set<Integer>> swappableIndices) {
+    SingleSideSwappableMatrix(T matrix, boolean rowSwappable, List<Set<Integer>> swappableIndices) {
         this.matrix = matrix;
         this.rowSwappable = rowSwappable;
         this.swappableIndices = swappableIndices;

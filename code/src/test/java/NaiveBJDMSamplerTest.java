@@ -7,6 +7,7 @@ import alice.structures.Vector;
 import alice.config.DatasetNames;
 import alice.structures.Edge;
 import alice.structures.Matrix;
+import alice.structures.SetMatrix;
 import alice.utils.Config;
 import alice.utils.Transformer;
 import alice.utils.Timer;
@@ -45,7 +46,7 @@ public class NaiveBJDMSamplerTest {
     
     @Test
     public void noTransitions() {
-        List<SingleSideSwappableMatrix> testCases = Lists.newArrayList();
+        List<SingleSideSwappableMatrix<SetMatrix>> testCases = Lists.newArrayList();
         List<Set<Integer>> swappables = Lists.newArrayList();
         swappables.add(Sets.newHashSet(0, 1));
         swappables.add(Sets.newHashSet(2, 3));
@@ -58,7 +59,7 @@ public class NaiveBJDMSamplerTest {
                 })),
                 true,
                 swappables));
-        for (SingleSideSwappableMatrix test : testCases) {
+        for (SingleSideSwappableMatrix<SetMatrix> test : testCases) {
             BJDMMatrix matrix = (BJDMMatrix) test.matrix;
             for (int t = 0; t < 100; t++) {
                 boolean rowSwap = rnd.nextBoolean();
@@ -92,7 +93,7 @@ public class NaiveBJDMSamplerTest {
     
     @Test
     public void getNumEquivAdjMatrices() {
-        final List<AdjMatrixTestCase> testCases = new ArrayList<>();
+        final List<AdjMatrixTestCase<SetMatrix>> testCases = new ArrayList<>();
         // different row sums
         testCases.add(new AdjMatrixTestCase(
                         new BJDMMatrix(
@@ -187,7 +188,7 @@ public class NaiveBJDMSamplerTest {
                                         })),
                         new Edge(0, 1),
                         new Edge(1, 2)));
-        for (AdjMatrixTestCase testCase : testCases) {
+        for (AdjMatrixTestCase<SetMatrix> testCase : testCases) {
             final BJDMMatrix matrix = (BJDMMatrix) testCase.matrix;
             final BJDMMatrix adjMatrix = (BJDMMatrix) testCase.adjMatrix;
             final Edge swappableEdge1 = testCase.swappableEdge1;
@@ -230,10 +231,10 @@ public class NaiveBJDMSamplerTest {
             
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
+            final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
+            final Edge newEdge2 = new Edge(swappableEdge2.row, swappableEdge1.col);
             double samplingProb = adjMatrix.samplingProb(swappableEdge1, swappableEdge2);
-            adjMatrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+            adjMatrix.transition(sne);
             adjMatrix = new BJDMMatrix(adjMatrix.getMatrix());
 
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
@@ -241,17 +242,12 @@ public class NaiveBJDMSamplerTest {
             final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
-            matrix.transition(
-                    swappableEdge1,
-                    swappableEdge2,
-                    newEdge1,
-                    newEdge2,
+            matrix.transition(sne,
                     swappableRow1,
                     swappableRow2,
                     newRow1,
                     newRow2);
             double adjSamplingProb = matrix.samplingProb(newEdge1, newEdge2);
-            
             Assert.assertEquals(adjMatrix, matrix);
             Assert.assertEquals(adjMatrix.getEdgesSet(), matrix.getEdgesSet());
             Assert.assertEquals(adjMatrix.getRowToNumEqRowsMap(), matrix.getRowToNumEqRowsMap());
@@ -278,7 +274,7 @@ public class NaiveBJDMSamplerTest {
 
     @Test
     public void uniformity() {
-        final Map<Matrix, Integer> matrixNumStatesMap = Maps.newHashMap();
+        final Map<SetMatrix, Integer> matrixNumStatesMap = Maps.newHashMap();
         matrixNumStatesMap.put(
                 new BJDMMatrix(
                         new SparseMatrix(
@@ -327,7 +323,7 @@ public class NaiveBJDMSamplerTest {
                 1);
 
         matrixNumStatesMap.entrySet().stream().forEach(entry -> {
-            final Matrix matrix = entry.getKey();
+            final SetMatrix matrix = entry.getKey();
             final int numStates = entry.getValue();
             final int numSamples = numStates * 10_000;
             final int numSwaps = 2 * matrix.getNumEdges(); // as per our experiments

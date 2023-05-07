@@ -16,11 +16,8 @@ package alice.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * An implementation of a sparse 0-1 vector using a hash set. Any nonzero value
@@ -32,13 +29,13 @@ public class Vector {
      * The set of indices in the vector. We only store the indices since this is
      * a 0-1 vector.
      */
-    private final Set<Integer> indices;
+    private final IntOpenHashSet indices;
     
     /**
      * Initializes an empty vector.
      */
     public Vector() {
-        this.indices = new HashSet<>();
+        this.indices = new IntOpenHashSet();
     }
     
     /**
@@ -46,7 +43,7 @@ public class Vector {
      * @param indices positions where the vector is 1
      */
     public Vector(Collection<Integer> indices) {
-        this.indices = Sets.newHashSet(indices);
+        this.indices = new IntOpenHashSet(indices);
     }
 
     /**
@@ -56,7 +53,9 @@ public class Vector {
     public Vector(int[] array) {
         this();
         for (int i = 0; i < array.length; i++) {
-            this.set(i, array[i]);
+            if (array[i] == 1) {
+                this.indices.add(i);
+            }
         }
     }
 
@@ -72,7 +71,7 @@ public class Vector {
             return false;
         }
         Vector otherVector = (Vector) o;
-        return Objects.equals(this.indices, otherVector.indices);
+        return this.indices.equals(otherVector.indices);
     }
 
     @Override
@@ -116,7 +115,7 @@ public class Vector {
      * 
      * @return all the indices set in the vector
      */
-    public Set<Integer> getNonzeroIndices() {
+    public IntOpenHashSet getNonzeroIndices() {
         return this.indices;
     }
 
@@ -134,7 +133,7 @@ public class Vector {
      * @return number of elements in the intersection between the two vectors
      */
     public long interSize(Vector other) {
-        return this.indices.stream()
+        return this.indices.intStream()
                 .filter(i -> other.indices.contains(i))
                 .count();
     }

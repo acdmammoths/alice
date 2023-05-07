@@ -52,7 +52,7 @@ public class GmmtSampler implements Sampler {
         long matrixDegree = matrix.getDegree();
 
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
-        System.out.println("SETUP: " + setupTime);
+//        System.out.println("SETUP: " + setupTime);
         timer.save(setupTime);
 
         for (int i = 0; i < numSwaps; i++) {
@@ -60,14 +60,12 @@ public class GmmtSampler implements Sampler {
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
             
             final long adjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
             final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
             if (rnd.nextDouble() <= acceptanceProb) {
-                matrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+                matrix.transition(sne);
                 matrixDegree = adjMatrixDegree;
             }
 
@@ -98,28 +96,22 @@ public class GmmtSampler implements Sampler {
 
         final Random rnd = new Random(seed);
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
-        System.out.println("SETUP: " + setupTime);
+//        System.out.println("SETUP: " + setupTime);
         timer.save(setupTime);
-
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
-            long start = System.currentTimeMillis();
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
-            System.out.println("Got SNE: " + (System.currentTimeMillis() - start));
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
             final long adjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
             final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
             if (rnd.nextDouble() <= acceptanceProb) {
-                matrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+                matrix.transition(sne);
                 matrixDegree = adjMatrixDegree;
             }
             timer.stop();
         }
-        System.out.println("Got Sample");
         return matrix.getMatrix();
     }
 
@@ -162,14 +154,12 @@ public class GmmtSampler implements Sampler {
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
             
             final long adjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
             final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
             if (rnd.nextDouble() <= acceptanceProb) {
-                matrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+                matrix.transition(sne);
                 matrixDegree = adjMatrixDegree;
             }
             timer.stop();

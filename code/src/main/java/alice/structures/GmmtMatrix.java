@@ -18,9 +18,8 @@ package alice.structures;
  */
 import alice.helpers.CountingWedges;
 import alice.helpers.SwappableAndNewEdges;
+import java.util.Arrays;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.IntStream;
 
 /**
  * This class extends {@link Matrix} and is used for the {@link GmmtSampler}.
@@ -36,6 +35,17 @@ public class GmmtMatrix extends Matrix {
     public GmmtMatrix(SparseMatrix inMatrix) {
         super(inMatrix);
     }
+    
+    /**
+     * Creates an instance of {@link GmmtMatrix} from a 0-1 {@link SparseMatrix}
+     * by initializing necessary data structures from the matrix.
+     *
+     * @param inMatrix a 0-1 matrix representation of the dataset
+     * @param edges
+     */
+    public GmmtMatrix(SparseMatrix inMatrix, Edge[] edges) {
+        super(inMatrix, edges);
+    }
 
     public int getRowProdMatrixVal(int row, int col) {
         return getMatrix().getRowDotProd(row, col);
@@ -49,10 +59,11 @@ public class GmmtMatrix extends Matrix {
      */
     public long getDegree() {
         final long numDisjPairsOfEdges = this.getNumDisjPairsOfEdges();
+//        System.out.println("NEW: " + numDisjPairsOfEdges + " OLD: " + getNumDisjPairsOfEdges_old());
         final long numZstructs = this.getNumZstructs();
-        System.out.println("NUM Caterpillars " + numZstructs);
+//        System.out.println("NUM Caterpillars " + numZstructs);
         final long numK22Cliques = this.getNumK22Cliques();
-        System.out.println("NUM Butterflies " + numK22Cliques);
+//        System.out.println("NUM Butterflies " + numK22Cliques);
         return numDisjPairsOfEdges - numZstructs + 2 * numK22Cliques;
     }
 
@@ -79,7 +90,18 @@ public class GmmtMatrix extends Matrix {
      *
      * @return the number of disjoint pairs of edges
      */
-    public int getNumDisjPairsOfEdges() {
+    public long getNumDisjPairsOfEdges() {
+        long sumOfRowSumsSqrd = Arrays.stream(this.getRowSums())
+                .mapToLong(rowSum -> rowSum * rowSum)
+                .sum();
+        long sumOfColSumsSqrd = Arrays.stream(this.getColSums())
+                .mapToLong(colSum -> colSum * colSum)
+                .sum();
+        final long numEdges = this.getNumEdges();
+        return (numEdges * (numEdges + 1) - sumOfRowSumsSqrd - sumOfColSumsSqrd) / 2;
+    }
+    
+    public int getNumDisjPairsOfEdges_old() {
         int sumOfRowSumsSqrd = 0;
         int sumOfColSumsSqrd = 0;
         for (int rowSum : this.getRowSums()) {
@@ -99,7 +121,8 @@ public class GmmtMatrix extends Matrix {
      * @return the number of Z structures
      */
     public long getNumZstructs() {
-        return edges.parallelStream()
+        return Arrays.stream(edges)
+                .parallel()
                 .mapToLong(edge -> (this.getRowSum(edge.row) - 1) * (this.getColSum(edge.col) - 1))
                 .sum();
     }
@@ -141,19 +164,20 @@ public class GmmtMatrix extends Matrix {
      * adjacent matrix
      * @return the change in the number of K22 cliques
      */
-//    private int getChangeInNumK22Cliques(Edge swappableEdge1, Edge swappableEdge2) {
-//        int sum = 0;
-//        final int[] swappableRows = {swappableEdge1.row, swappableEdge2.row};
-//        for (int swappableRow : swappableRows) {
-//            for (int row = 0; row < swappableRow; row++) {
-//                sum += this.sqrdDiff(row, swappableRow, swappableEdge1, swappableEdge2);
-//            }
-//            for (int row = swappableRow + 1; row < this.getNumRows(); row++) {
-//                sum += this.sqrdDiff(swappableRow, row, swappableEdge1, swappableEdge2);
-//            }
-//        }
-//        return sum / 2;
-//    }
+    private int getChangeInNumK22Cliques_old(Edge swappableEdge1, Edge swappableEdge2) {
+        int sum = 0;
+        final int[] swappableRows = {swappableEdge1.row, swappableEdge2.row};
+        for (int swappableRow : swappableRows) {
+            for (int row = 0; row < swappableRow; row++) {
+                sum += this.sqrdDiff(row, swappableRow, swappableEdge1, swappableEdge2);
+            }
+            for (int row = swappableRow + 1; row < this.getNumRows(); row++) {
+                sum += this.sqrdDiff(swappableRow, row, swappableEdge1, swappableEdge2);
+            }
+        }
+        return sum / 2;
+    }
+    
     protected int getChangeInNumK22Cliques(Edge swappableEdge1, Edge swappableEdge2) {
         int output = 0;
         final int[] srcs = {swappableEdge1.row, swappableEdge2.row};
@@ -295,19 +319,16 @@ public class GmmtMatrix extends Matrix {
      * @return an instance of {@link SwappableAndNewEdges}
      */
     public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd) {
-        Edge sampledEdge1;
-        Edge sampledEdge2;
-
+        SwappableAndNewEdges sne;
+        Edge edge1;
+        Edge edge2;
         do {
-            final Edge[] sampledEdges = this.sampleEdges(rnd);
-            sampledEdge1 = sampledEdges[0];
-            sampledEdge2 = sampledEdges[1];
-        } while ((this.getVal(sampledEdge1.row, sampledEdge2.col) == 1)
-                || (this.getVal(sampledEdge2.row, sampledEdge1.col) == 1));
+            sne = this.sampleEdges(rnd);
+            edge1 = sne.swappableEdge1;
+            edge2 = sne.swappableEdge2;
+        } while ((this.getVal(edge1.row, edge2.col) == 1)
+                || (this.getVal(edge2.row, edge1.col) == 1));
 
-        final Edge newEdge1 = new Edge(sampledEdge1.row, sampledEdge2.col);
-        final Edge newEdge2 = new Edge(sampledEdge2.row, sampledEdge1.col);
-
-        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2);
+        return sne;
     }
 }

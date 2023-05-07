@@ -5,6 +5,7 @@ import alice.helpers.SwappableLists;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
 import gr.james.sampling.LiLSampling;
 import gr.james.sampling.RandomSamplingCollector;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
  * A class to represent the adjacency matrix of the bipartite graph representation
  * of a transactional dataset.
  */
-public class BJDMMatrix extends Matrix {
+public class BJDMMatrix extends SetMatrix {
 
     /**
      * A map where each key is a row sum and the value is the unique set of rows
@@ -59,12 +60,12 @@ public class BJDMMatrix extends Matrix {
     /**
      * ids of rows such that there exists at least two rows with the same rowSum.
      */
-    private final List<Integer> samplableRows;
+    private final int[] samplableRows;
     
     /**
      * ids of cols such that there exists at least two cols with the same colSum.
      */
-    private final List<Integer> samplableCols;
+    private final int[] samplableCols;
 
     /**
      * Creates an instance of {@link BJDMMatrix} from a 0-1
@@ -86,22 +87,32 @@ public class BJDMMatrix extends Matrix {
         this.rowSumToEqRowSumRows = IntStream.range(0, rowSums.length)
                 .boxed()
                 .collect(Collectors.groupingBy(r -> rowSums[r], Collectors.toList()));
-        this.samplableRows = rowSumToEqRowSumRows
+        List<Integer> tmpR = rowSumToEqRowSumRows
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() > 1)
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
+        if (!tmpR.isEmpty()) {
+            this.samplableRows = Ints.toArray(tmpR);
+        } else {
+            this.samplableRows = null;
+        }
         // initialize col sum map and samplable columns
         this.colSumToEqColSumCols = IntStream.range(0, colSums.length)
                 .boxed()
                 .collect(Collectors.groupingBy(c -> colSums[c], Collectors.toList()));
-        this.samplableCols = colSumToEqColSumCols
+        List<Integer> tmpC = colSumToEqColSumCols
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() > 1)
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
+        if (!tmpC.isEmpty()) {
+            this.samplableCols = Ints.toArray(tmpC);
+        } else {
+           this.samplableCols = null; 
+        }
     }
 
     /**
@@ -290,8 +301,8 @@ public class BJDMMatrix extends Matrix {
         // sample rows or columns
         boolean rowSwap = rnd.nextBoolean();
         Map<Integer, List<Integer>> sumToEqSumElements;
-        List<Integer> samplable;
-        List<Vector> instances;
+        int[] samplable;
+        Vector[] instances;
         int[] sums;
         if (rowSwap) {
             sumToEqSumElements = rowSumToEqRowSumRows;
@@ -304,16 +315,16 @@ public class BJDMMatrix extends Matrix {
             instances = getCols();
             sums = colSums;
         }
-        if (samplable.isEmpty()) {
+        if (samplable == null) {
             return null;
         }
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
         // column/row differences
-        Set<Integer> S1 = Sets.newHashSet(instances.get(pair.getValue0()).getNonzeroIndices());
-        S1.removeAll(instances.get(pair.getValue1()).getNonzeroIndices());
-        Set<Integer> S2 = Sets.newHashSet(instances.get(pair.getValue1()).getNonzeroIndices());
-        S2.removeAll(instances.get(pair.getValue0()).getNonzeroIndices());
+        Set<Integer> S1 = Sets.newHashSet(instances[pair.getValue0()].getNonzeroIndices());
+        S1.removeAll(instances[pair.getValue1()].getNonzeroIndices());
+        Set<Integer> S2 = Sets.newHashSet(instances[pair.getValue1()].getNonzeroIndices());
+        S2.removeAll(instances[pair.getValue0()].getNonzeroIndices());
         if (S1.isEmpty()) {
             // self loop
             return null;
@@ -323,20 +334,14 @@ public class BJDMMatrix extends Matrix {
         int f2 = S2.stream().skip(rnd.nextInt(S2.size())).findFirst().get();
         Edge sampledEdge1;
         Edge sampledEdge2;
-        Edge newEdge1;
-        Edge newEdge2;
         if (rowSwap) {
             sampledEdge1 = new Edge(pair.getValue0(), f1);
             sampledEdge2 = new Edge(pair.getValue1(), f2);
-            newEdge1 = new Edge(pair.getValue0(), f2);
-            newEdge2 = new Edge(pair.getValue1(), f1);
         } else {
             sampledEdge1 = new Edge(f1, pair.getValue0());
             sampledEdge2 = new Edge(f2, pair.getValue1());
-            newEdge1 = new Edge(f1, pair.getValue1());
-            newEdge2 = new Edge(f2, pair.getValue0()); 
         }
-        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2);
+        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, 0, 0);
     }
     
     /**
@@ -349,7 +354,7 @@ public class BJDMMatrix extends Matrix {
         final Edge first = sne.swappableEdge1;
         final Edge second = sne.swappableEdge2;
         return !(first.row == second.row || first.col == second.col ||
-                edges.contains(sne.newEdge1) || edges.contains(sne.newEdge2) ||
+                edges.contains(new Edge(first.row, second.col)) || edges.contains(new Edge(second.row, first.col)) ||
                 (rowSums[first.row] != rowSums[second.row] && colSums[first.col] != colSums[second.col]));
     }
     
@@ -363,8 +368,8 @@ public class BJDMMatrix extends Matrix {
     public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd, boolean rowSwap) {
         // sample rows or columns
         Map<Integer, List<Integer>> sumToEqSumElements;
-        List<Integer> samplable;
-        List<Vector> instances;
+        int[] samplable;
+        Vector[] instances;
         int[] sums;
         if (rowSwap) {
             sumToEqSumElements = rowSumToEqRowSumRows;
@@ -377,16 +382,16 @@ public class BJDMMatrix extends Matrix {
             instances = getCols();
             sums = colSums;
         }
-        if (samplable.isEmpty()) {
+        if (samplable == null) {
             return null;
         }
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
         // column/row differences
-        Set<Integer> S1 = Sets.newHashSet(instances.get(pair.getValue0()).getNonzeroIndices());
-        S1.removeAll(instances.get(pair.getValue1()).getNonzeroIndices());
-        Set<Integer> S2 = Sets.newHashSet(instances.get(pair.getValue1()).getNonzeroIndices());
-        S2.removeAll(instances.get(pair.getValue0()).getNonzeroIndices());
+        Set<Integer> S1 = Sets.newHashSet(instances[pair.getValue0()].getNonzeroIndices());
+        S1.removeAll(instances[pair.getValue1()].getNonzeroIndices());
+        Set<Integer> S2 = Sets.newHashSet(instances[pair.getValue1()].getNonzeroIndices());
+        S2.removeAll(instances[pair.getValue0()].getNonzeroIndices());
         List<Integer> candC1 = Lists.newArrayList(S1);
         List<Integer> candC2 = Lists.newArrayList(S2);
         if (S1.isEmpty()) {
@@ -398,20 +403,14 @@ public class BJDMMatrix extends Matrix {
         int f2 = candC2.get(rnd.nextInt(candC2.size()));
         Edge sampledEdge1;
         Edge sampledEdge2;
-        Edge newEdge1;
-        Edge newEdge2;
         if (rowSwap) {
             sampledEdge1 = new Edge(pair.getValue0(), f1);
             sampledEdge2 = new Edge(pair.getValue1(), f2);
-            newEdge1 = new Edge(pair.getValue0(), f2);
-            newEdge2 = new Edge(pair.getValue1(), f1);
         } else {
             sampledEdge1 = new Edge(f1, pair.getValue0());
             sampledEdge2 = new Edge(f2, pair.getValue1());
-            newEdge1 = new Edge(f1, pair.getValue1());
-            newEdge2 = new Edge(f2, pair.getValue0()); 
         }
-        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, newEdge1, newEdge2);
+        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, 0, 0);
     }
     
     /**
@@ -427,8 +426,8 @@ public class BJDMMatrix extends Matrix {
         // sample rows or columns
         boolean rowSwap = rnd.nextBoolean();
         Map<Integer, List<Integer>> sumToEqSumElements;
-        List<Integer> samplable;
-        List<Vector> instances;
+        int[] samplable;
+        Vector[] instances;
         int[] sums;
         if (rowSwap) {
             sumToEqSumElements = rowSumToEqRowSumRows;
@@ -441,14 +440,14 @@ public class BJDMMatrix extends Matrix {
             instances = getCols();
             sums = colSums;
         }
-        if (samplable.isEmpty()) {
+        if (samplable == null) {
             return null;
         }
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
         // column/row differences
-        Set<Integer> S1 = Sets.newHashSet(instances.get(pair.getValue0()).getNonzeroIndices());
-        Set<Integer> S2 = Sets.newHashSet(instances.get(pair.getValue1()).getNonzeroIndices());
+        Set<Integer> S1 = Sets.newHashSet(instances[pair.getValue0()].getNonzeroIndices());
+        Set<Integer> S2 = Sets.newHashSet(instances[pair.getValue1()].getNonzeroIndices());
         Set<Integer> S12 = S1.stream().filter(i -> S2.contains(i)).collect(Collectors.toSet());
         S1.removeAll(S12);
         S2.removeAll(S12);
@@ -483,8 +482,8 @@ public class BJDMMatrix extends Matrix {
     public SwappableLists getSwappablesNewEdges(Random rnd, boolean rowSwap) {
         // sample rows or columns
         Map<Integer, List<Integer>> sumToEqSumElements;
-        List<Integer> samplable;
-        List<Vector> instances;
+        int[] samplable;
+        Vector[] instances;
         int[] sums;
         if (rowSwap) {
             sumToEqSumElements = rowSumToEqRowSumRows;
@@ -497,14 +496,14 @@ public class BJDMMatrix extends Matrix {
             instances = getCols();
             sums = colSums;
         }
-        if (samplable.isEmpty()) {
+        if (samplable == null) {
             return null;
         }
         // we select a row/col to select a row/col sum
         Pair<Integer, Integer> pair = samplePairOfIndices(sumToEqSumElements, samplable, sums, rnd);
         // column/row differences
-        Set<Integer> S1 = Sets.newHashSet(instances.get(pair.getValue0()).getNonzeroIndices());
-        Set<Integer> S2 = Sets.newHashSet(instances.get(pair.getValue1()).getNonzeroIndices());
+        Set<Integer> S1 = Sets.newHashSet(instances[pair.getValue0()].getNonzeroIndices());
+        Set<Integer> S2 = Sets.newHashSet(instances[pair.getValue1()].getNonzeroIndices());
         Set<Integer> S12 = S1.stream().filter(i -> S2.contains(i)).collect(Collectors.toSet());
         S1.removeAll(S12);
         S2.removeAll(S12);
@@ -538,11 +537,11 @@ public class BJDMMatrix extends Matrix {
      */
     private Pair<Integer, Integer> samplePairOfIndices(
             Map<Integer, List<Integer>> sumToEqSum,
-            List<Integer> samplable,
+            int[] samplable,
             int[] sums,
             Random rnd) {
         
-        int e1 = samplable.get(rnd.nextInt(samplable.size()));
+        int e1 = samplable[rnd.nextInt(samplable.length)];
         int s = sums[e1];
         int numElems = sumToEqSum.get(s).size();
         if (numElems == 2) {
@@ -716,21 +715,16 @@ public class BJDMMatrix extends Matrix {
         assert(U.size()==L.size());
         List<Integer> new1 = Lists.newArrayList(L);
         List<Integer> new2 = Lists.newArrayList(U);
-//        System.out.println("Actual Swaps=" + new1.size());
         List<SwappableAndNewEdges> E = Lists.newArrayList();
         for (int c = 0; c < new1.size(); c++) {
             if (swappables.rowBased) {
                 E.add(new SwappableAndNewEdges(
                         new Edge(swappables.swappable1, new2.get(c)), 
-                        new Edge(swappables.swappable2, new1.get(c)),
-                        new Edge(swappables.swappable1, new1.get(c)),
-                        new Edge(swappables.swappable2, new2.get(c))));
+                        new Edge(swappables.swappable2, new1.get(c)), 0, 0));
             } else {
                 E.add(new SwappableAndNewEdges(
                         new Edge(new1.get(c), swappables.swappable2),
-                        new Edge(new2.get(c), swappables.swappable1), 
-                        new Edge(new1.get(c), swappables.swappable1),
-                        new Edge(new2.get(c), swappables.swappable2)));
+                        new Edge(new2.get(c), swappables.swappable1), 0, 0));
             }
         }
         return E;
@@ -758,7 +752,8 @@ public class BJDMMatrix extends Matrix {
     }
     
     public long getNumCaterpillars() {
-        return edges.parallelStream()
+        return edges
+                .parallelStream()
                 .mapToLong(edge -> (this.getRowSum(edge.row) - 1) * (this.getColSum(edge.col) - 1))
                 .sum();
     }

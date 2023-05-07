@@ -5,6 +5,7 @@ import alice.helpers.SwappableAndNewEdges;
 import alice.structures.SparseMatrix;
 import alice.helpers.LogNumEquivMatricesTracker;
 import alice.helpers.SwappableLists;
+import alice.structures.Edge;
 import alice.structures.Vector;
 import alice.utils.Timer;
 import com.google.common.collect.Maps;
@@ -86,11 +87,13 @@ public class CurveballBJDMSampler implements Sampler {
                     final Vector[] swappableRows = new Vector[]{
                         matrix.getRowInstance(swappable.swappableEdge1.row), 
                         matrix.getRowInstance(swappable.swappableEdge2.row)};
+                    final Edge newEdge1 = new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col);
+                    final Edge newEdge2 = new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col);
                     final Vector[] newRows = matrix.getNewRows(
                             swappableRows[0], 
                             swappableRows[1],
-                            swappable.newEdge1, 
-                            swappable.newEdge2);
+                            newEdge1, 
+                            newEdge2);
                     logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivAdjMatrices,
                             swappableRows[0],
@@ -125,13 +128,13 @@ public class CurveballBJDMSampler implements Sampler {
                         // update cols
                         matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
-                        matrix.setCol(swappable.newEdge1.row, swappable.newEdge1.col, 1);
-                        matrix.setCol(swappable.newEdge2.row, swappable.newEdge2.col, 1);
+                        matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge2.col, 1);
+                        matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge1.col, 1);
                         // update edges
                         matrix.edges.remove(swappable.swappableEdge1);
                         matrix.edges.remove(swappable.swappableEdge2);
-                        matrix.edges.add(swappable.newEdge1);
-                        matrix.edges.add(swappable.newEdge2);
+                        matrix.edges.add(new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col));
+                        matrix.edges.add(new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col));
                     }
                 } else {
                     // update num equal rows
@@ -144,20 +147,20 @@ public class CurveballBJDMSampler implements Sampler {
                         // update rows
                         matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
-                        matrix.setRow(swappable.newEdge1.row, swappable.newEdge1.col, 1);
-                        matrix.setRow(swappable.newEdge2.row, swappable.newEdge2.col, 1);
+                        matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge2.col, 1);
+                        matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge1.col, 1);
                         // update edges
                         matrix.edges.remove(swappable.swappableEdge1);
                         matrix.edges.remove(swappable.swappableEdge2);
-                        matrix.edges.add(swappable.newEdge1);
-                        matrix.edges.add(swappable.newEdge2);
+                        matrix.edges.add(new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col));
+                        matrix.edges.add(new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col));
                     }
                 }
                 logNumEquivMatrices = logNumEquivAdjMatrices;
             }
             timer.stop();
         }
-        System.out.println("Actual Swaps: " + actualSwaps);
+//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
     
@@ -203,11 +206,13 @@ public class CurveballBJDMSampler implements Sampler {
                     final Vector[] swappableRows = new Vector[]{
                         matrix.getRowInstance(swappable.swappableEdge1.row), 
                         matrix.getRowInstance(swappable.swappableEdge2.row)};
+                    final Edge newEdge1 = new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col);
+                    final Edge newEdge2 = new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col);
                     final Vector[] newRows = matrix.getNewRows(
                             swappableRows[0], 
                             swappableRows[1],
-                            swappable.newEdge1, 
-                            swappable.newEdge2);
+                            newEdge1, 
+                            newEdge2);
                     logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivAdjMatrices,
                             swappableRows[0],
@@ -242,13 +247,13 @@ public class CurveballBJDMSampler implements Sampler {
                         // update cols
                         matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
-                        matrix.setCol(swappable.newEdge1.row, swappable.newEdge1.col, 1);
-                        matrix.setCol(swappable.newEdge2.row, swappable.newEdge2.col, 1);
+                        matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge2.col, 1);
+                        matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge1.col, 1);
                         // update edges
                         matrix.edges.remove(swappable.swappableEdge1);
                         matrix.edges.remove(swappable.swappableEdge2);
-                        matrix.edges.add(swappable.newEdge1);
-                        matrix.edges.add(swappable.newEdge2);
+                        matrix.edges.add(new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col));
+                        matrix.edges.add(new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col));
                     }
                 } else {
                     // update num equal rows
@@ -261,13 +266,13 @@ public class CurveballBJDMSampler implements Sampler {
                         // update rows
                         matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
-                        matrix.setRow(swappable.newEdge1.row, swappable.newEdge1.col, 1);
-                        matrix.setRow(swappable.newEdge2.row, swappable.newEdge2.col, 1);
+                        matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge2.col, 1);
+                        matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge1.col, 1);
                         // update edges
                         matrix.edges.remove(swappable.swappableEdge1);
                         matrix.edges.remove(swappable.swappableEdge2);
-                        matrix.edges.add(swappable.newEdge1);
-                        matrix.edges.add(swappable.newEdge2);
+                        matrix.edges.add(new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col));
+                        matrix.edges.add(new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col));
                     }
                 }
                 logNumEquivMatrices = logNumEquivAdjMatrices;
@@ -306,7 +311,7 @@ public class CurveballBJDMSampler implements Sampler {
         double logNumEquivMatrices = matrix.getLogNumEquivMatrices();
 
         for (int i = 0; i < numSwaps; i++) {
-            logNumEquivMatricesTracker.save(matrix, logNumEquivMatrices);
+            logNumEquivMatricesTracker.save(matrix.getMatrix(), logNumEquivMatrices);
 
             final SwappableLists snes = matrix.getSwappablesNewEdges(rnd);
 
@@ -326,18 +331,14 @@ public class CurveballBJDMSampler implements Sampler {
 
                 final Vector swappableRow1 = matrix.getRowInstance(swappable.swappableEdge1.row);
                 final Vector swappableRow2 = matrix.getRowInstance(swappable.swappableEdge2.row);
-                final Vector[] newRows = matrix.getNewRows(
-                        swappable.newEdge1,
-                        swappable.newEdge2);
+                final Edge newEdge1 = new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col);
+                final Edge newEdge2 = new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col);
+                final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
 
                 logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
                         logNumEquivAdjMatrices, swappableRow1, swappableRow2, newRows[0], newRows[1]);
 
-                matrix.transition(
-                                swappable.swappableEdge1,
-                                swappable.swappableEdge2,
-                                swappable.newEdge1,
-                                swappable.newEdge2,
+                matrix.transition(swappable,
                                 swappableRow1,
                                 swappableRow2,
                                 newRows[0],
@@ -354,6 +355,7 @@ public class CurveballBJDMSampler implements Sampler {
      * @param seed the random seed
      * @param timer a timer
      * @param stats stores the distances between consecutive BJDMs
+     * @param numCater stores the number of caterpillars
      * @return the matrix representation of the sampled dataset
      */
     @Override
@@ -408,11 +410,13 @@ public class CurveballBJDMSampler implements Sampler {
                     final Vector[] swappableRows = new Vector[]{
                         matrix.getRowInstance(swappable.swappableEdge1.row), 
                         matrix.getRowInstance(swappable.swappableEdge2.row)};
+                    final Edge newEdge1 = new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col);
+                    final Edge newEdge2 = new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col);
                     final Vector[] newRows = matrix.getNewRows(
                             swappableRows[0], 
                             swappableRows[1],
-                            swappable.newEdge1, 
-                            swappable.newEdge2);
+                            newEdge1, 
+                            newEdge2);
                     logNumEquivAdjMatrices = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivAdjMatrices,
                             swappableRows[0],
@@ -445,13 +449,13 @@ public class CurveballBJDMSampler implements Sampler {
                         // update cols
                         matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
-                        matrix.setCol(swappable.newEdge1.row, swappable.newEdge1.col, 1);
-                        matrix.setCol(swappable.newEdge2.row, swappable.newEdge2.col, 1);
+                        matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge2.col, 1);
+                        matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge1.col, 1);
                         // update edges
                         matrix.edges.remove(swappable.swappableEdge1);
                         matrix.edges.remove(swappable.swappableEdge2);
-                        matrix.edges.add(swappable.newEdge1);
-                        matrix.edges.add(swappable.newEdge2);
+                        matrix.edges.add(new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col));
+                        matrix.edges.add(new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col));
                     }
                 } else {
                     // update num equal rows
@@ -464,13 +468,13 @@ public class CurveballBJDMSampler implements Sampler {
                         // update rows
                         matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
-                        matrix.setRow(swappable.newEdge1.row, swappable.newEdge1.col, 1);
-                        matrix.setRow(swappable.newEdge2.row, swappable.newEdge2.col, 1);
+                        matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge2.col, 1);
+                        matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge1.col, 1);
                         // update edges
                         matrix.edges.remove(swappable.swappableEdge1);
                         matrix.edges.remove(swappable.swappableEdge2);
-                        matrix.edges.add(swappable.newEdge1);
-                        matrix.edges.add(swappable.newEdge2);
+                        matrix.edges.add(new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col));
+                        matrix.edges.add(new Edge(swappable.swappableEdge2.row, swappable.swappableEdge1.col));
                     }
                 }
                 logNumEquivMatrices = logNumEquivAdjMatrices;

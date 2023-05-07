@@ -61,7 +61,7 @@ public class CountingWedges {
         return numButts;
     }
     
-    public static long countWedges(List<Vector> elems, int max_id) {
+    public static long countWedges(Vector[] elems, int max_id) {
         int max_id_plus_one = max_id + 1;
         Long2LongOpenHashMap map__id_id__num_occ = new Long2LongOpenHashMap(16 * max_id);
         map__id_id__num_occ.defaultReturnValue(0);

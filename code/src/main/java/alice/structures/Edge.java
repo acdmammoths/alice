@@ -55,4 +55,8 @@ public class Edge {
     public String toString() {
         return "(" + this.row + ", " + this.col + ")";
     }
+    
+    public Edge copy() {
+        return new Edge(this.row, this.col);
+    }
 }

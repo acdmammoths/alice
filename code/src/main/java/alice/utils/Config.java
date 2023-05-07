@@ -30,7 +30,7 @@ public class Config {
     public static int numSwaps = 1000;
     public static double maxNumSwapsFactor = 5;
     // number of random sample to generate
-    public static int numSamples = 2;
+    public static int numSamples = 20;
     // number of random samples to generate to estimate the p-values
     public static int numEstSamples = 2048;
     // number of random samples to generate to compute the adjusted critical values

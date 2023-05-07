@@ -255,12 +255,12 @@ public class GmmtSamplerTest {
         final GmmtMatrix matrix = new GmmtMatrix(inMatrix);
 
         for (int t = 0; t < 1000; t++) {
-            GmmtMatrix adjMatrix = new GmmtMatrix(matrix.getMatrix());
+            GmmtMatrix adjMatrix = new GmmtMatrix(matrix.getMatrix(), matrix.edges);
             final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
-            adjMatrix.transition(sne.swappableEdge1, sne.swappableEdge2, sne.newEdge1, sne.newEdge2);
-            adjMatrix = new GmmtMatrix(adjMatrix.getMatrix());
-
-            matrix.transition(sne.swappableEdge1, sne.swappableEdge2, sne.newEdge1, sne.newEdge2);
+            
+            adjMatrix.transition(sne);
+            adjMatrix = new GmmtMatrix(adjMatrix.getMatrix(), adjMatrix.edges);
+            matrix.transition(sne);
 
             Assert.assertEquals(adjMatrix, matrix);
             Assert.assertEquals(adjMatrix.getEdgesSet(), matrix.getEdgesSet());

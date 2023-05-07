@@ -16,12 +16,9 @@ package alice.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.google.common.collect.Lists;
-import java.util.List;
-import java.util.Objects;
+import com.google.common.collect.Sets;
+import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * An implementation of a sparse 0-1 matrix using an array of hash sets. Any
@@ -32,12 +29,12 @@ public class SparseMatrix {
     /**
      * A list of vectors to store the rows of the matrix.
      */
-    private final List<Vector> listOfRows;
+    private final Vector[] listOfRows;
     
     /**
      * A list of vectors to store the cols of the matrix.
      */
-    private final List<Vector> listOfCols;
+    private final Vector[] listOfCols;
 
     /**
      * Initialize an empty matrix with dimensions numRows x numCols.
@@ -46,22 +43,24 @@ public class SparseMatrix {
      * @param numCols the number of columns in the matrix
      */
     public SparseMatrix(int numRows, int numCols) {
-        this.listOfRows = IntStream.range(0, numRows)
-                .mapToObj(i -> new Vector())
-                .collect(Collectors.toList());
-        this.listOfCols = IntStream.range(0, numCols)
-                .mapToObj(i -> new Vector())
-                .collect(Collectors.toList());
+        this.listOfRows = new Vector[numRows];
+        for (int i = 0; i < numRows; i++) {
+            listOfRows[i] = new Vector();
+        }
+        this.listOfCols = new Vector[numCols];
+        for (int i = 0; i < numCols; i++) {
+            listOfCols[i] = new Vector();
+        }
     }
     
-    public SparseMatrix(List<Vector> rows, List<Vector> cols) {
-        this.listOfRows = Lists.newArrayList();
-        for (Vector row : rows) {
-            this.listOfRows.add(row.copy());
+    public SparseMatrix(Vector[] rows, Vector[] cols) {
+        this.listOfRows = new Vector[rows.length];
+        for (int i = 0; i < rows.length; i++) {
+            this.listOfRows[i] = rows[i].copy();
         }
-        this.listOfCols = Lists.newArrayList();
-        for (Vector col : cols) {
-            this.listOfCols.add(col.copy());
+        this.listOfCols = new Vector[cols.length];
+        for (int i = 0; i < cols.length; i++) {
+            this.listOfCols[i] = cols[i].copy();
         }
     }
 
@@ -84,87 +83,93 @@ public class SparseMatrix {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o == null) {
-            return false;
-        } else if (this.getClass() != o.getClass()) {
-            return false;
-        } else {
-            SparseMatrix otherMatrix = (SparseMatrix) o;
-            return Objects.equals(this.listOfRows, otherMatrix.listOfRows);
         }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        } 
+        SparseMatrix otherMatrix = (SparseMatrix) o;
+        for (int i = 0; i < this.listOfRows.length; i++) {
+            if (!this.listOfRows[i].equals(otherMatrix.listOfRows[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return this.listOfRows.hashCode();
+        return Arrays.hashCode(this.listOfRows);
     }
 
     @Override
     public String toString() {
-        return this.listOfRows.toString();
+        return Arrays.toString(listOfRows);
     }
 
     public int getNumRows() {
-        return this.listOfRows.size();
+        return this.listOfRows.length;
     }
 
     public int getNumCols() {
-        return this.listOfCols.size();
+        return this.listOfCols.length;
     }
 
     public int isInRow(int r, int c) {
-        return this.listOfRows.get(r).get(c);
+        return this.listOfRows[r].get(c);
     }
     
     public void setInRow(int r, int c, int value) {
-        this.listOfRows.get(r).set(c, value);
+        this.listOfRows[r].set(c, value);
     }
     
     public void replaceRow(int r, Vector row) {
-        this.listOfRows.set(r, row);
+        this.listOfRows[r] = row;
     }
     
     public void replaceCol(int c, Vector col) {
-        this.listOfCols.set(c, col);
+        this.listOfCols[c] = col;
     }
     
     public void setInCol(int r, int c, int value) {
-        this.listOfCols.get(c).set(r, value);
+        this.listOfCols[c].set(r, value);
     }
 
     public Set<Integer> getNonzeroIndices(int r) {
-        return this.listOfRows.get(r).getNonzeroIndices();
+        return this.listOfRows[r].getNonzeroIndices();
     }
     
     public Set<Integer> getNonzeroColIndices(int c) {
-        return this.listOfCols.get(c).getNonzeroIndices();
+        return this.listOfCols[c].getNonzeroIndices();
     }
 
     public int getNumNonzeroIndices(int r) {
-        return this.listOfRows.get(r).getNumNonzeroIndices();
+        return this.listOfRows[r].getNumNonzeroIndices();
     }
 
     public Vector getRowCopy(int r) {
-        return this.listOfRows.get(r).copy();
+        return this.listOfRows[r].copy();
     }
 
     public Vector getRowInstance(int r) {
-        return this.listOfRows.get(r);
+        return this.listOfRows[r];
     }
     
     public Vector getColCopy(int c) {
-        return this.listOfCols.get(c).copy();
+        return this.listOfCols[c].copy();
     }
 
     public Vector getColInstance(int c) {
-        return this.listOfCols.get(c);
+        return this.listOfCols[c];
     }
     
-    public List<Vector> getCols() {
+    public Vector[] getCols() {
         return this.listOfCols;
     }
     
-    public List<Vector> getRows() {
+    public Vector[] getRows() {
         return this.listOfRows;
     }
 

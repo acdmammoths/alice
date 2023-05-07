@@ -97,10 +97,11 @@ public class SampleAndMineTask implements Runnable {
 
     @Override
     public void run() {
+        long start = System.currentTimeMillis();
         final SparseMatrix sample
                 = this.sampler.sample(this.matrix, this.degree, this.numSwaps, this.seed, new Timer(false));
         this.transformer.createDataset(this.samplePath, sample);
-        System.out.println("Sample created: " + this.samplePath);
+        System.out.println("Sample created: " + this.samplePath + " in " + (System.currentTimeMillis() - start));
 
         FreqItemsetMiner.mine(this.samplePath, this.minFreq, this.freqItemsetsPath);
         System.out.println("Frequent itemsets mined: " + this.freqItemsetsPath);

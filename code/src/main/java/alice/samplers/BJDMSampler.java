@@ -64,10 +64,10 @@ public class BJDMSampler implements Sampler {
             
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
+            final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
+            final Edge newEdge2 = new Edge(swappableEdge2.row, swappableEdge1.col);
             final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
             final Vector newRow1 = newRows[0];
             final Vector newRow2 = newRows[1];
@@ -81,9 +81,7 @@ public class BJDMSampler implements Sampler {
             
             if (rnd.nextDouble() <= acceptanceProb) {
                 actualSwaps ++;
-                matrix.transition(
-                        swappableEdge1, swappableEdge2,
-                        newEdge1, newEdge2,
+                matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
                 
@@ -116,11 +114,10 @@ public class BJDMSampler implements Sampler {
             if (sne == null) {
                 continue;
             }
-            
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
+            final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
+            final Edge newEdge2 = new Edge(swappableEdge2.row, swappableEdge1.col);
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
             final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
@@ -136,9 +133,7 @@ public class BJDMSampler implements Sampler {
             
             if (rnd.nextDouble() <= acceptanceProb) {
                 actualSwaps ++;
-                matrix.transition(
-                        swappableEdge1, swappableEdge2,
-                        newEdge1, newEdge2,
+                matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
                 
@@ -146,7 +141,6 @@ public class BJDMSampler implements Sampler {
             }
             timer.stop();
         }
-//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
 
@@ -178,7 +172,7 @@ public class BJDMSampler implements Sampler {
         double logNumEquivMatrices = matrix.getLogNumEquivMatrices();
 
         for (int i = 0; i < numSwaps; i++) {
-            logNumEquivMatricesTracker.save(matrix, logNumEquivMatrices);
+            logNumEquivMatricesTracker.save(matrix.getMatrix(), logNumEquivMatrices);
 
             final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
             
@@ -188,8 +182,8 @@ public class BJDMSampler implements Sampler {
             
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
+            final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
+            final Edge newEdge2 = new Edge(swappableEdge2.row, swappableEdge1.col);
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
             final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
@@ -200,9 +194,7 @@ public class BJDMSampler implements Sampler {
                     = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
 
-            matrix.transition(
-                    swappableEdge1, swappableEdge2,
-                    newEdge1, newEdge2,
+            matrix.transition(sne,
                     swappableRow1, swappableRow2,
                     newRow1, newRow2);
 
@@ -253,8 +245,8 @@ public class BJDMSampler implements Sampler {
             
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final Edge newEdge1 = sne.newEdge1;
-            final Edge newEdge2 = sne.newEdge2;
+            final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
+            final Edge newEdge2 = new Edge(swappableEdge2.row, swappableEdge1.col);
             final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
             final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
             final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
@@ -264,15 +256,12 @@ public class BJDMSampler implements Sampler {
             final double logNumEquivAdjMatrices
                     = matrix.getLogNumEquivAdjMatrices(
                             logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
-
+            
             final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
-//                System.out.println("Swap Done");
-                matrix.transition(
-                        swappableEdge1, swappableEdge2,
-                        newEdge1, newEdge2,
+                matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
 

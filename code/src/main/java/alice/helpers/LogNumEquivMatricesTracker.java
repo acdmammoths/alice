@@ -17,6 +17,7 @@ package alice.helpers;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import alice.structures.Matrix;
+import alice.structures.SparseMatrix;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class LogNumEquivMatricesTracker {
      * @param matrix the input matrix
      * @param logNumEquivMatrices the log of the number of equivalent matrices
      */
-    public void save(Matrix matrix, double logNumEquivMatrices) {
+    public void save(SparseMatrix matrix, double logNumEquivMatrices) {
         int matrixHash = matrix.hashCode();
         Set<Integer> matrixHashes
                 = this.logNumEquivMatricesToMatrixHashes.getOrDefault(logNumEquivMatrices, new HashSet<>());

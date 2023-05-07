@@ -18,13 +18,13 @@ import alice.structures.Matrix;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-class AdjMatrixTestCase {
-  final Matrix matrix;
-  final Matrix adjMatrix;
+class AdjMatrixTestCase<T> {
+  final T matrix;
+  final T adjMatrix;
   final Edge swappableEdge1;
   final Edge swappableEdge2;
 
-  AdjMatrixTestCase(Matrix matrix, Matrix adjMatrix, Edge swappableEdge1, Edge swappableEdge2) {
+  AdjMatrixTestCase(T matrix, T adjMatrix, Edge swappableEdge1, Edge swappableEdge2) {
     this.matrix = matrix;
     this.adjMatrix = adjMatrix;
     this.swappableEdge1 = swappableEdge1;

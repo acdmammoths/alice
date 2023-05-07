@@ -19,8 +19,8 @@
 #   -version (to print out version info)
 
 L_TLEN="10"                    # T
-L_NTRANS="20"               # D
-L_NITEMS="1"                   # N
+L_NTRANS="1000"               # D
+L_NITEMS="10"                   # N
 
 NPATS=2000                     # L 
 PATLEN=8                      # I

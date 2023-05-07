@@ -26,9 +26,9 @@ import alice.structures.Edge;
 public class SwappableAndNewEdges {
 
     public final Edge swappableEdge1;
+    public final int e1Index;
     public final Edge swappableEdge2;
-    public final Edge newEdge1;
-    public final Edge newEdge2;
+    public final int e2Index;
 
     /**
      * Instantiates an instance of {@link SwappableAndNewEdges}.
@@ -37,20 +37,19 @@ public class SwappableAndNewEdges {
      * adjacent matrix
      * @param swappableEdge2 the second swappable edge that transitions to the
      * adjacent matrix
-     * @param newEdge1 the first new edge that transitions to the adjacent
-     * matrix
-     * @param newEdge2 the second new edge that transitions to the adjacent
-     * matrix
+     * @param index1
+     * @param index2
      */
-    public SwappableAndNewEdges(Edge swappableEdge1, Edge swappableEdge2, Edge newEdge1, Edge newEdge2) {
+    public SwappableAndNewEdges(Edge swappableEdge1, Edge swappableEdge2, int index1, int index2) {
         this.swappableEdge1 = swappableEdge1;
         this.swappableEdge2 = swappableEdge2;
-        this.newEdge1 = newEdge1;
-        this.newEdge2 = newEdge2;
+        this.e1Index = index1;
+        this.e2Index = index2;
     }
     
     @Override
     public String toString() {
-        return swappableEdge1.toString() + "," + swappableEdge2.toString();
+        return swappableEdge1.toString() + "," + swappableEdge2.toString() 
+                + "-" + e1Index + "," + e2Index;
     }
 }

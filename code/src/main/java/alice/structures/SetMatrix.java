@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -36,7 +35,7 @@ import org.javatuples.Pair;
  * A wrapper class around an instance of a {@link SparseMatrix} and useful data
  * structures that store the matrix's properties.
  */
-public class Matrix {
+public class SetMatrix {
 
     /**
      * A 0-1 matrix representation of the dataset.
@@ -57,7 +56,7 @@ public class Matrix {
      * A list of the edges from the bipartite graph representation of the
      * matrix.
      */
-    public final Edge[] edges;
+    public final Set<Edge> edges;
 
     /**
      * A map where each key is a row and the value is the number of rows equal
@@ -71,45 +70,20 @@ public class Matrix {
      *
      * @param inMatrix a 0-1 matrix representation of the dataset
      */
-    public Matrix(SparseMatrix inMatrix) {
+    public SetMatrix(SparseMatrix inMatrix) {
         this.rowToNumEqRows = Maps.newHashMap();
         this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
         this.rowSums = new int[inMatrix.getNumRows()];
         this.colSums = new int[inMatrix.getNumCols()];
-        Set<Edge> tmpEdges = Sets.newHashSet();
+        this.edges = Sets.newHashSet();
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
             for (int c : inMatrix.getNonzeroIndices(r)) {
                 setRow(r, c, inMatrix.isInRow(r, c));
                 setCol(r, c, inMatrix.isInRow(r, c));
-                tmpEdges.add(new Edge(r, c));
+                edges.add(new Edge(r, c));
                 this.rowSums[r]++;
                 this.colSums[c]++;
             }
-        }
-        int counter = 0;
-        this.edges = new Edge[tmpEdges.size()];
-        for (Edge edge : tmpEdges) {
-            this.edges[counter] = edge;
-            counter ++;
-        }
-    }
-    
-    public Matrix(SparseMatrix inMatrix, Edge[] edges) {
-        this.rowToNumEqRows = Maps.newHashMap();
-        this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
-        this.rowSums = new int[inMatrix.getNumRows()];
-        this.colSums = new int[inMatrix.getNumCols()];
-        for (int r = 0; r < inMatrix.getNumRows(); r++) {
-            for (int c : inMatrix.getNonzeroIndices(r)) {
-                setRow(r, c, inMatrix.isInRow(r, c));
-                setCol(r, c, inMatrix.isInRow(r, c));
-                this.rowSums[r]++;
-                this.colSums[c]++;
-            }
-        }
-        this.edges = new Edge[edges.length];
-        for (int i = 0; i < edges.length; i++) {
-            this.edges[i] = edges[i].copy();
         }
     }
 
@@ -117,14 +91,15 @@ public class Matrix {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o == null) {
-            return false;
-        } else if (this.getClass() != o.getClass()) {
-            return false;
-        } else {
-            Matrix otherMatrix = (Matrix) o;
-            return this.matrix.equals(otherMatrix.matrix);
         }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+        SetMatrix other = (SetMatrix) o;
+        return this.matrix.equals(other.getMatrix());
     }
     
     @Override
@@ -222,26 +197,9 @@ public class Matrix {
     }
 
     public int getNumEdges() {
-        return this.edges.length;
+        return this.edges.size();
     }
 
-    /**
-     * Samples edges from the graph representation of the matrix uniformly at
-     * random.
-     *
-     * @param rnd a {@link Random} instance
-     * @return the two sampled edges as a length two array of {@link Edge}
-     */
-    public SwappableAndNewEdges sampleEdges(Random rnd) {
-        final int edge1Index = rnd.nextInt(this.getNumEdges());
-        int edge2Index;
-        do {
-            edge2Index = rnd.nextInt(this.getNumEdges());
-        } while (edge1Index == edge2Index);
-
-        return new SwappableAndNewEdges(edges[edge1Index], edges[edge2Index], edge1Index, edge2Index);
-    }
-    
     /**
      * Swaps 1s across two rows in the matrix.
      *
@@ -267,8 +225,10 @@ public class Matrix {
     public void swapEdges(SwappableAndNewEdges sne) {
         final Edge newEdge1 = new Edge(sne.swappableEdge1.row, sne.swappableEdge2.col);
         final Edge newEdge2 = new Edge(sne.swappableEdge2.row, sne.swappableEdge1.col);
-        this.edges[sne.e1Index] = newEdge1;
-        this.edges[sne.e2Index] = newEdge2;
+        this.edges.remove(sne.swappableEdge1);
+        this.edges.remove(sne.swappableEdge2);
+        this.edges.add(newEdge1);
+        this.edges.add(newEdge2);
     }
 
     /**
@@ -465,7 +425,7 @@ public class Matrix {
             
             M[r-1][c-1] = entries.get(i).getValue();
             if (normalize) {
-                M[r-1][c-1] /= 1. * edges.length;
+                M[r-1][c-1] /= 1. * edges.size();
             }
         });
         double[] bjdmV = new double[maxRowSum * maxColSum];
@@ -505,9 +465,11 @@ public class Matrix {
     }
     
     public SwappableAndNewEdges getRandomSwappables(Random rnd) {
-        final int e1Index = rnd.nextInt(edges.length);
-        final int e2Index = rnd.nextInt(edges.length);
-        return new SwappableAndNewEdges(edges[e1Index], edges[e2Index], e1Index, e2Index);
+        final int e1Index = rnd.nextInt(edges.size());
+        final int e2Index = rnd.nextInt(edges.size());
+        final Edge firstEdge = edges.stream().skip(e1Index).findFirst().get();
+        final Edge secondEdge = edges.stream().skip(e2Index).findFirst().get();
+        return new SwappableAndNewEdges(firstEdge, secondEdge, e1Index, e2Index);
     }
     
 }
