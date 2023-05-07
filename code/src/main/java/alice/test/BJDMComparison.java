@@ -76,6 +76,7 @@ public class BJDMComparison {
             
             final String samplerName = sampler.getClass().getName();
             final Map<Integer, DescriptiveStatistics> allStats = Maps.newConcurrentMap();
+            final Map<Integer, DescriptiveStatistics> allCatNum = Maps.newConcurrentMap();
             final Map<Integer, Timer> allTimers = Maps.newConcurrentMap();
             
             System.out.println(samplerName);
@@ -90,9 +91,11 @@ public class BJDMComparison {
                         seed,
                         i,
                         new Timer(true),
+                        new DescriptiveStatistics(),
                         new DescriptiveStatistics());
                 pool.execute(sampleTask);
                 allStats.put(i, sampleTask.getStats());
+                allCatNum.put(i, sampleTask.getNumCat());
                 allTimers.put(i, sampleTask.getTimes());
             }
             pool.shutdown();
@@ -144,6 +147,15 @@ public class BJDMComparison {
                 c90[e.getKey()] = st.getPercentile(90);
                 max[e.getKey()] = st.getMax();
             }
+            
+            // get Num Caterpillars
+            final double[] numC = new double[Config.numSamples];
+            
+            for (Entry<Integer, DescriptiveStatistics> e : allCatNum.entrySet()) {
+                DescriptiveStatistics st = e.getValue();
+                numC[e.getKey()] = st.getMax();
+            }
+            
             // create object for stats
             final JSONObject samplerRuntimeStats = new JSONObject();
             samplerRuntimeStats.put(JsonKeys.setupTime, setupTime);
@@ -162,6 +174,7 @@ public class BJDMComparison {
             samplerRuntimeStats.put("q3Dist", q3);
             samplerRuntimeStats.put("c90Dist", c90);
             samplerRuntimeStats.put("maxDist", max);
+            samplerRuntimeStats.put("numCater", numC);
             
             runtimeStats.put(samplerName, samplerRuntimeStats);
         }

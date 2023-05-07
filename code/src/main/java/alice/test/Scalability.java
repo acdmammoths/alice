@@ -44,9 +44,10 @@ public class Scalability {
         CMDLineParser.parse(args);
 
         final Sampler[] samplers = {
+            new GmmtSampler(),
             new BJDMSampler(), 
-            new CurveballBJDMSampler(), 
-            new GmmtSampler()};
+            new CurveballBJDMSampler() 
+            };
 
         System.out.println("Executing runtime experiment for dataset at " + Config.datasetPath);
 

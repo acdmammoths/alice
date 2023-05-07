@@ -42,6 +42,11 @@ public class SampleAndMineTask implements Runnable {
      * The matrix of the observed dataset.
      */
     private final SparseMatrix matrix;
+    
+    /**
+     * The degree of the matrix.
+     */
+    private final long degree;
 
     /**
      * The number of swaps to perform.
@@ -73,6 +78,7 @@ public class SampleAndMineTask implements Runnable {
             Sampler sampler,
             Transformer transformer,
             SparseMatrix matrix,
+            long degree,
             int numSwaps,
             long seed,
             double minFreq,
@@ -81,6 +87,7 @@ public class SampleAndMineTask implements Runnable {
         this.sampler = sampler;
         this.transformer = transformer;
         this.matrix = matrix;
+        this.degree = degree;
         this.numSwaps = numSwaps;
         this.seed = seed;
         this.minFreq = minFreq;
@@ -91,7 +98,7 @@ public class SampleAndMineTask implements Runnable {
     @Override
     public void run() {
         final SparseMatrix sample
-                = this.sampler.sample(this.matrix, this.numSwaps, this.seed, new Timer(false));
+                = this.sampler.sample(this.matrix, this.degree, this.numSwaps, this.seed, new Timer(false));
         this.transformer.createDataset(this.samplePath, sample);
         System.out.println("Sample created: " + this.samplePath);
 

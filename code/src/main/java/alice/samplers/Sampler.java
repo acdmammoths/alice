@@ -28,9 +28,12 @@ public interface Sampler {
 
     SparseMatrix sample(SparseMatrix inMatrix, int numSwaps, long seed, Timer timer);
     
+    SparseMatrix sample(SparseMatrix inMatrix, long degree, int numSwaps, long seed, Timer timer);
+    
     SparseMatrix sample(SparseMatrix inMatrix, 
             int numSwaps, 
             long seed, 
             Timer timer, 
-            DescriptiveStatistics stats);
+            DescriptiveStatistics stats,
+            DescriptiveStatistics numCater);
 }

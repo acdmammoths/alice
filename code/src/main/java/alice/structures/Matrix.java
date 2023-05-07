@@ -16,6 +16,7 @@ package alice.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import alice.helpers.SwappableAndNewEdges;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -29,6 +30,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
 import org.apache.commons.math3.ml.distance.EarthMoversDistance;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.javatuples.Pair;
 
 /**
@@ -169,6 +171,10 @@ public class Matrix {
 
     public int getNumRows() {
         return this.matrix.getNumRows();
+    }
+    
+    public int getNumCols() {
+        return this.matrix.getNumCols();
     }
 
     public int[] getRowSums() {
@@ -480,6 +486,33 @@ public class Matrix {
         double[] thisBJDM = getBJDMVector(normalize);
         EarthMoversDistance emd = new EarthMoversDistance();
         return emd.compute(thisBJDM, otherBJDM);
+    }
+    
+    public long getNumButterflies() {
+        List<Vector> vec = matrix.getCols();
+        if (matrix.getNumRows() < matrix.getNumCols()) {
+            vec = matrix.getRows();
+        }
+        long butt = 0;
+        for (int i = 0; i < vec.size(); i++) {
+            for (int j = i + 1; j < vec.size(); j++) {
+                int inter = (int) vec.get(i).interSize(vec.get(j));
+                if (inter > 1) {
+                    butt += CombinatoricsUtils.binomialCoefficient(inter, 2);   
+                } 
+            }
+        }
+        return butt;
+    }
+    
+    public SwappableAndNewEdges getRandomSwappables(Random rnd) {
+
+        List<Edge> edgeList = Lists.newArrayList(edges);
+        final Edge swappableEdge1 = edgeList.get(rnd.nextInt(edgeList.size()));
+        final Edge swappableEdge2 = edgeList.get(rnd.nextInt(edgeList.size()));
+        final Edge newEdge1 = new Edge(swappableEdge1.row, swappableEdge2.col);
+        final Edge newEdge2 = new Edge(swappableEdge2.row, swappableEdge1.col);
+        return new SwappableAndNewEdges(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
     }
     
 }

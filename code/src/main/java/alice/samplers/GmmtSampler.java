@@ -49,9 +49,10 @@ public class GmmtSampler implements Sampler {
         final GmmtMatrix matrix = new GmmtMatrix(inMatrix);
 
         final Random rnd = new Random(seed);
-        int matrixDegree = matrix.getDegree();
+        long matrixDegree = matrix.getDegree();
 
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
+        System.out.println("SETUP: " + setupTime);
         timer.save(setupTime);
 
         for (int i = 0; i < numSwaps; i++) {
@@ -62,7 +63,7 @@ public class GmmtSampler implements Sampler {
             final Edge newEdge1 = sne.newEdge1;
             final Edge newEdge2 = sne.newEdge2;
             
-            final int adjMatrixDegree
+            final long adjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
             final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
             if (rnd.nextDouble() <= acceptanceProb) {
@@ -73,6 +74,52 @@ public class GmmtSampler implements Sampler {
             timer.stop();
         }
 
+        return matrix.getMatrix();
+    }
+    
+    /**
+     * Samples a matrix from the uniform distribution of matrices with the same
+     * row and column margins as the original matrix by using the
+     * Metropolis-Hastings method by Gionis et al.Reference: Gionis et al.,
+ Algorithm 4 Metropolis-Hastings.
+     *
+     * @param inMatrix a {@link SparseMatrix} representation of the dataset
+     * @param matrixDegree degree of the matrix
+     * @param numSwaps the number of swaps to make such that the chain
+     * sufficiently mixes
+     * @param seed the random seed
+     * @param timer a timer
+     * @return the sampled matrix
+     */
+    @Override
+    public SparseMatrix sample(SparseMatrix inMatrix, long matrixDegree, int numSwaps, long seed, Timer timer) {
+        final long setupTimeStart = System.currentTimeMillis();
+        final GmmtMatrix matrix = new GmmtMatrix(inMatrix);
+
+        final Random rnd = new Random(seed);
+        final long setupTime = System.currentTimeMillis() - setupTimeStart;
+        System.out.println("SETUP: " + setupTime);
+        timer.save(setupTime);
+
+        for (int i = 0; i < numSwaps; i++) {
+            timer.start();
+            long start = System.currentTimeMillis();
+            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            System.out.println("Got SNE: " + (System.currentTimeMillis() - start));
+            final Edge swappableEdge1 = sne.swappableEdge1;
+            final Edge swappableEdge2 = sne.swappableEdge2;
+            final Edge newEdge1 = sne.newEdge1;
+            final Edge newEdge2 = sne.newEdge2;
+            final long adjMatrixDegree
+                    = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
+            final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
+            if (rnd.nextDouble() <= acceptanceProb) {
+                matrix.transition(swappableEdge1, swappableEdge2, newEdge1, newEdge2);
+                matrixDegree = adjMatrixDegree;
+            }
+            timer.stop();
+        }
+        System.out.println("Got Sample");
         return matrix.getMatrix();
     }
 
@@ -87,6 +134,7 @@ public class GmmtSampler implements Sampler {
      * @param seed the random seed
      * @param timer a timer
      * @param stats stores stats on BJDM 
+     * @param numCater stores the number of caterpillars
      * @return the sampled matrix
      */
     @Override
@@ -94,13 +142,14 @@ public class GmmtSampler implements Sampler {
             int numSwaps, 
             long seed, 
             Timer timer, 
-            DescriptiveStatistics stats) {
+            DescriptiveStatistics stats,
+            DescriptiveStatistics numCater) {
         
         final long setupTimeStart = System.currentTimeMillis();
         final GmmtMatrix matrix = new GmmtMatrix(inMatrix);
 
         final Random rnd = new Random(seed);
-        int matrixDegree = matrix.getDegree();
+        long matrixDegree = matrix.getDegree();
 
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
@@ -116,7 +165,7 @@ public class GmmtSampler implements Sampler {
             final Edge newEdge1 = sne.newEdge1;
             final Edge newEdge2 = sne.newEdge2;
             
-            final int adjMatrixDegree
+            final long adjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
             final double acceptanceProb = Math.min(1, (double) matrixDegree / adjMatrixDegree);
             if (rnd.nextDouble() <= acceptanceProb) {
@@ -130,6 +179,7 @@ public class GmmtSampler implements Sampler {
                 stats.addValue(distance);
             } 
         }
+        numCater.addValue(matrix.getNumZstructs());
         return matrix.getMatrix();
     }
 }

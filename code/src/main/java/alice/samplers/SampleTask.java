@@ -61,6 +61,11 @@ public class SampleTask implements Runnable {
      */
     private final DescriptiveStatistics stats;
     
+    /**
+     * The object to store the number of caterpillars.
+     */
+    private final DescriptiveStatistics numCater;
+    
 
     public SampleTask(
             Sampler sampler,
@@ -69,7 +74,8 @@ public class SampleTask implements Runnable {
             long seed,
             int id,
             Timer timer,
-            DescriptiveStatistics stats) {
+            DescriptiveStatistics stats,
+            DescriptiveStatistics numCater) {
         this.sampler = sampler;
         this.matrix = matrix;
         this.numSwaps = numSwaps;
@@ -77,11 +83,12 @@ public class SampleTask implements Runnable {
         this.id = id;
         this.timer = timer;
         this.stats = stats;
+        this.numCater = numCater;
     }
 
     @Override
     public void run() {
-        this.sampler.sample(this.matrix, this.numSwaps, this.seed, this.timer, this.stats);
+        this.sampler.sample(this.matrix, this.numSwaps, this.seed, this.timer, this.stats, this.numCater);
         System.out.println(this.sampler.getClass().toString() + ": sample " + this.id + " created.");
     }
     
@@ -92,4 +99,9 @@ public class SampleTask implements Runnable {
     public Timer getTimes() {
         return timer;
     }
+    
+    public DescriptiveStatistics getNumCat() {
+        return numCater;
+    }
+    
 }

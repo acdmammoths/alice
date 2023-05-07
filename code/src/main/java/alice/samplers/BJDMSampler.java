@@ -78,7 +78,7 @@ public class BJDMSampler implements Sampler {
 
             final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
             final double acceptanceProb = Math.min(1, frac);
-
+            
             if (rnd.nextDouble() <= acceptanceProb) {
                 actualSwaps ++;
                 matrix.transition(
@@ -86,12 +86,67 @@ public class BJDMSampler implements Sampler {
                         newEdge1, newEdge2,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
-
+                
                 logNumEquivMatrices = logNumEquivAdjMatrices;
             }
             timer.stop();
         }
-        System.out.println("Actual Swaps: " + actualSwaps);
+//        System.out.println("Actual Swaps: " + actualSwaps);
+        return matrix.getMatrix();
+    }
+    
+    public SparseMatrix sample(SparseMatrix inMatrix, long degree, int numSwaps, long seed, Timer timer) {
+        final long setupTimeStart = System.currentTimeMillis();
+
+        final BJDMMatrix matrix = new BJDMMatrix(inMatrix);
+
+        final Random rnd = new Random(seed);
+
+        double logNumEquivMatrices = matrix.getLogNumEquivMatrices();
+
+        final long setupTime = System.currentTimeMillis() - setupTimeStart;
+        timer.save(setupTime);
+
+        int actualSwaps = 0;
+        for (int i = 0; i < numSwaps; i++) {
+            timer.start();
+
+            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            
+            if (sne == null) {
+                continue;
+            }
+            
+            final Edge swappableEdge1 = sne.swappableEdge1;
+            final Edge swappableEdge2 = sne.swappableEdge2;
+            final Edge newEdge1 = sne.newEdge1;
+            final Edge newEdge2 = sne.newEdge2;
+            final Vector swappableRow1 = matrix.getRowInstance(swappableEdge1.row);
+            final Vector swappableRow2 = matrix.getRowInstance(swappableEdge2.row);
+            final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
+            final Vector newRow1 = newRows[0];
+            final Vector newRow2 = newRows[1];
+
+            final double logNumEquivAdjMatrices
+                    = matrix.getLogNumEquivAdjMatrices(
+                            logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
+
+            final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
+            final double acceptanceProb = Math.min(1, frac);
+            
+            if (rnd.nextDouble() <= acceptanceProb) {
+                actualSwaps ++;
+                matrix.transition(
+                        swappableEdge1, swappableEdge2,
+                        newEdge1, newEdge2,
+                        swappableRow1, swappableRow2,
+                        newRow1, newRow2);
+                
+                logNumEquivMatrices = logNumEquivAdjMatrices;
+            }
+            timer.stop();
+        }
+//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
 
@@ -162,6 +217,7 @@ public class BJDMSampler implements Sampler {
      * @param seed the random seed
      * @param timer a timer
      * @param stats stores the distances between consecutive BJDMs.
+     * @param catNum stores the number of caterpillars
      * @return the matrix representation of the sampled dataset
      */
     @Override
@@ -169,7 +225,8 @@ public class BJDMSampler implements Sampler {
             int numSwaps, 
             long seed, 
             Timer timer, 
-            DescriptiveStatistics stats) {
+            DescriptiveStatistics stats,
+            DescriptiveStatistics catNum) {
         
         final long setupTimeStart = System.currentTimeMillis();
 
@@ -212,7 +269,7 @@ public class BJDMSampler implements Sampler {
             final double acceptanceProb = Math.min(1, frac);
 
             if (rnd.nextDouble() <= acceptanceProb) {
-                System.out.println("Swap Done");
+//                System.out.println("Swap Done");
                 matrix.transition(
                         swappableEdge1, swappableEdge2,
                         newEdge1, newEdge2,
@@ -228,7 +285,8 @@ public class BJDMSampler implements Sampler {
                 stats.addValue(distance);
             } 
         }
-
+        catNum.addValue(matrix.getNumCaterpillars());
+        
         return matrix.getMatrix();
     
     }

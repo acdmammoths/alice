@@ -16,8 +16,11 @@ package alice.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import alice.helpers.CountingWedges;
 import alice.helpers.SwappableAndNewEdges;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 /**
  * This class extends {@link Matrix} and is used for the {@link GmmtSampler}.
@@ -44,10 +47,12 @@ public class GmmtMatrix extends Matrix {
      *
      * @return the degree of the matrix
      */
-    public int getDegree() {
-        final int numDisjPairsOfEdges = this.getNumDisjPairsOfEdges();
-        final int numZstructs = this.getNumZstructs();
-        final int numK22Cliques = this.getNumK22Cliques();
+    public long getDegree() {
+        final long numDisjPairsOfEdges = this.getNumDisjPairsOfEdges();
+        final long numZstructs = this.getNumZstructs();
+        System.out.println("NUM Caterpillars " + numZstructs);
+        final long numK22Cliques = this.getNumK22Cliques();
+        System.out.println("NUM Butterflies " + numK22Cliques);
         return numDisjPairsOfEdges - numZstructs + 2 * numK22Cliques;
     }
 
@@ -62,7 +67,7 @@ public class GmmtMatrix extends Matrix {
      * @param matrixDegree the degree of the current matrix
      * @return the degree of the adjacent matrix
      */
-    public int getAdjMatrixDegree(Edge swappableEdge1, Edge swappableEdge2, int matrixDegree) {
+    public long getAdjMatrixDegree(Edge swappableEdge1, Edge swappableEdge2, long matrixDegree) {
         final int changeInNumZstructs = this.getChangeInNumZstructs(swappableEdge1, swappableEdge2);
         final int changeInNumK22Cliques = this.getChangeInNumK22Cliques(swappableEdge1, swappableEdge2);
         return matrixDegree - changeInNumZstructs + 2 * changeInNumK22Cliques;
@@ -93,14 +98,10 @@ public class GmmtMatrix extends Matrix {
      *
      * @return the number of Z structures
      */
-    public int getNumZstructs() {
-        int numZstructs = 0;
-        for (Edge edge : this.edges) {
-            final int rowSum = this.getRowSum(edge.row);
-            final int colSum = this.getColSum(edge.col);
-            numZstructs += ((rowSum - 1) * (colSum - 1));
-        }
-        return numZstructs;
+    public long getNumZstructs() {
+        return edges.parallelStream()
+                .mapToLong(edge -> (this.getRowSum(edge.row) - 1) * (this.getColSum(edge.col) - 1))
+                .sum();
     }
 
     /**
@@ -109,15 +110,8 @@ public class GmmtMatrix extends Matrix {
      *
      * @return the number of K22 cliques
      */
-    private int getNumK22Cliques() {
-        int sum = 0;
-        for (int i = 0; i < this.getNumRows(); i++) {
-            for (int k = i + 1; k < this.getNumRows(); k++) {
-                final int val = this.getRowProdMatrixVal(i, k);
-                sum += (val * val - val);
-            }
-        }
-        return sum / 2;
+    public long getNumK22Cliques() {
+        return CountingWedges.countWedges(this.getRows(), getNumRows() + 1);
     }
 
     /**
@@ -147,18 +141,67 @@ public class GmmtMatrix extends Matrix {
      * adjacent matrix
      * @return the change in the number of K22 cliques
      */
-    private int getChangeInNumK22Cliques(Edge swappableEdge1, Edge swappableEdge2) {
-        int sum = 0;
-        final int[] swappableRows = {swappableEdge1.row, swappableEdge2.row};
-        for (int swappableRow : swappableRows) {
-            for (int row = 0; row < swappableRow; row++) {
-                sum += this.sqrdDiff(row, swappableRow, swappableEdge1, swappableEdge2);
+//    private int getChangeInNumK22Cliques(Edge swappableEdge1, Edge swappableEdge2) {
+//        int sum = 0;
+//        final int[] swappableRows = {swappableEdge1.row, swappableEdge2.row};
+//        for (int swappableRow : swappableRows) {
+//            for (int row = 0; row < swappableRow; row++) {
+//                sum += this.sqrdDiff(row, swappableRow, swappableEdge1, swappableEdge2);
+//            }
+//            for (int row = swappableRow + 1; row < this.getNumRows(); row++) {
+//                sum += this.sqrdDiff(swappableRow, row, swappableEdge1, swappableEdge2);
+//            }
+//        }
+//        return sum / 2;
+//    }
+    protected int getChangeInNumK22Cliques(Edge swappableEdge1, Edge swappableEdge2) {
+        int output = 0;
+        final int[] srcs = {swappableEdge1.row, swappableEdge2.row};
+        final int[] dsts = {swappableEdge1.col, swappableEdge2.col};
+        int[][] common = new int[this.getNumRows()][2];
+        for (int i = 0; i < srcs.length; i++) {
+            // for each b, stores the number of neighbors 
+            // before and after the swap
+            if (i != 0) {
+                for (int[] common1 : common) {
+                    common1[0] = 0;
+                    common1[1] = 0;
+                }
             }
-            for (int row = swappableRow + 1; row < this.getNumRows(); row++) {
-                sum += this.sqrdDiff(swappableRow, row, swappableEdge1, swappableEdge2);
+            // neighbors of src
+            Vector neighs = getRowInstance(srcs[i]);
+            for (int h : neighs.getNonzeroIndices()) {
+                Vector hneighs = getColInstance(h);
+                for (int v : hneighs.getNonzeroIndices()) {
+                    if (v == srcs[i]) {
+                        continue;
+                    }
+                    // update num neighs before
+                    common[v][0]++;
+                    // update num neighs after
+                    if (dsts[i] != h) {
+                        common[v][1]++;
+                    }
+                }
             }
+            Vector NewNeigh = getColInstance(dsts[(i + 1) % 2]);
+            for (int v : NewNeigh.getNonzeroIndices()) {
+                if (v == srcs[i] || v == srcs[(i + 1) % 2]) {
+                    continue;
+                }
+                // update num neighs after
+                common[v][1]++;
+            }
+            // compute binomial coefficients
+            int sumDiff = 0;
+            for (int[] common1 : common) {
+                sumDiff += (common1[1] * (common1[1] - 1))
+                        - (common1[0] * (common1[0] - 1));
+            }
+            sumDiff /= 2;
+            output += sumDiff;
         }
-        return sum / 2;
+        return output;
     }
 
     /**

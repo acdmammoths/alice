@@ -127,4 +127,15 @@ public class Vector {
     public int getNumNonzeroIndices() {
         return this.indices.size();
     }
+    
+    /**
+     * 
+     * @param other a vector
+     * @return number of elements in the intersection between the two vectors
+     */
+    public long interSize(Vector other) {
+        return this.indices.stream()
+                .filter(i -> other.indices.contains(i))
+                .count();
+    }
 }

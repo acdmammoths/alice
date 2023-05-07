@@ -110,7 +110,7 @@ public class GmmtSamplerTest {
         for (Entry<GmmtMatrix, Integer> entry : matrixDegreeMap.entrySet()) {
             final GmmtMatrix matrix = entry.getKey();
             final int expectedMatrixDegree = entry.getValue();
-            final int actualMatrixDegree = matrix.getDegree();
+            final long actualMatrixDegree = matrix.getDegree();
 
             Assert.assertEquals(expectedMatrixDegree, actualMatrixDegree);
         }
@@ -238,10 +238,10 @@ public class GmmtSamplerTest {
             final GmmtMatrix adjMatrix = (GmmtMatrix) testCase.adjMatrix;
             final Edge swappableEdge1 = testCase.swappableEdge1;
             final Edge swappableEdge2 = testCase.swappableEdge2;
-            final int matrixDegree = matrix.getDegree();
-            final int expectedAdjMatrixDegree = adjMatrix.getDegree();
+            final long matrixDegree = matrix.getDegree();
+            final long expectedAdjMatrixDegree = adjMatrix.getDegree();
 
-            final int actualAdjMatrixDegree
+            final long actualAdjMatrixDegree
                     = matrix.getAdjMatrixDegree(swappableEdge1, swappableEdge2, matrixDegree);
 
             Assert.assertEquals(expectedAdjMatrixDegree, actualAdjMatrixDegree);

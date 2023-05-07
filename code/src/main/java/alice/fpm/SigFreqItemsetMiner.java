@@ -21,9 +21,11 @@ package alice.fpm;
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
 import alice.config.JsonKeys;
+import alice.samplers.GmmtSampler;
 import alice.utils.Config;
 import alice.utils.JsonFile;
 import alice.samplers.Sampler;
+import alice.structures.GmmtMatrix;
 import alice.utils.Transformer;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -284,6 +286,10 @@ public class SigFreqItemsetMiner {
     private void sampleAndMine(SparseMatrix matrix, int numSamples, String tag) {
         final ExecutorService pool = Executors.newFixedThreadPool(this.numThreads);
 
+        long degree = 0;
+        if (sampler.getClass().getName().equals(GmmtSampler.class.getName())) {
+            degree = new GmmtMatrix(matrix).getDegree();
+        }
         for (int i = 0; i < numSamples; i++) {
             final long thisSeed = rnd.nextLong();
             final String samplePath = this.paths.getSamplePath(tag, i);
@@ -293,6 +299,7 @@ public class SigFreqItemsetMiner {
                             this.sampler,
                             this.transformer,
                             matrix,
+                            degree,
                             this.numSwaps,
                             thisSeed,
                             this.minFreq,

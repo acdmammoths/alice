@@ -18,7 +18,9 @@ package alice.fpm;
  */
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
+import alice.samplers.GmmtSampler;
 import alice.samplers.Sampler;
+import alice.structures.GmmtMatrix;
 import alice.utils.Transformer;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -58,6 +60,10 @@ public class SampleAndMiner {
             String resultsDir) {
         final Transformer transformer = new Transformer();
         final SparseMatrix matrix = transformer.createMatrix(datasetPath);
+        long degree = 0;
+        if (sampler.getClass().getName().equals(GmmtSampler.class.getName())) {
+            degree = new GmmtMatrix(matrix).getDegree();
+        }
         final Paths paths = new Paths(datasetPath, resultsDir);
         final Random rnd = new Random(seed);
         final ExecutorService pool = Executors.newFixedThreadPool(numThreads);
@@ -73,6 +79,7 @@ public class SampleAndMiner {
                             sampler,
                             transformer,
                             matrix,
+                            degree,
                             numSwaps,
                             rnd.nextLong(),
                             minFreq,

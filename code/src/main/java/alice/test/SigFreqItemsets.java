@@ -36,8 +36,8 @@ public class SigFreqItemsets {
         
         final Sampler[] samplers = {
             new BJDMSampler(), 
-            new CurveballBJDMSampler(), 
-            new GmmtSampler()
+//            new CurveballBJDMSampler(), 
+//            new GmmtSampler()
         };
 
         for (Sampler sampler : samplers) {

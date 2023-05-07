@@ -28,6 +28,7 @@ import alice.structures.Matrix;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.samplers.Sampler;
+import alice.samplers.SelfLoopBJDMSampler;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 import com.google.common.collect.Lists;
@@ -51,7 +52,7 @@ public class Convergence {
         
         CMDLineParser.parse(args);
         
-        final Sampler[] samplers = {new BJDMSampler(), new CurveballBJDMSampler()};
+        final Sampler[] samplers = {new SelfLoopBJDMSampler(), new BJDMSampler(), new CurveballBJDMSampler()};
 
         System.out.println("Executing convergence experiment for dataset at " + Config.datasetPath);
 

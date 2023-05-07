@@ -23,24 +23,24 @@ public class Config {
     // directory where the datasets are placed
     public static String datasetsDir = "datasets";
     // path to the dataset
-    public static String datasetPath = "datasets/foodmart.txt";
+    public static String datasetPath = "datasets/retail.txt";
     // directory where the output is saved
     public static String resultsDir = "datasets/";
     // number of iterations to perform before returning the sample
-    public static int numSwaps = 27478;
+    public static int numSwaps = 1000;
     public static double maxNumSwapsFactor = 5;
     // number of random sample to generate
-    public static int numSamples = 2048;
+    public static int numSamples = 2;
     // number of random samples to generate to estimate the p-values
-    public static int numEstSamples = 500;
+    public static int numEstSamples = 2048;
     // number of random samples to generate to compute the adjusted critical values
     public static int numWySamples = 128;
     // minimum frequency for an itemset to be frequent
-    public static double minFreq = 0.0003;
+    public static double minFreq = 0.002;
     // family wise error rate
     public static double fwer = 0.05;
     // number of threads
-    public static int numThreads = 12;
+    public static int numThreads = 32;
     // seed for reproducibility
     public static long seed = 0;
     // whether to sample random datasets and mine their frequent itemsets,

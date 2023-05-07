@@ -340,6 +340,20 @@ public class BJDMMatrix extends Matrix {
     }
     
     /**
+     * Checks whether two edges are swappable.
+     * 
+     * @param sne candidate swappables
+     * @return True if the two edges are swappable; False otherwise
+     */
+    public boolean areSwappable(SwappableAndNewEdges sne) {
+        final Edge first = sne.swappableEdge1;
+        final Edge second = sne.swappableEdge2;
+        return !(first.row == second.row || first.col == second.col ||
+                edges.contains(sne.newEdge1) || edges.contains(sne.newEdge2) ||
+                (rowSums[first.row] != rowSums[second.row] && colSums[first.col] != colSums[second.col]));
+    }
+    
+    /**
      * Method used for validation.
      * 
      * @param rnd
@@ -741,6 +755,12 @@ public class BJDMMatrix extends Matrix {
         newRow2.set(newEdge2.col, 1);
 
         return new Vector[]{newRow1, newRow2};
+    }
+    
+    public long getNumCaterpillars() {
+        return edges.parallelStream()
+                .mapToLong(edge -> (this.getRowSum(edge.row) - 1) * (this.getColSum(edge.col) - 1))
+                .sum();
     }
 
 }
