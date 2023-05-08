@@ -20,6 +20,8 @@ import alice.config.Paths;
 import alice.fpm.Itemsets;
 import alice.config.DatasetNames;
 import alice.utils.Config;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -51,11 +53,11 @@ public class AlgoNegFINModTest {
         final String outPath = Paths.concat(paths.freqItemsetsDirPath, paths.datasetBaseName);
         final AlgoNegFIN negFin = new AlgoNegFIN();
         negFin.runAlgorithm(Config.datasetPath, Config.minFreq, outPath);
-        final Map<Set<Integer>, Integer> expectedFreqItemsetToSup
+        final Object2IntOpenHashMap<IntOpenHashSet> expectedFreqItemsetToSup
                 = Itemsets.getFreqItemsetToSupMap(outPath);
 
         final AlgoNegFINMod negFinMod = new AlgoNegFINMod();
-        final Map<Set<Integer>, Integer> actualFreqItemsetToSup
+        final Object2IntOpenHashMap<IntOpenHashSet> actualFreqItemsetToSup
                 = negFinMod.runAlgorithm(Config.datasetPath, Config.minFreq);
 
         Assert.assertEquals(expectedFreqItemsetToSup, actualFreqItemsetToSup);

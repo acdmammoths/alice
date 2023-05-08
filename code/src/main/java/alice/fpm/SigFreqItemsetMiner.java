@@ -27,6 +27,10 @@ import alice.utils.JsonFile;
 import alice.samplers.Sampler;
 import alice.structures.GmmtMatrix;
 import alice.utils.Transformer;
+import com.google.common.collect.Maps;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -119,13 +123,13 @@ public class SigFreqItemsetMiner {
      * A map where each key is a frequent itemset and the value is the frequent
      * itemset's support.
      */
-    private Map<Set<Integer>, Integer> freqItemsetToSup = new HashMap<>();
+    private Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup = new Object2IntOpenHashMap();
 
     /**
      * A map where each key is a significant frequent itemset and the value is
      * the support and p-value for that significant frequent itemset.
      */
-    private final Map<Set<Integer>, SupAndPvalue> sigFreqItemsetToSupAndPvalue = new HashMap<>();
+    private final Map<IntOpenHashSet, SupAndPvalue> sigFreqItemsetToSupAndPvalue = Maps.newHashMap();
 
     /**
      * The total runtime for mining.
@@ -361,18 +365,17 @@ public class SigFreqItemsetMiner {
         this.freqItemsetToSup = FreqItemsetMiner.mine(datasetPath, this.minFreq);
         System.out.println("Number of frequent itemsets: " + this.freqItemsetToSup.size());
 
-        final Map<Set<Integer>, Double> freqItemsetToPvalue
+        final Object2DoubleOpenHashMap<IntOpenHashSet> freqItemsetToPvalue
                 = Itemsets.getFreqItemsetToPvalueMap(this.paths, this.freqItemsetToSup, this.numEstSamples);
 
-        for (Entry<Set<Integer>, Double> entry : freqItemsetToPvalue.entrySet()) {
-            final double pvalue = entry.getValue();
+        for (IntOpenHashSet  itemset: freqItemsetToPvalue.keySet()) {
+            final double pvalue = freqItemsetToPvalue.get(itemset);
             
             if (pvalue <= this.adjustedCriticalValue) {
-                final Set<Integer> itemset = entry.getKey();
                 final int sup = this.freqItemsetToSup.get(itemset);
                 this.sigFreqItemsetToSupAndPvalue.put(itemset, new SupAndPvalue(sup, pvalue));
             } else {
-                System.out.println(entry.getKey().toString() + " := " + pvalue + " > " +  this.adjustedCriticalValue);
+                System.out.println(itemset.toString() + " := " + pvalue + " > " +  this.adjustedCriticalValue);
             }
         }
         System.out.println(
@@ -385,9 +388,8 @@ public class SigFreqItemsetMiner {
     private void saveResults() {
         // create object for frequent itemsets
         final JSONObject freqItemsetsJson = new JSONObject();
-        for (Entry<Set<Integer>, Integer> entry : this.freqItemsetToSup.entrySet()) {
-            final Set<Integer> freqItemset = entry.getKey();
-            final int sup = entry.getValue();
+        for (IntOpenHashSet freqItemset : this.freqItemsetToSup.keySet()) {
+            final int sup = this.freqItemsetToSup.get(freqItemset);
 
             final String freqItemsetString = Itemsets.toString(freqItemset);
 
@@ -399,8 +401,8 @@ public class SigFreqItemsetMiner {
 
         // create object for significant frequent itemsets
         final JSONObject sigFreqItemsetsJson = new JSONObject();
-        for (Entry<Set<Integer>, SupAndPvalue> entry : this.sigFreqItemsetToSupAndPvalue.entrySet()) {
-            final Set<Integer> sigFreqItemset = entry.getKey();
+        for (Entry<IntOpenHashSet, SupAndPvalue> entry : this.sigFreqItemsetToSupAndPvalue.entrySet()) {
+            final IntOpenHashSet sigFreqItemset = entry.getKey();
             final SupAndPvalue supAndPvalue = entry.getValue();
             final int sup = supAndPvalue.sup;
             final double pvalue = supAndPvalue.pvalue;

@@ -4,6 +4,10 @@ import alice.config.DatasetNames;
 import alice.test.Convergence;
 import alice.utils.Config;
 import alice.utils.Transformer;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,35 +56,35 @@ public class ConvergenceExperimentTest {
     public void getSampleItemsetToSupMap() {
         final Transformer transformer = new Transformer();
         final SparseMatrix sample = transformer.createMatrix(Config.datasetPath);
-        final Set<Set<Integer>> freqItemsets = new HashSet<>();
-        freqItemsets.add(new HashSet<>(Arrays.asList(1, 4)));
-        freqItemsets.add(new HashSet<>(Arrays.asList(2, 4)));
-        freqItemsets.add(new HashSet<>(Arrays.asList(2, 4, 5)));
-        freqItemsets.add(new HashSet<>(Arrays.asList(3, 5)));
-        freqItemsets.add(new HashSet<>(Arrays.asList(1, 3, 5)));
+        final ObjectSet<IntOpenHashSet> freqItemsets = new ObjectOpenHashSet();
+        freqItemsets.add(new IntOpenHashSet(Arrays.asList(1, 4)));
+        freqItemsets.add(new IntOpenHashSet(Arrays.asList(2, 4)));
+        freqItemsets.add(new IntOpenHashSet(Arrays.asList(2, 4, 5)));
+        freqItemsets.add(new IntOpenHashSet(Arrays.asList(3, 5)));
+        freqItemsets.add(new IntOpenHashSet(Arrays.asList(1, 3, 5)));
 
-        final Map<Set<Integer>, Integer> expectedSampleItemsetToSup = new HashMap<>();
-        expectedSampleItemsetToSup.put(new HashSet<>(Arrays.asList(1, 4)), 1);
-        expectedSampleItemsetToSup.put(new HashSet<>(Arrays.asList(2, 4)), 2);
-        expectedSampleItemsetToSup.put(new HashSet<>(Arrays.asList(2, 4, 5)), 2);
+        final Object2IntOpenHashMap<IntOpenHashSet> expectedSampleItemsetToSup = new Object2IntOpenHashMap();
+        expectedSampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(1, 4)), 1);
+        expectedSampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 4)), 2);
+        expectedSampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 4, 5)), 2);
 
-        final Map<Set<Integer>, Integer> actualSampleItemsetToSup
+        final Object2IntOpenHashMap<IntOpenHashSet> actualSampleItemsetToSup
                 = Convergence.getSampleItemsetToSupMap(sample, transformer, freqItemsets);
         Assert.assertEquals(expectedSampleItemsetToSup, actualSampleItemsetToSup);
     }
 
     @Test
     public void getAvgRelFreqDiff() {
-        final Map<Set<Integer>, Integer> itemsetToSup = new HashMap<>();
-        itemsetToSup.put(new HashSet<>(Arrays.asList(1)), 5);
-        itemsetToSup.put(new HashSet<>(Arrays.asList(2)), 2);
-        itemsetToSup.put(new HashSet<>(Arrays.asList(4, 5)), 2);
-        itemsetToSup.put(new HashSet<>(Arrays.asList(2, 3, 4)), 1);
+        final Object2IntOpenHashMap<IntOpenHashSet> itemsetToSup = new Object2IntOpenHashMap();
+        itemsetToSup.put(new IntOpenHashSet(Arrays.asList(1)), 5);
+        itemsetToSup.put(new IntOpenHashSet(Arrays.asList(2)), 2);
+        itemsetToSup.put(new IntOpenHashSet(Arrays.asList(4, 5)), 2);
+        itemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 3, 4)), 1);
 
-        final Map<Set<Integer>, Integer> sampleItemsetToSup = new HashMap<>();
-        sampleItemsetToSup.put(new HashSet<>(Arrays.asList(1)), 2);
-        sampleItemsetToSup.put(new HashSet<>(Arrays.asList(2)), 3);
-        sampleItemsetToSup.put(new HashSet<>(Arrays.asList(2, 3, 4)), 3);
+        final Object2IntOpenHashMap<IntOpenHashSet> sampleItemsetToSup = new Object2IntOpenHashMap();
+        sampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(1)), 2);
+        sampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2)), 3);
+        sampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 3, 4)), 3);
 
         // 1:       |5 - 2| / 5 = 3/5
         // 2:       |2 - 3| / 2 = 1/2

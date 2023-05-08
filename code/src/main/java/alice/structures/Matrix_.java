@@ -20,7 +20,6 @@ import alice.helpers.SwappableAndNewEdges;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,48 +35,57 @@ import org.javatuples.Pair;
  * A wrapper class around an instance of a {@link SparseMatrix} and useful data
  * structures that store the matrix's properties.
  */
-public class Matrix {
+public class Matrix_ {
 
     /**
      * A 0-1 matrix representation of the dataset.
      */
-    private SparseMatrix matrix;
+    private SparseMatrix_ matrix;
 
     /**
      * An array of the matrix's row sums indexed by row.
      */
-    private int[] rowSums;
+    int[] rowSums;
 
     /**
      * An array of the matrix's column sums indexed by column.
      */
-    private int[] colSums;
+    int[] colSums;
 
     /**
      * A list of the edges from the bipartite graph representation of the
      * matrix.
      */
-    public Edge[] edges;
+    public final Edge[] edges;
 
+    /**
+     * A map where each key is a row and the value is the number of rows equal
+     * to that row.
+     */
+    private final Map<RawFastIntCollectionFixedSize, Integer> rowToNumEqRows;
+    
     /**
      * Creates an instance of {@link Matrix} from a 0-1 {@link SparseMatrix} by
      * initializing necessary data structures from the matrix.
      *
      * @param inMatrix a 0-1 matrix representation of the dataset
      */
-    public Matrix(SparseMatrix inMatrix) {
-        this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
+    public Matrix_(SparseMatrix_ inMatrix) {
+        this.rowToNumEqRows = Maps.newHashMap();
+        this.matrix = new SparseMatrix_(inMatrix.getNumRows(), inMatrix.getNumCols());
         this.rowSums = new int[inMatrix.getNumRows()];
         this.colSums = new int[inMatrix.getNumCols()];
         Set<Edge> tmpEdges = Sets.newHashSet();
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
-            matrix.replaceRow(r, new Vector(inMatrix.getNonzeroIndices(r)));
+            matrix.replaceRow(r, new RawFastIntCollectionFixedSize(inMatrix.getRowInstance(r)));
             rowSums[r] = inMatrix.getNumNonzeroIndices(r);
             for (int c : inMatrix.getNonzeroIndices(r)) {
-                matrix.setInCol(r, c, inMatrix.isInRow(r, c));
                 tmpEdges.add(new Edge(r, c));
                 this.colSums[c]++;
             }
+        }
+        for (int c = 0; c < inMatrix.getNumCols(); c++) {
+            matrix.replaceCol(c, new RawFastIntCollectionFixedSize(inMatrix.getColInstance(c)));
         }
         int counter = 0;
         this.edges = new Edge[tmpEdges.size()];
@@ -87,17 +95,20 @@ public class Matrix {
         }
     }
     
-    public Matrix(SparseMatrix inMatrix, Edge[] edges) {
-        this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
+    public Matrix_(SparseMatrix_ inMatrix, Edge[] edges) {
+        this.rowToNumEqRows = Maps.newHashMap();
+        this.matrix = new SparseMatrix_(inMatrix.getNumRows(), inMatrix.getNumCols());
         this.rowSums = new int[inMatrix.getNumRows()];
         this.colSums = new int[inMatrix.getNumCols()];
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
-            matrix.replaceRow(r, new Vector(inMatrix.getNonzeroIndices(r)));
+            matrix.replaceRow(r, new RawFastIntCollectionFixedSize(inMatrix.getRowInstance(r)));
             rowSums[r] = inMatrix.getNumNonzeroIndices(r);
             for (int c : inMatrix.getNonzeroIndices(r)) {
-                matrix.setInCol(r, c, inMatrix.isInRow(r, c));
                 this.colSums[c]++;
             }
+        }
+        for (int c = 0; c < inMatrix.getNumCols(); c++) {
+            matrix.replaceCol(c, new RawFastIntCollectionFixedSize(inMatrix.getColInstance(c)));
         }
         this.edges = new Edge[edges.length];
         for (int i = 0; i < edges.length; i++) {
@@ -116,7 +127,7 @@ public class Matrix {
         if (this.getClass() != o.getClass()) {
             return false;
         }
-        Matrix otherMatrix = (Matrix) o;
+        Matrix_ otherMatrix = (Matrix_) o;
         return this.matrix.equals(otherMatrix.matrix);
     }
     
@@ -130,7 +141,7 @@ public class Matrix {
         return this.matrix.toString();
     }
 
-    public SparseMatrix getMatrix() {
+    public SparseMatrix_ getMatrix() {
         return this.matrix;
     }
 
@@ -138,51 +149,51 @@ public class Matrix {
         return this.matrix.isInRow(row, col);
     }
     
-    public void setRow(int row, int col, int val) {
-        this.matrix.setInRow(row, col, val);
+    public void setInRow(int row, int oldc, int newc) {
+        this.matrix.replaceValueInRow(row, oldc, newc);
     }
     
-    public void setRow(int id, Vector row) {
+    public void setRow(int id, RawFastIntCollectionFixedSize row) {
         this.matrix.replaceRow(id, row);
     }
     
-    public void setCol(int row, int col, int val) {
-        this.matrix.setInCol(row, col, val);
+    public void setInCol(int col, int oldr, int newr) {
+        this.matrix.replaceValueInCol(col, oldr, newr);
     }
     
-    public void setCol(int id, Vector col) {
+    public void setCol(int id, RawFastIntCollectionFixedSize col) {
         this.matrix.replaceCol(id, col);
     }
 
-    public Vector getRowCopy(int row) {
+    public RawFastIntCollectionFixedSize getRowCopy(int row) {
         return this.matrix.getRowCopy(row);
     }
 
-    public Vector getRowInstance(int row) {
+    public RawFastIntCollectionFixedSize getRowInstance(int row) {
         return this.matrix.getRowInstance(row);
     }
     
-    public Vector[] getRows() {
+    public RawFastIntCollectionFixedSize[] getRows() {
         return getMatrix().getRows();
     }
     
-    public Vector[] getCols() {
+    public RawFastIntCollectionFixedSize[] getCols() {
         return getMatrix().getCols();
     }
     
-    public Vector getColCopy(int col) {
+    public RawFastIntCollectionFixedSize getColCopy(int col) {
         return this.matrix.getColCopy(col);
     }
 
-    public Vector getColInstance(int col) {
+    public RawFastIntCollectionFixedSize getColInstance(int col) {
         return this.matrix.getColInstance(col);
     }
 
-    public IntOpenHashSet getNonzeroIndices(int row) {
+    public int[] getNonzeroIndices(int row) {
         return this.matrix.getNonzeroIndices(row);
     }
     
-    public IntOpenHashSet getNonzeroColIndices(int col) {
+    public int[] getNonzeroColIndices(int col) {
         return this.matrix.getNonzeroColIndices(col);
     }
 
@@ -241,15 +252,10 @@ public class Matrix {
      * @param sne edges to swap
      */
     public void swapVals(SwappableAndNewEdges sne) {
-        
-        this.setRow(sne.swappableEdge1.row, sne.swappableEdge1.col, 0);
-        this.setCol(sne.swappableEdge1.row, sne.swappableEdge1.col, 0);
-        this.setRow(sne.swappableEdge2.row, sne.swappableEdge2.col, 0);
-        this.setCol(sne.swappableEdge2.row, sne.swappableEdge2.col, 0);
-        this.setRow(sne.swappableEdge1.row, sne.swappableEdge2.col, 1);
-        this.setCol(sne.swappableEdge1.row, sne.swappableEdge2.col, 1);
-        this.setRow(sne.swappableEdge2.row, sne.swappableEdge1.col, 1);
-        this.setCol(sne.swappableEdge2.row, sne.swappableEdge1.col, 1);
+        this.setInRow(sne.swappableEdge1.row, sne.swappableEdge1.col, sne.swappableEdge2.col);
+        this.setInRow(sne.swappableEdge2.row, sne.swappableEdge2.col, sne.swappableEdge1.col);
+        this.setInCol(sne.swappableEdge1.col, sne.swappableEdge1.row, sne.swappableEdge2.row);
+        this.setInCol(sne.swappableEdge2.col, sne.swappableEdge2.row, sne.swappableEdge1.row);
     }
 
     /**
@@ -271,16 +277,12 @@ public class Matrix {
      * @param newEdge2 the second new edge to be added
      * @return the two new rows of the matrix
      */
-    public Vector[] getNewRows(Edge newEdge1, Edge newEdge2) {
-        final Vector newRow1 = this.getRowCopy(newEdge1.row);
-        newRow1.set(newEdge2.col, 0);
-        newRow1.set(newEdge1.col, 1);
-
-        final Vector newRow2 = this.getRowCopy(newEdge2.row);
-        newRow2.set(newEdge1.col, 0);
-        newRow2.set(newEdge2.col, 1);
-
-        return new Vector[]{newRow1, newRow2};
+    public RawFastIntCollectionFixedSize[] getNewRows(Edge newEdge1, Edge newEdge2) {
+        final RawFastIntCollectionFixedSize newRow1 = this.getRowCopy(newEdge1.row);
+        newRow1.fastReplaceWithoutChecks(newEdge2.col, newEdge1.col);
+        final RawFastIntCollectionFixedSize newRow2 = this.getRowCopy(newEdge2.row);
+        newRow2.fastReplaceWithoutChecks(newEdge1.col, newEdge2.col);
+        return new RawFastIntCollectionFixedSize[]{newRow1, newRow2};
     }
     
     /**
@@ -290,15 +292,81 @@ public class Matrix {
      * @param newEdge2 the second new edge to be added
      * @return the two new cols of the matrix
      */
-    public Vector[] getNewCols(Edge newEdge1, Edge newEdge2) {
-        final Vector newCol1 = this.getColCopy(newEdge1.col);
-        newCol1.set(newEdge2.row, 0);
-        newCol1.set(newEdge1.row, 1);
+    public RawFastIntCollectionFixedSize[] getNewCols(Edge newEdge1, Edge newEdge2) {
+        final RawFastIntCollectionFixedSize newCol1 = this.getColCopy(newEdge1.col);
+        newCol1.fastReplaceWithoutChecks(newEdge2.row, newEdge1.row);
+        final RawFastIntCollectionFixedSize newCol2 = this.getColCopy(newEdge2.col);
+        newCol2.fastReplaceWithoutChecks(newEdge1.row, newEdge2.row);
+        return new RawFastIntCollectionFixedSize[]{newCol1, newCol2};
+    }
+    
+    public Map<RawFastIntCollectionFixedSize, Integer> getRowToNumEqRowsMap() {
+        return this.rowToNumEqRows;
+    }
+    
+    public int getNumEqRows(RawFastIntCollectionFixedSize row) {
+        return rowToNumEqRows.getOrDefault(row, 0);
+    }
+    
+    public boolean setNumEqRows(RawFastIntCollectionFixedSize row, int eqRowsNum) {
+        if (eqRowsNum == 0) {
+            removeNumEqRows(row);
+            return false;
+        }
+        if (!rowToNumEqRows.containsKey(row)) {
+            rowToNumEqRows.put(new RawFastIntCollectionFixedSize(row), eqRowsNum);
+            return true;
+        }
+        rowToNumEqRows.put(row, eqRowsNum);
+        return false;
+    }
+    
+    public void removeNumEqRows(RawFastIntCollectionFixedSize row) {
+        rowToNumEqRows.remove(row);
+    }
 
-        final Vector newCol2 = this.getColCopy(newEdge2.col);
-        newCol2.set(newEdge1.row, 0);
-        newCol2.set(newEdge2.row, 1);
-        return new Vector[]{newCol1, newCol2};
+    /**
+     * Increment the number of equal rows for the input row by 1.
+     * 
+     * @param row the input row
+     * @return true if the row was not aleady present in the map of equal rows;
+     * false otherwise
+     */
+    public boolean incNumEqRows(RawFastIntCollectionFixedSize row) {
+        return setNumEqRows(row, getNumEqRows(row) + 1);
+    }
+
+    /**
+     * Decrement the number of equal rows for the input row by 1.
+     *
+     * @param row the input row
+     * @throws IllegalArgumentException if the current number of equal rows is
+     * not greater than 0
+     */
+    public void decNumEqRows(RawFastIntCollectionFixedSize row) {
+        final int num = getNumEqRows(row);
+        if (num <= 0) {
+            throw new IllegalArgumentException(
+                    "The number of rows equal to row " + row + " is " + num + ", which is non positive.");
+        }
+        setNumEqRows(row, num - 1);
+    }
+    
+    /**
+     * Overwrites the entries of the map storing the number of equal 
+     * rows for each row, with the entries in the input map.
+     * 
+     * @param rowsToEqRows number of equal rows for each row
+     */
+    public void replaceNumEqRows(Map<RawFastIntCollectionFixedSize, Integer> rowsToEqRows) {
+        rowsToEqRows.entrySet().stream()
+                .forEach(entry -> {
+                    if (entry.getValue() == 0) {
+                        rowToNumEqRows.remove(entry.getKey());
+                    } else {
+                        rowToNumEqRows.put(entry.getKey(), entry.getValue());
+                    }
+                });
     }
     
     /**
@@ -314,6 +382,34 @@ public class Matrix {
     }
 
     /**
+     * Transitions to the next state in the chain by updating the current matrix
+     * to the adjacent matrix and the rowToNumEqRows map.
+     *
+     * @param sne swappable edges that transition to the
+     * adjacent matrix
+     * @param swappableRow1 the first swappable row of the matrix
+     * @param swappableRow2 the second swappable row of the matrix
+     * @param newRow1 the first new row of the adjacent matrix
+     * @param newRow2 the second new row of the adjacent matrix
+     */
+    public void transition(
+            SwappableAndNewEdges sne,
+            RawFastIntCollectionFixedSize swappableRow1,
+            RawFastIntCollectionFixedSize swappableRow2,
+            RawFastIntCollectionFixedSize newRow1,
+            RawFastIntCollectionFixedSize newRow2) {
+        // update number of equal rows
+        this.decNumEqRows(swappableRow1);
+        this.decNumEqRows(swappableRow2);
+        this.incNumEqRows(newRow1);
+        this.incNumEqRows(newRow2);
+
+        // update matrix and edges
+        // call this last so that the swap doesn't update the Vector instances first
+        this.transition(sne);
+    }
+    
+    /**
      * 
      * @return BJDM of bipartite graph represented by this matrix
      */
@@ -323,7 +419,7 @@ public class Matrix {
             Map<Integer, Integer> entry = BJDM.getOrDefault(rowSums[edge.row], Maps.newHashMap());
             entry.put(colSums[edge.col], entry.getOrDefault(colSums[edge.col], 0) + 1);
             BJDM.put(rowSums[edge.row], entry);
-        }
+        };
         return BJDM;
     }
     
@@ -384,14 +480,14 @@ public class Matrix {
     }
     
     public long getNumButterflies() {
-        Vector[] vec = matrix.getCols();
+        RawFastIntCollectionFixedSize[] vec = matrix.getCols();
         if (matrix.getNumRows() < matrix.getNumCols()) {
             vec = matrix.getRows();
         }
         long butt = 0;
         for (int i = 0; i < vec.length; i++) {
             for (int j = i + 1; j < vec.length; j++) {
-                int inter = (int) vec[i].interSize(vec[j]);
+                int inter = (int) vec[i].computeInterSize(vec[j]);
                 if (inter > 1) {
                     butt += CombinatoricsUtils.binomialCoefficient(inter, 2);   
                 } 

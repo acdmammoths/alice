@@ -18,10 +18,8 @@ package alice.structures;
  */
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * An implementation of a sparse 0-1 matrix using an array of hash sets. Any

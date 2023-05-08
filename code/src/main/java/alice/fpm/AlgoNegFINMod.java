@@ -17,6 +17,8 @@ package alice.fpm;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import alice.utils.MemoryLogger;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +31,7 @@ import java.util.Set;
  */
 public class AlgoNegFINMod extends AlgoNegFIN {
 
-    private Map<Set<Integer>, Integer> freqItemsetToSup; // frequent itemsets to their support
+    private Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup; // frequent itemsets to their support
 
     /**
      * This method adds an itemset to freqItemsetsToSup + all itemsets that can
@@ -43,7 +45,7 @@ public class AlgoNegFINMod extends AlgoNegFIN {
     public void writeItemsetsToFile(SetEnumerationTreeNode curNode, int sameCount) {
 
         // initialize a frequent itemset
-        Set<Integer> freqItemset = new HashSet<>();
+        IntOpenHashSet freqItemset = new IntOpenHashSet();
 
         outputCount++;
         // append items from the itemset to the StringBuilder
@@ -59,7 +61,7 @@ public class AlgoNegFINMod extends AlgoNegFIN {
         if (sameCount > 0) {
             // generate all subsets of the node list except the empty set
             for (long i = 1, max = 1 << sameCount; i < max; i++) {
-                Set<Integer> otherFreqItemset = new HashSet<>();
+                IntOpenHashSet otherFreqItemset = new IntOpenHashSet();
                 for (int k = 0; k < itemsetLen; k++) {
                     otherFreqItemset.add(item[itemset[k]].index);
                 }
@@ -89,9 +91,9 @@ public class AlgoNegFINMod extends AlgoNegFIN {
      * support
      * @throws IOException if error while reading file
      */
-    public Map<Set<Integer>, Integer> runAlgorithm(String filename, double minsup)
+    public Object2IntOpenHashMap<IntOpenHashSet> runAlgorithm(String filename, double minsup)
             throws IOException {
-        freqItemsetToSup = new HashMap<>();
+        freqItemsetToSup = new Object2IntOpenHashMap<IntOpenHashSet>();
 
         bmcTreeRoot = new BMCTreeNode();
         nlRoot = new SetEnumerationTreeNode();

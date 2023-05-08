@@ -16,9 +16,9 @@ package alice.fpm;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A wrapper class for mining frequent itemsets.
@@ -52,8 +52,8 @@ public class FreqItemsetMiner {
      * @return a map where each key is a frequent itemset and the value is the
      * frequent itemset's support
      */
-    public static Map<Set<Integer>, Integer> mine(String datasetPath, double minFreq) {
-        Map<Set<Integer>, Integer> freqItemsetToSup = null;
+    public static Object2IntOpenHashMap<IntOpenHashSet> mine(String datasetPath, double minFreq) {
+        Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup = null;
         final AlgoNegFINMod algo = new AlgoNegFINMod();
         try {
             freqItemsetToSup = algo.runAlgorithm(datasetPath, minFreq);

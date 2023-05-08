@@ -37,10 +37,12 @@ public class SwappableAndNewEdges {
      * adjacent matrix
      * @param swappableEdge2 the second swappable edge that transitions to the
      * adjacent matrix
-     * @param index1
-     * @param index2
+     * @param index1 first index
+     * @param index2 second index
+     * @param rowSwap if the indexes refer to positions in rows or cols
      */
-    public SwappableAndNewEdges(Edge swappableEdge1, Edge swappableEdge2, int index1, int index2) {
+    public SwappableAndNewEdges(Edge swappableEdge1, Edge swappableEdge2, 
+            int index1, int index2) {
         this.swappableEdge1 = swappableEdge1;
         this.swappableEdge2 = swappableEdge2;
         this.e1Index = index1;

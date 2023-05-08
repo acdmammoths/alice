@@ -18,6 +18,9 @@ package alice.fpm;
  */
 import alice.config.Paths;
 import alice.config.Delimiters;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,7 +47,7 @@ public class Itemsets {
      * @return the minimum p-value for the set of frequent itemsets
      */
     public static double getMinPvalue(Paths paths, String freqItemsetsPath, int numEstSamples) {
-        final Map<Set<Integer>, Integer> freqItemsetToSum
+        final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSum
                 = getFreqItemsetToSumMap(paths, freqItemsetsPath, numEstSamples);
         final Collection<Integer> sums = freqItemsetToSum.values();
         int minSum = 0;
@@ -65,14 +68,13 @@ public class Itemsets {
      * @return a map where each key is a frequent itemset and the value is the
      * p-value for the frequent itemset.
      */
-    public static Map<Set<Integer>, Double> getFreqItemsetToPvalueMap(
-            Paths paths, Map<Set<Integer>, Integer> freqItemsetToSup, int numEstSamples) {
-        final Map<Set<Integer>, Double> freqItemsetToPvalue = new HashMap<>();
-        final Map<Set<Integer>, Integer> freqItemsetToSum
+    public static Object2DoubleOpenHashMap<IntOpenHashSet> getFreqItemsetToPvalueMap(
+            Paths paths, Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup, int numEstSamples) {
+        final Object2DoubleOpenHashMap<IntOpenHashSet> freqItemsetToPvalue = new Object2DoubleOpenHashMap();
+        final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSum
                 = getFreqItemsetToSumMap(paths, freqItemsetToSup, numEstSamples);
-        for (Entry<Set<Integer>, Integer> entry : freqItemsetToSum.entrySet()) {
-            final Set<Integer> freqItemset = entry.getKey();
-            final int sum = entry.getValue();
+        for (IntOpenHashSet freqItemset : freqItemsetToSum.keySet()) {
+            final int sum = freqItemsetToSum.get(freqItemset);
             final double pvalue = getPvalue(sum, numEstSamples);
             freqItemsetToPvalue.put(freqItemset, pvalue);
         }
@@ -92,9 +94,9 @@ public class Itemsets {
      * and the value is the number of estimate (sampled) datasets where the
      * itemset has a support no less than its support in the input dataset
      */
-    public static Map<Set<Integer>, Integer> getFreqItemsetToSumMap(
-            Paths paths, Map<Set<Integer>, Integer> freqItemsetToSup, int numEstSamples) {
-        final Map<Set<Integer>, Integer> freqItemsetToSum = new HashMap<>();
+    public static Object2IntOpenHashMap<IntOpenHashSet> getFreqItemsetToSumMap(
+            Paths paths, Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup, int numEstSamples) {
+        final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSum = new Object2IntOpenHashMap();
 
         for (int i = 0; i < numEstSamples; i++) {
             final String estFreqItemsetsPath = paths.getFreqItemsetsPath(Paths.estTag, i);
@@ -104,7 +106,7 @@ public class Itemsets {
                 String line = br.readLine();
                 while (line != null) {
                     final String[] freqItemsetAndSup = line.split(Delimiters.sup);
-                    final Set<Integer> freqItemset = getFreqItemset(freqItemsetAndSup);
+                    final IntOpenHashSet freqItemset = getFreqItemset(freqItemsetAndSup);
                     final int sup = getSup(freqItemsetAndSup);
                     // (MR) XXX: Breaks if sup == Integer.MAX_VALUE but freqItemsets is
                     // not in freqItemsetToSup, which seems unlikely.
@@ -136,9 +138,9 @@ public class Itemsets {
      * and the value is the number of estimate (sampled) datasets where the
      * itemset has a support no less than its support in the input dataset
      */
-    public static Map<Set<Integer>, Integer> getFreqItemsetToSumMap(
+    public static Object2IntOpenHashMap<IntOpenHashSet> getFreqItemsetToSumMap(
             Paths paths, String freqItemsetsPath, int numEstSamples) {
-        final Map<Set<Integer>, Integer> freqItemsetToSup = getFreqItemsetToSupMap(freqItemsetsPath);
+        final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup = getFreqItemsetToSupMap(freqItemsetsPath);
         return getFreqItemsetToSumMap(paths, freqItemsetToSup, numEstSamples);
     }
 
@@ -150,8 +152,8 @@ public class Itemsets {
      * @return a map where each key is a frequent itemset and the value is the
      * support for the frequent itemset.
      */
-    public static Map<Set<Integer>, Integer> getFreqItemsetToSupMap(String freqItemsetsPath) {
-        final Map<Set<Integer>, Integer> freqItemsetToSup = new HashMap<>();
+    public static Object2IntOpenHashMap<IntOpenHashSet> getFreqItemsetToSupMap(String freqItemsetsPath) {
+        final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup = new Object2IntOpenHashMap();
 
         try {
             final BufferedReader br = new BufferedReader(new FileReader(freqItemsetsPath));
@@ -159,7 +161,7 @@ public class Itemsets {
             String line = br.readLine();
             while (line != null) {
                 final String[] freqItemsetAndSup = line.split(Delimiters.sup);
-                final Set<Integer> freqItemset = getFreqItemset(freqItemsetAndSup);
+                final IntOpenHashSet freqItemset = getFreqItemset(freqItemsetAndSup);
                 final int sup = getSup(freqItemsetAndSup);
                 freqItemsetToSup.put(freqItemset, sup);
                 line = br.readLine();
@@ -185,9 +187,9 @@ public class Itemsets {
         return (double) (1 + sum) / (numEstSamples + 1);
     }
 
-    public static Set<Integer> getFreqItemset(String[] freqItemsetAndSup) {
+    public static IntOpenHashSet getFreqItemset(String[] freqItemsetAndSup) {
         final String freqItemsetString = freqItemsetAndSup[0];
-        final Set<Integer> freqItemset = new HashSet<>();
+        final IntOpenHashSet freqItemset = new IntOpenHashSet();
         for (String itemString : freqItemsetString.split(Delimiters.space)) {
             final int itemInt = Integer.parseInt(itemString);
             freqItemset.add(itemInt);
@@ -199,7 +201,7 @@ public class Itemsets {
         return Integer.parseInt(itemsetAndSup[1]);
     }
 
-    public static String toString(Set<Integer> itemset) {
+    public static String toString(IntOpenHashSet itemset) {
         final StringBuilder buffer = new StringBuilder();
         for (int item : itemset) {
             buffer.append(item);

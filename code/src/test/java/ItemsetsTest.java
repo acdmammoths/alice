@@ -4,6 +4,9 @@ import alice.fpm.FreqItemsetMiner;
 import alice.config.DatasetNames;
 import alice.config.Delimiters;
 import alice.utils.Config;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -79,29 +82,29 @@ public class ItemsetsTest {
   @Test
   public void getFreqItemsetToSupMap() {
     // minimum itemset size of 1
-    final Map<Set<Integer>, Integer> expectedFreqItemsetToSup = new HashMap<>();
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5, 2)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5, 4)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(5, 2, 4)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(2)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(2, 4)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(1)), 2);
-    expectedFreqItemsetToSup.put(new HashSet<>(Arrays.asList(4)), 3);
+    final Object2IntOpenHashMap<IntOpenHashSet> expectedFreqItemsetToSup = new Object2IntOpenHashMap();
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(5)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(5, 2)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(5, 4)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(5, 2, 4)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 4)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(1)), 2);
+    expectedFreqItemsetToSup.put(new IntOpenHashSet(Arrays.asList(4)), 3);
 
-    final Map<Set<Integer>, Integer> actualFreqItemsetToSup =
+    final Object2IntOpenHashMap<IntOpenHashSet> actualFreqItemsetToSup =
         Itemsets.getFreqItemsetToSupMap(freqItemsetsPath);
     Assert.assertEquals(expectedFreqItemsetToSup, actualFreqItemsetToSup);
   }
 
   @Test
   public void getFreqItemsetToSumMap() {
-    final Map<Set<Integer>, Integer> expectedFreqItemsetToSum = new HashMap<>();
-    expectedFreqItemsetToSum.put(new HashSet<>(Arrays.asList(5)), 2);
-    expectedFreqItemsetToSum.put(new HashSet<>(Arrays.asList(2)), 1);
-    expectedFreqItemsetToSum.put(new HashSet<>(Arrays.asList(5, 2, 4)), 1);
+    final Object2IntOpenHashMap<IntOpenHashSet> expectedFreqItemsetToSum = new Object2IntOpenHashMap();
+    expectedFreqItemsetToSum.put(new IntOpenHashSet(Arrays.asList(5)), 2);
+    expectedFreqItemsetToSum.put(new IntOpenHashSet(Arrays.asList(2)), 1);
+    expectedFreqItemsetToSum.put(new IntOpenHashSet(Arrays.asList(5, 2, 4)), 1);
 
-    final Map<Set<Integer>, Integer> actualFreqItemsetToSum =
+    final Object2IntOpenHashMap<IntOpenHashSet> actualFreqItemsetToSum =
         Itemsets.getFreqItemsetToSumMap(paths, freqItemsetsPath, 2);
 
     Assert.assertEquals(expectedFreqItemsetToSum, actualFreqItemsetToSum);
@@ -109,17 +112,17 @@ public class ItemsetsTest {
 
   @Test
   public void getFreqItemsetToPvalueMap() {
-    final Map<Set<Integer>, Double> expectedFreqItemsetToPvalue = new HashMap<>();
+    final Object2DoubleOpenHashMap<IntOpenHashSet> expectedFreqItemsetToPvalue = new Object2DoubleOpenHashMap();
     expectedFreqItemsetToPvalue.put(
-        new HashSet<>(Arrays.asList(5)), (double) (1 + 2) / (2 + 1));
+        new IntOpenHashSet(Arrays.asList(5)), (double) (1 + 2) / (2 + 1));
     expectedFreqItemsetToPvalue.put(
-        new HashSet<>(Arrays.asList(2)), (double) (1 + 1) / (2 + 1));
+        new IntOpenHashSet(Arrays.asList(2)), (double) (1 + 1) / (2 + 1));
     expectedFreqItemsetToPvalue.put(
-        new HashSet<>(Arrays.asList(5, 2, 4)), (double) (1 + 1) / (2 + 1));
+        new IntOpenHashSet(Arrays.asList(5, 2, 4)), (double) (1 + 1) / (2 + 1));
 
-    final Map<Set<Integer>, Integer> freqItemsetToSup =
+    final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup =
         Itemsets.getFreqItemsetToSupMap(freqItemsetsPath);
-    Map<Set<Integer>, Double> actualFreqItemsetToPvalue =
+    Object2DoubleOpenHashMap<IntOpenHashSet> actualFreqItemsetToPvalue =
         Itemsets.getFreqItemsetToPvalueMap(paths, freqItemsetToSup, 2);
 
     Assert.assertEquals(expectedFreqItemsetToPvalue, actualFreqItemsetToPvalue);

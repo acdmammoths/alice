@@ -2,6 +2,8 @@ package alice.fpm;
 
 
 import alice.utils.MemoryLogger;
+import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -90,7 +92,8 @@ public class AlgoNegFIN {
         // (1) Scan the database and count the count of each item.
         // The count of items is stored in map where
         // key = item value = count count
-        Map<Integer, Integer> mapItemCount = new HashMap<Integer, Integer>();
+        Int2IntOpenHashMap mapItemCount = new Int2IntOpenHashMap();
+        mapItemCount.defaultReturnValue(0);
         // scan the database
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
@@ -113,12 +116,7 @@ public class AlgoNegFIN {
             for (String itemString : lineSplited) {
                 // increase the count count of the item by 1
                 Integer item = Integer.parseInt(itemString);
-                Integer count = mapItemCount.get(item);
-                if (count == null) {
-                    mapItemCount.put(item, 1);
-                } else {
-                    mapItemCount.put(item, ++count);
-                }
+                mapItemCount.addTo(item, 1);
             }
         }
         // close the input file
@@ -130,11 +128,12 @@ public class AlgoNegFIN {
 
         Item[] tempItems = new Item[numOfFItem];
         int i = 0;
-        for (Entry<Integer, Integer> entry : mapItemCount.entrySet()) {
-            if (entry.getValue() >= this.minSupport) {
+        for (int key : mapItemCount.keySet()) {
+            
+            if (mapItemCount.get(key) >= this.minSupport) {
                 tempItems[i] = new Item();
-                tempItems[i].index = entry.getKey();
-                tempItems[i].num = entry.getValue();
+                tempItems[i].index = key;
+                tempItems[i].num = mapItemCount.get(key);
                 i++;
             }
         }
@@ -253,7 +252,7 @@ public class AlgoNegFIN {
             root.bitmapCode.set(root.label); // bitIndex=numOfFItem - 1 - root.label
             ArrayList<BMCTreeNode> nodeset = mapItemNodeset.get(root.label);
             if (nodeset == null) {
-                nodeset = new ArrayList<>();
+                nodeset = Lists.newArrayList();
                 mapItemNodeset.put(root.label, nodeset);
             }
             nodeset.add(root);
@@ -320,7 +319,7 @@ public class AlgoNegFIN {
         while (sibling != null) {
             SetEnumerationTreeNode child = new SetEnumerationTreeNode();
 
-            child.nodeset = new ArrayList<>();
+            child.nodeset = Lists.newArrayList();
             int countNegNodeset = 0;
             if (level == 1) {
                 for (int i = 0; i < curNode.nodeset.size(); i++) {

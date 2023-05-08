@@ -3,6 +3,10 @@ import alice.config.DatasetNames;
 import alice.config.Delimiters;
 import alice.test.NumFreqItemsets;
 import alice.utils.Config;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -79,16 +83,16 @@ public class NumFreqItemsetsExperimentTest {
 
   @Test
   public void getFreqItemsetLenToCountMap() {
-    final Set<Set<Integer>> freqItemsets = new HashSet<>();
-    freqItemsets.add(new HashSet<>(Arrays.asList(1, 2, 3)));
-    freqItemsets.add(new HashSet<>(Arrays.asList(2, 3, 4)));
-    freqItemsets.add(new HashSet<>(Arrays.asList(1)));
+    final ObjectSet<IntOpenHashSet> freqItemsets = new ObjectOpenHashSet();
+    freqItemsets.add(new IntOpenHashSet(Arrays.asList(1, 2, 3)));
+    freqItemsets.add(new IntOpenHashSet(Arrays.asList(2, 3, 4)));
+    freqItemsets.add(new IntOpenHashSet(Arrays.asList(1)));
 
-    final Map<Integer, Integer> expectedFreqItemsetLenToCount = new HashMap<>();
+    final Int2IntOpenHashMap expectedFreqItemsetLenToCount = new Int2IntOpenHashMap();
     expectedFreqItemsetLenToCount.put(3, 2);
     expectedFreqItemsetLenToCount.put(1, 1);
 
-    Map<Integer, Integer> actualFreqItemsetLenTocount =
+    Int2IntOpenHashMap actualFreqItemsetLenTocount =
         NumFreqItemsets.getFreqItemsetLenToCountMap(freqItemsets);
     Assert.assertEquals(expectedFreqItemsetLenToCount, actualFreqItemsetLenTocount);
 
@@ -99,12 +103,12 @@ public class NumFreqItemsetsExperimentTest {
 
   @Test
   public void getNumFreqItemsets() {
-    final Set<Set<Integer>> freqItemsets = new HashSet<>();
-    freqItemsets.add(new HashSet<>(Arrays.asList(1, 2, 3)));
-    freqItemsets.add(new HashSet<>(Arrays.asList(2, 3, 4)));
-    freqItemsets.add(new HashSet<>(Arrays.asList(1)));
+    final ObjectSet<IntOpenHashSet> freqItemsets = new ObjectOpenHashSet();
+    freqItemsets.add(new IntOpenHashSet(Arrays.asList(1, 2, 3)));
+    freqItemsets.add(new IntOpenHashSet(Arrays.asList(2, 3, 4)));
+    freqItemsets.add(new IntOpenHashSet(Arrays.asList(1)));
 
-    final Map<Integer, Integer> freqItemsetLenToCount =
+    final Int2IntOpenHashMap freqItemsetLenToCount =
         NumFreqItemsets.getFreqItemsetLenToCountMap(freqItemsets);
 
     final int expectedNumFreqItemsets = 3;
@@ -128,7 +132,7 @@ public class NumFreqItemsetsExperimentTest {
     actualFreqItemsetLenToCountDist.put(2, new ArrayList<>(Arrays.asList(2, 3)));
     actualFreqItemsetLenToCountDist.put(3, new ArrayList<>(Arrays.asList(1, 2)));
 
-    final Map<Integer, Integer> freqItemsetLenToCount = new HashMap<>();
+    final Int2IntOpenHashMap freqItemsetLenToCount = new Int2IntOpenHashMap();
     freqItemsetLenToCount.put(1, 2);
     freqItemsetLenToCount.put(2, 3);
     freqItemsetLenToCount.put(3, 1);
