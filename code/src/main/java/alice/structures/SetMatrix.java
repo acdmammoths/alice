@@ -20,6 +20,7 @@ import alice.helpers.SwappableAndNewEdges;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -77,9 +78,9 @@ public class SetMatrix {
         this.colSums = new int[inMatrix.getNumCols()];
         this.edges = Sets.newHashSet();
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
+            matrix.replaceRow(r, new Vector(inMatrix.getNonzeroIndices(r)));
             for (int c : inMatrix.getNonzeroIndices(r)) {
-                setRow(r, c, inMatrix.isInRow(r, c));
-                setCol(r, c, inMatrix.isInRow(r, c));
+                matrix.setInCol(r, c, inMatrix.isInRow(r, c));
                 edges.add(new Edge(r, c));
                 this.rowSums[r]++;
                 this.colSums[c]++;
@@ -160,11 +161,11 @@ public class SetMatrix {
         return this.matrix.getColInstance(col);
     }
 
-    public Set<Integer> getNonzeroIndices(int row) {
+    public IntOpenHashSet getNonzeroIndices(int row) {
         return this.matrix.getNonzeroIndices(row);
     }
     
-    public Set<Integer> getNonzeroColIndices(int col) {
+    public IntOpenHashSet getNonzeroColIndices(int col) {
         return this.matrix.getNonzeroColIndices(col);
     }
 

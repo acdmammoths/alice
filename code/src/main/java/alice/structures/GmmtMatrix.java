@@ -59,7 +59,6 @@ public class GmmtMatrix extends Matrix {
      */
     public long getDegree() {
         final long numDisjPairsOfEdges = this.getNumDisjPairsOfEdges();
-//        System.out.println("NEW: " + numDisjPairsOfEdges + " OLD: " + getNumDisjPairsOfEdges_old());
         final long numZstructs = this.getNumZstructs();
 //        System.out.println("NUM Caterpillars " + numZstructs);
         final long numK22Cliques = this.getNumK22Cliques();

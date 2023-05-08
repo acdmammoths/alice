@@ -18,11 +18,17 @@ package alice.utils;
  */
 import alice.structures.SparseMatrix;
 import alice.config.Delimiters;
+import alice.structures.MultiGraph;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,8 +43,9 @@ import java.util.Set;
  */
 public class Transformer {
 
-    public List<Integer> itemsList;
-    public Map<Integer, Integer> itemToColIndex;
+    public IntArrayList itemsList;
+    public Int2IntOpenHashMap itemToColIndex;
+    public Map<IntOpenHashSet, Integer> itemsetToIndex;
 
     /**
      * Creates a {@link SparseMatrix} from the dataset at datasetPath.
@@ -67,12 +74,12 @@ public class Transformer {
             matrix = new SparseMatrix(numRows, itemsSet.size());
 
             // Construct matrix such that items are sorted in increasing order of their integer value
-            this.itemToColIndex = Maps.newHashMap();
-            this.itemsList = Lists.newArrayList(itemsSet);
+            this.itemToColIndex = new Int2IntOpenHashMap();
+            this.itemsList = new IntArrayList(itemsSet);
             Collections.sort(this.itemsList);
             
             for (int i = 0; i < this.itemsList.size(); i++) {
-                this.itemToColIndex.put(this.itemsList.get(i), i);
+                this.itemToColIndex.put(this.itemsList.getInt(i), i);
             }
             int rowIndex = 0;
             br = new BufferedReader(new FileReader(datasetPath));
@@ -91,6 +98,61 @@ public class Transformer {
             System.exit(1);
         }
         return matrix;
+    }
+    
+    public MultiGraph createMultiGraph(String datasetPath) throws FileNotFoundException, IOException {
+        
+        Int2ObjectOpenHashMap<IntArrayList> rowSumToVertices = new Int2ObjectOpenHashMap();
+        this.itemsetToIndex = Maps.newHashMap();
+        List<int[]> tmpV2N  = Lists.newArrayList();
+        
+        BufferedReader br = new BufferedReader(new FileReader(datasetPath));
+        String line;
+        IntOpenHashSet itemSet;
+        int leftCount = 0;
+        int pos;
+
+        while ((line = br.readLine()) != null) {
+            pos = 0;
+            int[] tmpRow = new int[line.split("-1").length - 1];
+            for (String itemsetString : line.split("-1")) {
+                itemsetString = itemsetString.trim();
+                if (itemsetString.equals("-2")) {
+                    continue;
+                }
+                itemSet = new IntOpenHashSet();
+                for (String item : itemsetString.split(" ")) {
+                    itemSet.add(Integer.parseInt(item));
+                }
+                this.itemsetToIndex.putIfAbsent(itemSet, this.itemsetToIndex.size());
+                tmpRow[pos] = this.itemsetToIndex.get(itemSet);
+                pos++;
+            }
+            tmpV2N.add(tmpRow);
+            rowSumToVertices.putIfAbsent(tmpRow.length, new IntArrayList());
+            rowSumToVertices.get(tmpRow.length).add(leftCount);
+            leftCount++;
+        }
+        br.close();
+
+        // Left Nodes = Transactions, Right Nodes = Itemsets
+        int[][] vertexToNeighbors = new int[leftCount][];
+        for (int l = 0; l < leftCount; l++) {
+            vertexToNeighbors[l] = tmpV2N.get(l);
+        }
+        Int2ObjectOpenHashMap<int[]> rowSumToV = new Int2ObjectOpenHashMap();
+        rowSumToVertices.keySet()
+                .intStream()
+                .forEach(i -> {
+                    int[] vals = new int[rowSumToVertices.get(i).size()];
+                    int p = 0;
+                    for (int v : rowSumToVertices.get(i)) {
+                        vals[p] = v;
+                        p++;
+                    }
+                    rowSumToV.put(i, vals);
+                });
+        return new MultiGraph(vertexToNeighbors, rowSumToV);
     }
 
     /**
@@ -118,5 +180,9 @@ public class Transformer {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public Int2IntOpenHashMap getItemToColIndex() {
+        return this.itemToColIndex;
     }
 }

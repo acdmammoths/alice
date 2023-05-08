@@ -1,7 +1,7 @@
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
 import alice.config.DatasetNames;
-import alice.samplers.BJDMSampler;
+import alice.samplers.GmmtSampler;
 import alice.utils.Config;
 import alice.samplers.Sampler;
 import alice.utils.Transformer;
@@ -32,7 +32,7 @@ import org.junit.Test;
 /** A class to test {@link Transformer}. */
 public class TransformerTest {
   private final Transformer transformer = new Transformer();
-  private final Sampler sampler = new BJDMSampler();
+  private final Sampler sampler = new GmmtSampler();
   private final Random rnd = new Random();
   private static final String datasetPath =
       Paths.concat(Config.datasetsDir, DatasetNames.test);

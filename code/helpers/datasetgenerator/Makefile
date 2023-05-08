@@ -12,7 +12,7 @@ CC = g++
 #GDB=-ggdb3
 #DEBUG=-DDEBUG
 ifndef DEBUG
-	OPT=-Ofast -pipe -march=native -mtune=native #-m64
+	OPT=-Ofast -pipe -mcpu=apple-m1 -mtune=native #-m64
 endif
 
 # For some reasons, -static does not work on Mac OS X (MacPorts g++ 4.9) (FIXME)

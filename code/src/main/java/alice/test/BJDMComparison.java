@@ -27,9 +27,9 @@ import alice.structures.SparseMatrix;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.utils.Timer;
-import alice.utils.Transformer;
 import com.google.common.collect.Maps;
 import alice.samplers.Sampler;
+import alice.utils.Transformer;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -67,10 +67,10 @@ public class BJDMComparison {
                         String.valueOf(Config.seed));
         final String resultPath = Paths.getJsonFilePath(Config.resultsDir, resultsBaseName);
         
-        final SparseMatrix matrix = new Transformer().createMatrix(Config.datasetPath);
-        System.out.println("Matrix created from dataset");
-        
         final Random rnd = new Random(Config.seed);
+        
+        final Transformer transformer = new Transformer();
+        final SparseMatrix matrix = transformer.createMatrix(Config.datasetPath);
         
         for (Sampler sampler : samplers) {
             
@@ -78,11 +78,11 @@ public class BJDMComparison {
             final Map<Integer, DescriptiveStatistics> allStats = Maps.newConcurrentMap();
             final Map<Integer, DescriptiveStatistics> allCatNum = Maps.newConcurrentMap();
             final Map<Integer, Timer> allTimers = Maps.newConcurrentMap();
+            // sample datasets in parallel
+            final ExecutorService pool = Executors.newFixedThreadPool(Config.numThreads);
             
             System.out.println(samplerName);
             
-            // sample datasets in parallel
-            final ExecutorService pool = Executors.newFixedThreadPool(Config.numThreads);
             for (int i = 0; i < Config.numSamples; i++) {
                 final long seed = rnd.nextLong();
                 final SampleTask sampleTask = new SampleTask(sampler,

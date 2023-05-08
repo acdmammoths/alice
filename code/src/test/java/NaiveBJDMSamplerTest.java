@@ -10,6 +10,7 @@ import alice.structures.Matrix;
 import alice.structures.SetMatrix;
 import alice.utils.Config;
 import alice.utils.Transformer;
+import alice.utils.Transformer;
 import alice.utils.Timer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

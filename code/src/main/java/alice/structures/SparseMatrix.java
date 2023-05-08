@@ -16,7 +16,7 @@ package alice.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -137,11 +137,11 @@ public class SparseMatrix {
         this.listOfCols[c].set(r, value);
     }
 
-    public Set<Integer> getNonzeroIndices(int r) {
+    public IntOpenHashSet getNonzeroIndices(int r) {
         return this.listOfRows[r].getNonzeroIndices();
     }
     
-    public Set<Integer> getNonzeroColIndices(int c) {
+    public IntOpenHashSet getNonzeroColIndices(int c) {
         return this.listOfCols[c].getNonzeroIndices();
     }
 

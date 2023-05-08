@@ -20,11 +20,11 @@ import alice.helpers.SwappableAndNewEdges;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -78,11 +78,11 @@ public class Matrix {
         this.colSums = new int[inMatrix.getNumCols()];
         Set<Edge> tmpEdges = Sets.newHashSet();
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
+            matrix.replaceRow(r, new Vector(inMatrix.getNonzeroIndices(r)));
+            rowSums[r] = inMatrix.getNumNonzeroIndices(r);
             for (int c : inMatrix.getNonzeroIndices(r)) {
-                setRow(r, c, inMatrix.isInRow(r, c));
-                setCol(r, c, inMatrix.isInRow(r, c));
+                matrix.setInCol(r, c, inMatrix.isInRow(r, c));
                 tmpEdges.add(new Edge(r, c));
-                this.rowSums[r]++;
                 this.colSums[c]++;
             }
         }
@@ -100,10 +100,10 @@ public class Matrix {
         this.rowSums = new int[inMatrix.getNumRows()];
         this.colSums = new int[inMatrix.getNumCols()];
         for (int r = 0; r < inMatrix.getNumRows(); r++) {
+            matrix.replaceRow(r, new Vector(inMatrix.getNonzeroIndices(r)));
+            rowSums[r] = inMatrix.getNumNonzeroIndices(r);
             for (int c : inMatrix.getNonzeroIndices(r)) {
-                setRow(r, c, inMatrix.isInRow(r, c));
-                setCol(r, c, inMatrix.isInRow(r, c));
-                this.rowSums[r]++;
+                matrix.setInCol(r, c, inMatrix.isInRow(r, c));
                 this.colSums[c]++;
             }
         }
@@ -117,14 +117,15 @@ public class Matrix {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o == null) {
-            return false;
-        } else if (this.getClass() != o.getClass()) {
-            return false;
-        } else {
-            Matrix otherMatrix = (Matrix) o;
-            return this.matrix.equals(otherMatrix.matrix);
         }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+        Matrix otherMatrix = (Matrix) o;
+        return this.matrix.equals(otherMatrix.matrix);
     }
     
     @Override
@@ -185,11 +186,11 @@ public class Matrix {
         return this.matrix.getColInstance(col);
     }
 
-    public Set<Integer> getNonzeroIndices(int row) {
+    public IntOpenHashSet getNonzeroIndices(int row) {
         return this.matrix.getNonzeroIndices(row);
     }
     
-    public Set<Integer> getNonzeroColIndices(int col) {
+    public IntOpenHashSet getNonzeroColIndices(int col) {
         return this.matrix.getNonzeroColIndices(col);
     }
 

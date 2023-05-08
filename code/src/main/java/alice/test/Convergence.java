@@ -49,9 +49,9 @@ import org.json.JSONObject;
 public class Convergence {
 
     public static void main(String[] args) {
-        
+
         CMDLineParser.parse(args);
-        
+
         final Sampler[] samplers = {new SelfLoopBJDMSampler(), new BJDMSampler(), new CurveballBJDMSampler()};
 
         System.out.println("Executing convergence experiment for dataset at " + Config.datasetPath);
@@ -65,10 +65,10 @@ public class Convergence {
         final Transformer transformer = new Transformer();
         final SparseMatrix realMatrix = transformer.createMatrix(Config.datasetPath);
         System.out.println("Matrix created from dataset");
-
+        
         final int numOnes = new Matrix(realMatrix).getNumEdges();
         System.out.println(JsonKeys.numOnes + ": " + numOnes);
-
+        
         final Random rnd = new Random(Config.seed);
 
         final List<Double> numSwapsFactors = Lists.newArrayList();
@@ -91,16 +91,15 @@ public class Convergence {
                         String.valueOf(Config.minFreq),
                         String.valueOf(Config.seed));
         final String resultPath = Paths.getJsonFilePath(Config.resultsDir, resultsBaseName);
-
+        
         for (Sampler sampler : samplers) {
             final String samplerName = sampler.getClass().getName();
             System.out.println(JsonKeys.sampler + ": " + samplerName);
-
+            
             final JSONArray samplerConvergenceStats = new JSONArray();
 
-            // initialize start state as the real dataset
             SparseMatrix startMatrix = realMatrix;
-
+            
             for (int i = 0; i < numSwapsFactors.size(); i++) {
                 final double numSwapsFactor = numSwapsFactors.get(i);
                 System.out.println("\t" + JsonKeys.numSwapsFactor + ": " + numSwapsFactor);
@@ -112,9 +111,9 @@ public class Convergence {
                 System.out.println("\t\tGetting sample from matrix");
                 final Timer timer = new Timer(true);
                 final long start = System.currentTimeMillis();
-                final SparseMatrix sample = sampler.sample(startMatrix, 
-                        numSwaps, 
-                        rnd.nextLong(), 
+                final SparseMatrix sample = sampler.sample(startMatrix,
+                        numSwaps,
+                        rnd.nextLong(),
                         timer);
                 final long end = System.currentTimeMillis() - start;
                 final long setupTime = timer.getSavedTime();
@@ -125,7 +124,7 @@ public class Convergence {
                 final double q3StepTime = timer.getPercentile(75);
                 final double c90StepTime = timer.getPercentile(90);
                 final double maxStepTime = timer.getMax();
-                
+
                 System.out.println("\t\t" + JsonKeys.minStepTime + ": " + minStepTime);
                 System.out.println("\t\t" + JsonKeys.c10StepTime + ": " + c10StepTime);
                 System.out.println("\t\t" + JsonKeys.q1StepTime + ": " + q1StepTime);
@@ -137,7 +136,7 @@ public class Convergence {
                 System.out.println("\t\tGetting sample itemset to support map");
                 final Map<Set<Integer>, Integer> sampleFreqItemsetToSup
                         = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup.keySet());
-                
+
                 // compute convergence statistics
                 final double avgRelFreqDiff = getAvgRelFreqDiff(freqItemsetToSup, sampleFreqItemsetToSup);
                 System.out.println("\t\t" + JsonKeys.avgRelFreqDiff + ": " + avgRelFreqDiff);
@@ -197,14 +196,14 @@ public class Convergence {
         final Map<Set<Integer>, Integer> sampleItemsetToSup = Maps.newHashMap();
         for (int r = 0; r < sample.getNumRows(); r++) {
             for (Set<Integer> freqItemset : freqItemsets) {
-                if (isItemsetInSampleTransaction(freqItemset, sample, r, transformer.itemToColIndex)) {
+                if (isItemsetInSampleTransaction(freqItemset, sample, r, transformer.getItemToColIndex())) {
                     sampleItemsetToSup.put(freqItemset, sampleItemsetToSup.getOrDefault(freqItemset, 0) + 1);
                 }
             }
         }
         return sampleItemsetToSup;
     }
-
+    
     /**
      * Determines whether the itemset is in the transaction of the sample
      * specified by rowIndex.
@@ -221,11 +220,11 @@ public class Convergence {
             SparseMatrix sample,
             int rowIndex,
             Map<Integer, Integer> itemToColIndex) {
-        
+
         return itemset.stream()
                 .allMatch(item -> sample.isInRow(rowIndex, itemToColIndex.get(item)) != 0);
     }
-
+    
     /**
      * Gets the average relative frequency/support difference.
      *
@@ -237,14 +236,14 @@ public class Convergence {
      * @return the average relative frequency/support difference
      */
     public static double getAvgRelFreqDiff(
-            Map<Set<Integer>, Integer> freqItemsetToSup, 
+            Map<Set<Integer>, Integer> freqItemsetToSup,
             Map<Set<Integer>, Integer> sampleItemsetToSup) {
-        
+
         double sumRelFreqDiff = freqItemsetToSup.entrySet()
                 .stream()
-                .mapToDouble(entry -> 
-                        Math.abs(1.*entry.getValue() - sampleItemsetToSup.getOrDefault(entry.getKey(), 0)) 
-                                / entry.getValue())
+                .mapToDouble(entry
+                        -> Math.abs(1. * entry.getValue() - sampleItemsetToSup.getOrDefault(entry.getKey(), 0))
+                / entry.getValue())
                 .sum();
         return sumRelFreqDiff / freqItemsetToSup.size();
     }

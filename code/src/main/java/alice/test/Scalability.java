@@ -26,9 +26,9 @@ import alice.samplers.BJDMSampler;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.samplers.Sampler;
-import alice.utils.Transformer;
 import alice.utils.Timer;
 import alice.samplers.GmmtSampler;
+import alice.utils.Transformer;
 import java.time.LocalDateTime;
 import java.util.Random;
 import org.json.JSONObject;
@@ -51,8 +51,8 @@ public class Scalability {
 
         System.out.println("Executing runtime experiment for dataset at " + Config.datasetPath);
 
-        final SparseMatrix matrix = new Transformer().createMatrix(Config.datasetPath);
-
+        final Transformer transformer = new Transformer();
+        final SparseMatrix matrix = transformer.createMatrix(Config.datasetPath);
         final Random rnd = new Random(Config.seed);
 
         // create object for runtimeStats
