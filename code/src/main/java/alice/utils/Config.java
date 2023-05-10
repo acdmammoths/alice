@@ -28,9 +28,9 @@ public class Config {
     public static String resultsDir = "datasets/";
     // number of iterations to perform before returning the sample
     public static int numSwaps = 1000;
-    public static double maxNumSwapsFactor = 5;
+    public static double maxNumSwapsFactor = 10;
     // number of random sample to generate
-    public static int numSamples = 20;
+    public static int numSamples = 2;
     // number of random samples to generate to estimate the p-values
     public static int numEstSamples = 2048;
     // number of random samples to generate to compute the adjusted critical values
@@ -40,7 +40,7 @@ public class Config {
     // family wise error rate
     public static double fwer = 0.05;
     // number of threads
-    public static int numThreads = 32;
+    public static int numThreads = 10;
     // seed for reproducibility
     public static long seed = 0;
     // whether to sample random datasets and mine their frequent itemsets,

@@ -9,17 +9,13 @@ num_trans_title = "Number of transactions"
 step_time_title = "Step time (ms)"
 algo_title = "Algorithm"
 
-samplers = ["caterpillars.samplers.NaiveBJDMSampler", 
-            "caterpillars.samplers.CurveballBJDMSampler",
-            "diffusr.samplers.GmmtSampler"]
 
-
-def get_scalability_df(results_dir, result_file):
-    data_dict = get_data_dict(results_dir, result_file)
+def get_scalability_df(results_dir, result_file, samplers):
+    data_dict = get_data_dict(results_dir, result_file, samplers)
     return pd.DataFrame(data_dict)
 
 
-def get_step_times_df(result_path):
+def get_step_times_df(result_path, samplers):
     data = []
     with open(result_path) as f:
         result = json.load(f)
@@ -31,7 +27,7 @@ def get_step_times_df(result_path):
     return pd.DataFrame(data)
 
 
-def get_data_dict(result_path, result_file):
+def get_data_dict(result_path, result_file, samplers):
     data_dict = {num_trans_title: [], step_time_title: [], algo_title: []}
     num_trans = 0
     if 'synthetic' in result_file:

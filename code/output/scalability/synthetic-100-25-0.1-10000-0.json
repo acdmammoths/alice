@@ -1,0 +1,35 @@
+{
+  "runtimeStats": {
+    "alice.samplers.CurveballBJDMSampler": {
+      "c90StepTime": 4,
+      "q3StepTime": 2,
+      "setupTime": 499,
+      "maxStepTime": 88,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
+    },
+    "alice.samplers.GmmtSampler": {
+      "c90StepTime": 6,
+      "q3StepTime": 5,
+      "setupTime": 751,
+      "maxStepTime": 76,
+      "minStepTime": 4,
+      "q1StepTime": 5,
+      "medianStepTime": 5,
+      "c10StepTime": 4
+    },
+    "alice.samplers.BJDMSampler": {
+      "c90StepTime": 0,
+      "q3StepTime": 0,
+      "setupTime": 606,
+      "maxStepTime": 4,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
+    }
+  },
+  "runInfo": {"timestamp": "2023-05-10T05:55:05.172230417"}
+}

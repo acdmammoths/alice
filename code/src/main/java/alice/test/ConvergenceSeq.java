@@ -16,25 +16,24 @@ package alice.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import alice.structures.SparseMatrix;
 import alice.config.Paths;
-import alice.fpm.FreqItemsetMiner;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
 import alice.config.Delimiters;
 import alice.samplers.AliceCSampler;
-import alice.samplers.CurveballBJDMSampler;
-import alice.samplers.BJDMSampler;
-import alice.structures.Matrix;
+import alice.samplers.GmmtSeqSampler;
+import alice.samplers.Sampler;
+import alice.samplers.SeqSampler;
+import alice.spm.FreqSequenceMiner;
+import alice.spm.Itemset;
+import alice.spm.SequentialPattern;
+import alice.spm.SequentialPatterns;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
-import alice.samplers.Sampler;
-import alice.samplers.SelfLoopBJDMSampler;
 import alice.structures.MultiGraph;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -43,7 +42,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -58,15 +56,15 @@ public class ConvergenceSeq {
 
         CMDLineParser.parse(args);
 
-        final AliceCSampler sampler = new AliceCSampler();
+        final SeqSampler[] samplers = new SeqSampler[]{new AliceCSampler(), new GmmtSeqSampler()};
 
         System.out.println("Executing convergence experiment for dataset at " + Config.datasetPath);
 
         System.out.println("Mining frequent itemsets");
-        final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup = FreqItemsetMiner.mine(Config.datasetPath, Config.minFreq);
+        final SequentialPatterns freqItemsetToSup = FreqSequenceMiner.mine(Config.datasetPath, Config.minFreq);
 
-        final int numFreqItemsets = freqItemsetToSup.size();
-        System.out.println(JsonKeys.numFreqItemsets + ": " + freqItemsetToSup.size());
+        final int numFreqItemsets = freqItemsetToSup.sequenceCount;
+        System.out.println(JsonKeys.numFreqItemsets + ": " + numFreqItemsets);
 
         final Transformer transformer = new Transformer();
         final MultiGraph realMatrix = transformer.createMultiGraph(Config.datasetPath);
@@ -98,74 +96,77 @@ public class ConvergenceSeq {
                         String.valueOf(Config.seed));
         final String resultPath = Paths.getJsonFilePath(Config.resultsDir, resultsBaseName);
         
-        final String samplerName = sampler.getClass().getName();
-        System.out.println(JsonKeys.sampler + ": " + samplerName);
+                
+        for (SeqSampler sampler : samplers) {
+            final String samplerName = sampler.getClass().getName();
+            System.out.println(JsonKeys.sampler + ": " + samplerName);
 
-        final JSONArray samplerConvergenceStats = new JSONArray();
+            final JSONArray samplerConvergenceStats = new JSONArray();
 
-        MultiGraph startMatrix = realMatrix;
+            MultiGraph startMatrix = realMatrix;
 
-        for (int i = 0; i < numSwapsFactors.size(); i++) {
-            final double numSwapsFactor = numSwapsFactors.get(i);
-            System.out.println("\t" + JsonKeys.numSwapsFactor + ": " + numSwapsFactor);
+            for (int i = 0; i < numSwapsFactors.size(); i++) {
+                final double numSwapsFactor = numSwapsFactors.get(i);
+                System.out.println("\t" + JsonKeys.numSwapsFactor + ": " + numSwapsFactor);
 
-            final double prevNumSwapsFactor = i > 0 ? numSwapsFactors.get(i - 1) : 0;
-            final int numSwaps = (int) ((numSwapsFactor - prevNumSwapsFactor) * numOnes);
-            System.out.println("\t\t" + JsonKeys.numSwaps + ": " + numSwaps);
+                final double prevNumSwapsFactor = i > 0 ? numSwapsFactors.get(i - 1) : 0;
+                final int numSwaps = (int) ((numSwapsFactor - prevNumSwapsFactor) * numOnes);
+                System.out.println("\t\t" + JsonKeys.numSwaps + ": " + numSwaps);
 
-            System.out.println("\t\tGetting sample from matrix");
-            final Timer timer = new Timer(true);
-            final long start = System.currentTimeMillis();
-            final MultiGraph sample = sampler.sample(startMatrix,
-                    numSwaps,
-                    rnd.nextLong(),
-                    timer);
-            final long end = System.currentTimeMillis() - start;
-            final long setupTime = timer.getSavedTime();
-            final double minStepTime = timer.getMin();
-            final double c10StepTime = timer.getPercentile(10);
-            final double q1StepTime = timer.getPercentile(25);
-            final double medianStepTime = timer.getPercentile(50);
-            final double q3StepTime = timer.getPercentile(75);
-            final double c90StepTime = timer.getPercentile(90);
-            final double maxStepTime = timer.getMax();
+                System.out.println("\t\tGetting sample from matrix");
+                final Timer timer = new Timer(true);
+                final long start = System.currentTimeMillis();
+                final MultiGraph sample = sampler.sample(startMatrix,
+                        numSwaps,
+                        rnd.nextLong(),
+                        timer);
+                final long end = System.currentTimeMillis() - start;
+                final long setupTime = timer.getSavedTime();
+                final double minStepTime = timer.getMin();
+                final double c10StepTime = timer.getPercentile(10);
+                final double q1StepTime = timer.getPercentile(25);
+                final double medianStepTime = timer.getPercentile(50);
+                final double q3StepTime = timer.getPercentile(75);
+                final double c90StepTime = timer.getPercentile(90);
+                final double maxStepTime = timer.getMax();
 
-            System.out.println("\t\t" + JsonKeys.minStepTime + ": " + minStepTime);
-            System.out.println("\t\t" + JsonKeys.c10StepTime + ": " + c10StepTime);
-            System.out.println("\t\t" + JsonKeys.q1StepTime + ": " + q1StepTime);
-            System.out.println("\t\t" + JsonKeys.medianStepTime + ": " + medianStepTime);
-            System.out.println("\t\t" + JsonKeys.q3StepTime + ": " + q3StepTime);
-            System.out.println("\t\t" + JsonKeys.c90StepTime + ": " + c90StepTime);
-            System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
+                System.out.println("\t\t" + JsonKeys.minStepTime + ": " + minStepTime);
+                System.out.println("\t\t" + JsonKeys.c10StepTime + ": " + c10StepTime);
+                System.out.println("\t\t" + JsonKeys.q1StepTime + ": " + q1StepTime);
+                System.out.println("\t\t" + JsonKeys.medianStepTime + ": " + medianStepTime);
+                System.out.println("\t\t" + JsonKeys.q3StepTime + ": " + q3StepTime);
+                System.out.println("\t\t" + JsonKeys.c90StepTime + ": " + c90StepTime);
+                System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
 
-            System.out.println("\t\tGetting sample itemset to support map");
-            final Object2IntOpenHashMap<IntOpenHashSet> sampleFreqItemsetToSup
-                    = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup.keySet());
+                System.out.println("\t\tGetting sample itemset to support map");
+                final Object2IntOpenHashMap<String> sampleFreqItemsetToSup
+                        = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup);
 
-            // compute convergence statistics
-            final double avgRelFreqDiff = getAvgRelFreqDiff(freqItemsetToSup, sampleFreqItemsetToSup);
-            System.out.println("\t\t" + JsonKeys.avgRelFreqDiff + ": " + avgRelFreqDiff);
+                // compute convergence statistics
+                final double avgRelFreqDiff = getAvgRelFreqDiff(freqItemsetToSup, sampleFreqItemsetToSup);
+                System.out.println("\t\t" + JsonKeys.avgRelFreqDiff + ": " + avgRelFreqDiff);
 
-            // create object for factorConvergenceStats
-            final JSONObject factorConvergenceStats = new JSONObject();
-            factorConvergenceStats.put(JsonKeys.numSwapsFactor, numSwapsFactor);
-            factorConvergenceStats.put(JsonKeys.avgRelFreqDiff, avgRelFreqDiff);
-            factorConvergenceStats.put(JsonKeys.setupTime, setupTime);
-            factorConvergenceStats.put(JsonKeys.minStepTime, minStepTime);
-            factorConvergenceStats.put(JsonKeys.c10StepTime, c10StepTime);
-            factorConvergenceStats.put(JsonKeys.q1StepTime, q1StepTime);
-            factorConvergenceStats.put(JsonKeys.medianStepTime, medianStepTime);
-            factorConvergenceStats.put(JsonKeys.q3StepTime, q3StepTime);
-            factorConvergenceStats.put(JsonKeys.c90StepTime, c90StepTime);
-            factorConvergenceStats.put(JsonKeys.maxStepTime, maxStepTime);
-            factorConvergenceStats.put(JsonKeys.totalTime, end);
+                // create object for factorConvergenceStats
+                final JSONObject factorConvergenceStats = new JSONObject();
+                factorConvergenceStats.put(JsonKeys.numSwapsFactor, numSwapsFactor);
+                factorConvergenceStats.put(JsonKeys.avgRelFreqDiff, avgRelFreqDiff);
+                factorConvergenceStats.put(JsonKeys.setupTime, setupTime);
+                factorConvergenceStats.put(JsonKeys.minStepTime, minStepTime);
+                factorConvergenceStats.put(JsonKeys.c10StepTime, c10StepTime);
+                factorConvergenceStats.put(JsonKeys.q1StepTime, q1StepTime);
+                factorConvergenceStats.put(JsonKeys.medianStepTime, medianStepTime);
+                factorConvergenceStats.put(JsonKeys.q3StepTime, q3StepTime);
+                factorConvergenceStats.put(JsonKeys.c90StepTime, c90StepTime);
+                factorConvergenceStats.put(JsonKeys.maxStepTime, maxStepTime);
+                factorConvergenceStats.put(JsonKeys.totalTime, end);
 
-            samplerConvergenceStats.put(factorConvergenceStats);
+                samplerConvergenceStats.put(factorConvergenceStats);
 
-            // run the chain again starting from the last sample
-            startMatrix = sample;
+                // run the chain again starting from the last sample
+                startMatrix = sample;
+            }
+            convergenceStats.put(samplerName, samplerConvergenceStats);
         }
-        convergenceStats.put(samplerName, samplerConvergenceStats);
 
         // create object for runInfo
         final JSONObject runInfo = new JSONObject();
@@ -195,14 +196,17 @@ public class ConvergenceSeq {
      * support in the sampled dataset such that the map only contains itemsets
      * that are frequent itemsets of the observed dataset
      */
-    public static Object2IntOpenHashMap<IntOpenHashSet> getSampleItemsetToSupMap(
-            MultiGraph sample, Transformer transformer, ObjectSet<IntOpenHashSet> freqItemsets) {
-        final Object2IntOpenHashMap<IntOpenHashSet> sampleItemsetToSup = new Object2IntOpenHashMap();
+    public static Object2IntOpenHashMap<String> getSampleItemsetToSupMap(
+            MultiGraph sample, Transformer transformer, SequentialPatterns freqItemsets) {
+        final Object2IntOpenHashMap<String> sampleItemsetToSup = new Object2IntOpenHashMap();
         sampleItemsetToSup.defaultReturnValue(0);
         for (int r = 0; r < sample.getNumRows(); r++) {
-            for (IntOpenHashSet freqItemset : freqItemsets) {
-                if (isItemsetInSampleTransaction(freqItemset, sample, r, transformer.getItemToColIndex())) {
-                    sampleItemsetToSup.addTo(freqItemset, 1);
+            for (int level = 0; level < freqItemsets.getLevelCount(); level++) {
+                List<SequentialPattern> patterns = freqItemsets.getLevel(level);
+                for (SequentialPattern freqItemset : patterns) {
+                    if (isItemsetInSampleTransaction(freqItemset, sample, r, transformer.itemsetToIndex)) {
+                        sampleItemsetToSup.addTo(freqItemset.toSave(), 1);
+                    }
                 }
             }
         }
@@ -213,21 +217,26 @@ public class ConvergenceSeq {
      * Determines whether the itemset is in the transaction of the sample
      * specified by rowIndex.
      *
-     * @param itemset the itemset
+     * @param seqPattern
      * @param sample the sample
      * @param rowIndex the row index that corresponds to the transaction
-     * @param itemToColIndex a map where each key is an item and the value is
-     * the item's column index in the sample matrix
+     * @param revIndex
      * @return whether the itemset is in the transaction of the sample
      */
     public static boolean isItemsetInSampleTransaction(
-            IntOpenHashSet itemset,
+            SequentialPattern seqPattern,
             MultiGraph sample,
             int rowIndex,
-            Map<Integer, Integer> itemToColIndex) {
+            Map<IntOpenHashSet, Integer> revIndex) {
 
-        return itemset.intStream()
-                .allMatch(item -> sample.getRowInstance(rowIndex).contains(itemToColIndex.get(item)));
+        for (Itemset itemlist : seqPattern.getItemsets()) {
+            IntOpenHashSet itemset = new IntOpenHashSet(itemlist.getItems());
+            int itemId = revIndex.get(itemset);
+            if (!sample.getRowInstance(rowIndex).contains(itemId)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     /**
@@ -241,15 +250,18 @@ public class ConvergenceSeq {
      * @return the average relative frequency/support difference
      */
     public static double getAvgRelFreqDiff(
-            Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup,
-            Object2IntOpenHashMap<IntOpenHashSet> sampleItemsetToSup) {
+            SequentialPatterns freqItemsetToSup,
+            Object2IntOpenHashMap<String> sampleItemsetToSup) {
 
-        double sumRelFreqDiff = freqItemsetToSup.entrySet()
-                .stream()
-                .mapToDouble(entry
-                        -> Math.abs(1. * entry.getValue() - sampleItemsetToSup.getOrDefault(entry.getKey(), 0))
-                / entry.getValue())
-                .sum();
-        return sumRelFreqDiff / freqItemsetToSup.size();
+        double sumRelFreqDiff = 0;
+        for (int level = 0; level < freqItemsetToSup.getLevelCount(); level++) {
+            List<SequentialPattern> patterns = freqItemsetToSup.getLevel(level);
+            for (SequentialPattern freqItemset : patterns) {
+                String patternName = freqItemset.toSave();
+                double count = 1. * freqItemset.getSequenceIDs().size();
+                sumRelFreqDiff += Math.abs(count - sampleItemsetToSup.getOrDefault(patternName, 0)) / count;
+            }
+        }
+        return sumRelFreqDiff / freqItemsetToSup.sequenceCount;
     }
 }

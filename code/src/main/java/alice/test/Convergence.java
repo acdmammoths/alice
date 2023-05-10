@@ -32,7 +32,6 @@ import alice.samplers.SelfLoopBJDMSampler;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -40,7 +39,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

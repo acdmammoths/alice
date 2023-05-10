@@ -1,16 +1,9 @@
 package alice.samplers;
 
-import alice.config.Delimiters;
 import alice.config.JsonKeys;
-import alice.config.Paths;
-import alice.structures.BJDMMatrix;
 import alice.helpers.SwappableAndNewEdges;
-import alice.structures.SparseMatrix;
-import alice.helpers.LogNumEquivMatricesTracker;
-import alice.structures.Vector;
 import alice.structures.Edge;
 import alice.structures.MultiGraph;
-import alice.structures.RawFastIntCollectionFixedSize;
 import alice.structures.RawFastIntCollectionFixedSizeWithOrder;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
@@ -38,7 +31,7 @@ import java.util.Random;
 /**
  * ALICE-C Sampler.
  */
-public class AliceCSampler {
+public class AliceCSampler implements SeqSampler {
 
     /**
      * @param inGraph
@@ -48,13 +41,16 @@ public class AliceCSampler {
      * @param timer a timer
      * @return the matrix representation of the sampled dataset
      */
+    @Override
     public MultiGraph sample(MultiGraph inGraph, int numSwaps, long seed, Timer timer) {
         
         final long setupTimeStart = System.currentTimeMillis();
 
         final Random rnd = new Random(seed);
+        
+        final MultiGraph graph = new MultiGraph(inGraph);
 
-        double logNumEquivMatrices = inGraph.getLogNumEquivMatrices();
+        double logNumEquivMatrices = graph.getLogNumEquivMatrices();
 
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
@@ -63,7 +59,7 @@ public class AliceCSampler {
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
-            final SwappableAndNewEdges sne = inGraph.getSwappableAndNewEdges(rnd);
+            final SwappableAndNewEdges sne = graph.getSwappableAndNewEdges(rnd);
             
             if (sne == null) {
                 continue;
@@ -71,14 +67,14 @@ public class AliceCSampler {
             
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
-            final RawFastIntCollectionFixedSizeWithOrder swappableRow1 = inGraph.getRowInstance(swappableEdge1.row);
-            final RawFastIntCollectionFixedSizeWithOrder swappableRow2 = inGraph.getRowInstance(swappableEdge2.row);
-            final RawFastIntCollectionFixedSizeWithOrder[] newRows = inGraph.getNewRows(sne);
+            final RawFastIntCollectionFixedSizeWithOrder swappableRow1 = graph.getRowInstance(swappableEdge1.row);
+            final RawFastIntCollectionFixedSizeWithOrder swappableRow2 = graph.getRowInstance(swappableEdge2.row);
+            final RawFastIntCollectionFixedSizeWithOrder[] newRows = graph.getNewRows(sne);
             final RawFastIntCollectionFixedSizeWithOrder newRow1 = newRows[0];
             final RawFastIntCollectionFixedSizeWithOrder newRow2 = newRows[1];
 
             final double logNumEquivAdjMatrices
-                    = inGraph.getLogNumEquivAdjMatrices(
+                    = graph.getLogNumEquivAdjMatrices(
                             logNumEquivMatrices, swappableRow1, swappableRow2, newRow1, newRow2);
 
             final double frac = Math.exp(logNumEquivMatrices - logNumEquivAdjMatrices);
@@ -86,13 +82,13 @@ public class AliceCSampler {
             
             if (rnd.nextDouble() <= acceptanceProb) {
                 actualSwaps ++;
-                inGraph.transition(sne, swappableRow1, swappableRow2, newRow1, newRow2);
+                graph.transition(sne, swappableRow1, swappableRow2, newRow1, newRow2);
                 logNumEquivMatrices = logNumEquivAdjMatrices;
             }
             timer.stop();
         }
         System.out.println("Actual Swaps: " + actualSwaps);
-        return inGraph;
+        return graph;
     }
     
     public static void main(String[] args) throws IOException {

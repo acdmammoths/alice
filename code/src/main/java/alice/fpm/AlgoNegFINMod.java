@@ -20,10 +20,6 @@ import alice.utils.MemoryLogger;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A variant of SPMF's {@link AlgoNegFIN} that returns the collection of
@@ -93,7 +89,7 @@ public class AlgoNegFINMod extends AlgoNegFIN {
      */
     public Object2IntOpenHashMap<IntOpenHashSet> runAlgorithm(String filename, double minsup)
             throws IOException {
-        freqItemsetToSup = new Object2IntOpenHashMap<IntOpenHashSet>();
+        freqItemsetToSup = new Object2IntOpenHashMap();
 
         bmcTreeRoot = new BMCTreeNode();
         nlRoot = new SetEnumerationTreeNode();

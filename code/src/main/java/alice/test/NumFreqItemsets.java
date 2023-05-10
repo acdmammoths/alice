@@ -16,7 +16,6 @@ package alice.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import alice.samplers.GmmtSampler;
 import alice.config.Paths;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
@@ -29,8 +28,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import alice.fpm.FreqItemsetMiner;
 import alice.fpm.SampleAndMiner;
-import alice.samplers.GmmtSampler_;
 import alice.samplers.Sampler;
+import alice.samplers.SelfLoopGmmtSampler;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -74,7 +73,7 @@ public class NumFreqItemsets {
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
 
         final Sampler[] samplers = {
-            new GmmtSampler(),
+            new SelfLoopGmmtSampler()
 //                ,
 //            new BJDMSampler(), 
 //            new CurveballBJDMSampler() 
@@ -93,10 +92,14 @@ public class NumFreqItemsets {
 
             if (Config.sampleAndMine) {
                 System.out.println("Sampling and mining");
+                int numSwaps = Config.numSwaps;
+                if (samplerName.contains("SelfLoop")) {
+                    numSwaps *= 2;
+                }
                 SampleAndMiner.sampleAndMine(
                         Config.datasetPath,
                         sampler,
-                        Config.numSwaps,
+                        numSwaps,
                         Config.numSamples,
                         Config.minFreq,
                         Config.numThreads,

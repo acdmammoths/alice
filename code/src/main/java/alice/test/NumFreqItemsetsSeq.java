@@ -16,38 +16,29 @@ package alice.test;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import alice.samplers.GmmtSampler;
 import alice.config.Paths;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
 import alice.config.Delimiters;
-import alice.samplers.CurveballBJDMSampler;
-import alice.samplers.BJDMSampler;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import alice.fpm.FreqItemsetMiner;
-import alice.fpm.SampleAndMiner;
-import alice.fpm.SampleAndMinerSeq;
+import alice.spm.SampleAndMinerSeq;
 import alice.samplers.AliceCSampler;
-import alice.samplers.GmmtSampler_;
+import alice.samplers.GmmtSeqSampler;
 import alice.samplers.Sampler;
+import alice.samplers.SeqSampler;
+import alice.spm.FreqSequenceMiner;
+import alice.spm.SequentialPatterns;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,76 +56,81 @@ public class NumFreqItemsetsSeq {
         CMDLineParser.parse(args);
 
         System.out.println("Executing number of frequent itemsets experiment");
-        final ObjectSet<IntOpenHashSet> observedFreqItemsets
-                = FreqItemsetMiner.mine(Config.datasetPath, Config.minFreq).keySet();
+        final SequentialPatterns observedFreqItemsets
+                = FreqSequenceMiner.mine(Config.datasetPath, Config.minFreq);
 
-        final int observedNumFreqItemsets = observedFreqItemsets.size();
+        final int observedNumFreqItemsets = observedFreqItemsets.getSequenceCount();
         System.out.println(JsonKeys.numFreqItemsets + ": " + observedNumFreqItemsets);
 
         final Int2IntOpenHashMap observedFreqItemsetLenToCount
                 = getFreqItemsetLenToCountMap(observedFreqItemsets);
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
+        
+        final SeqSampler[] samplers = new SeqSampler[]{new AliceCSampler(), new GmmtSeqSampler()};
 
         // create object for numFreqItemsetsStats
         final JSONArray numFreqItemsetsStats = new JSONArray();
-        final AliceCSampler sampler = new AliceCSampler();
-        final String samplerName = sampler.getClass().getName();
-        System.out.println(JsonKeys.sampler + ": " + samplerName);
 
-        final String samplerResultsDir = Paths.concat(Config.resultsDir, samplerName);
-        final Paths paths = new Paths(Config.datasetPath, samplerResultsDir);
-        final String freqItemsetsSamplesDir = paths.freqItemsetsDirPath;
+        for (SeqSampler sampler : samplers) {
+            final String samplerName = sampler.getClass().getName();
+            System.out.println(JsonKeys.sampler + ": " + samplerName);
 
-        if (Config.sampleAndMine) {
-            System.out.println("Sampling and mining");
-            SampleAndMinerSeq.sampleAndMine(
-                    Config.datasetPath,
-                    sampler,
-                    Config.numSwaps,
-                    Config.numSamples,
-                    Config.minFreq,
-                    Config.numThreads,
-                    Config.seed,
-                    samplerResultsDir);
-        } else {
-            System.out.println("Skipping sampling and mining");
+            final String samplerResultsDir = Paths.concat(Config.resultsDir, samplerName);
+            final Paths paths = new Paths(Config.datasetPath, samplerResultsDir);
+            final String freqItemsetsSamplesDir = paths.freqItemsetsDirPath;
+
+            if (Config.sampleAndMine) {
+                System.out.println("Sampling and mining");
+                SampleAndMinerSeq.sampleAndMine(
+                        Config.datasetPath,
+                        sampler,
+                        Config.numSwaps,
+                        Config.numSamples,
+                        Config.minFreq,
+                        Config.numThreads,
+                        Config.seed,
+                        samplerResultsDir);
+            } else {
+                System.out.println("Skipping sampling and mining");
+            }
+
+            final IntArrayList numFreqItemsetsDist = new IntArrayList();
+            final Int2ObjectMap<IntArrayList> freqItemsetLenToCountDist = new Int2ObjectOpenHashMap();
+            final File[] freqItemsetsSamples = new File(freqItemsetsSamplesDir).listFiles();
+
+            for (File freqItemsetsSample : freqItemsetsSamples) {
+                final Int2IntOpenHashMap freqItemsetLenToCount
+                        = getFreqItemsetLenToCountMap(freqItemsetsSample);
+                final int numFreqItemsets = getNumFreqItemsets(freqItemsetLenToCount);
+                numFreqItemsetsDist.add(numFreqItemsets);
+                updateFreqItemsetLenToCountDist(freqItemsetLenToCountDist, freqItemsetLenToCount);
+            }
+
+            System.out.println(JsonKeys.numSamples + ": " + numFreqItemsetsDist.size());
+
+            final Int2ObjectMap<int[]> freqItemsetLenToCountQuartiles
+                    = getFreqItemsetLenToCountQuartiles(freqItemsetLenToCountDist);
+            System.out.println(JsonKeys.freqItemsetLenToCountQuartiles + ": ");
+            freqItemsetLenToCountQuartiles.int2ObjectEntrySet().forEach(entry -> {
+                System.out.println(entry.getIntKey() + " => " + Arrays.toString(entry.getValue()));
+            });
+
+            final int[] numFreqItemsetsQuartiles = getQuartiles(numFreqItemsetsDist);
+            System.out.println(JsonKeys.numFreqItemsetsQuartiles + ": " + Arrays.toString(numFreqItemsetsQuartiles));
+
+            final double pvalue = getPvalue(observedNumFreqItemsets, numFreqItemsetsDist);
+            System.out.println(JsonKeys.pvalue + ": " + pvalue);
+
+            // create object for samplerNumFreqItemsetsStats
+            final JSONObject samplerNumFreqItemsetsStats = new JSONObject();
+            samplerNumFreqItemsetsStats.put(JsonKeys.sampler, samplerName);
+            samplerNumFreqItemsetsStats.put(JsonKeys.numSamples, numFreqItemsetsDist.size());
+            samplerNumFreqItemsetsStats.put(JsonKeys.numFreqItemsetsQuartiles, numFreqItemsetsQuartiles);
+            samplerNumFreqItemsetsStats.put(JsonKeys.pvalue, pvalue);
+            samplerNumFreqItemsetsStats.put(JsonKeys.freqItemsetLenToCountQuartiles, freqItemsetLenToCountQuartiles);
+
+            numFreqItemsetsStats.put(samplerNumFreqItemsetsStats);
         }
-
-        final List<Integer> numFreqItemsetsDist = Lists.newArrayList();
-        final Map<Integer, List<Integer>> freqItemsetLenToCountDist = Maps.newHashMap();
-        final File[] freqItemsetsSamples = new File(freqItemsetsSamplesDir).listFiles();
-
-        for (File freqItemsetsSample : freqItemsetsSamples) {
-            final Int2IntOpenHashMap freqItemsetLenToCount
-                    = getFreqItemsetLenToCountMap(freqItemsetsSample);
-            final int numFreqItemsets = getNumFreqItemsets(freqItemsetLenToCount);
-            numFreqItemsetsDist.add(numFreqItemsets);
-            updateFreqItemsetLenToCountDist(freqItemsetLenToCountDist, freqItemsetLenToCount);
-        }
-
-        System.out.println(JsonKeys.numSamples + ": " + numFreqItemsetsDist.size());
-
-        final Map<Integer, List<Integer>> freqItemsetLenToCountQuartiles
-                = getFreqItemsetLenToCountQuartiles(freqItemsetLenToCountDist);
-        System.out.println(
-                JsonKeys.freqItemsetLenToCountQuartiles + ": " + freqItemsetLenToCountQuartiles);
-
-        final List<Integer> numFreqItemsetsQuartiles = getQuartiles(numFreqItemsetsDist);
-        System.out.println(JsonKeys.numFreqItemsetsQuartiles + ": " + numFreqItemsetsQuartiles);
-
-        final double pvalue = getPvalue(observedNumFreqItemsets, numFreqItemsetsDist);
-        System.out.println(JsonKeys.pvalue + ": " + pvalue);
-
-        // create object for samplerNumFreqItemsetsStats
-        final JSONObject samplerNumFreqItemsetsStats = new JSONObject();
-        samplerNumFreqItemsetsStats.put(JsonKeys.sampler, samplerName);
-        samplerNumFreqItemsetsStats.put(JsonKeys.numSamples, numFreqItemsetsDist.size());
-        samplerNumFreqItemsetsStats.put(JsonKeys.numFreqItemsetsQuartiles, numFreqItemsetsQuartiles);
-        samplerNumFreqItemsetsStats.put(JsonKeys.pvalue, pvalue);
-        samplerNumFreqItemsetsStats.put(
-                JsonKeys.freqItemsetLenToCountQuartiles, freqItemsetLenToCountQuartiles);
-
-        numFreqItemsetsStats.put(samplerNumFreqItemsetsStats);
 
         // create object for runInfo
         final JSONObject runInfo = new JSONObject();
@@ -172,11 +168,10 @@ public class NumFreqItemsetsSeq {
      * @return a map where each key is a frequent itemset length and the value
      * is the total number of frequent itemsets with that length in the dataset
      */
-    public static Int2IntOpenHashMap getFreqItemsetLenToCountMap(ObjectSet<IntOpenHashSet> freqItemsets) {
+    public static Int2IntOpenHashMap getFreqItemsetLenToCountMap(SequentialPatterns freqItemsets) {
         final Int2IntOpenHashMap freqItemsetLenToCount = new Int2IntOpenHashMap();
-        for (IntOpenHashSet freqItemset : freqItemsets) {
-            final int freqItemsetLen = freqItemset.size();
-            freqItemsetLenToCount.merge(freqItemsetLen, 1, Integer::sum);
+        for (int level = 0; level < freqItemsets.getLevelCount(); level ++) {
+            freqItemsetLenToCount.put(level, freqItemsets.getLevel(level).size());
         }
         return freqItemsetLenToCount;
     }
@@ -190,14 +185,17 @@ public class NumFreqItemsetsSeq {
      * is the total number of frequent itemsets with that length in the dataset
      */
     public static Int2IntOpenHashMap getFreqItemsetLenToCountMap(File freqItemsetsFile) {
+        
+        // pattern -1 #SUP: support #SID: sid1 sid2 ... sidn
         final Int2IntOpenHashMap freqItemsetLenToCount = new Int2IntOpenHashMap();
+        freqItemsetLenToCount.defaultReturnValue(0);
         try {
             final BufferedReader br = new BufferedReader(new FileReader(freqItemsetsFile.getPath()));
             String line = br.readLine();
             while (line != null) {
-                final String freqItemsetString = line.split(Delimiters.sup)[0];
-                final int freqItemsetLen = freqItemsetString.split(Delimiters.space).length;
-                freqItemsetLenToCount.merge(freqItemsetLen, 1, Integer::sum);
+                String[] tmp = line.strip().split(" #SUP: ");
+                String[] freqItemsetString = tmp[0].strip().split("-1");
+                freqItemsetLenToCount.addTo(freqItemsetString.length, 1);
                 line = br.readLine();
             }
             br.close();
@@ -218,11 +216,7 @@ public class NumFreqItemsetsSeq {
      * @return the number of frequent itemsets in the dataset
      */
     public static int getNumFreqItemsets(Int2IntOpenHashMap freqItemsetLenToCount) {
-        int numFreqItemsets = 0;
-        for (int count : freqItemsetLenToCount.values()) {
-            numFreqItemsets += count;
-        }
-        return numFreqItemsets;
+        return freqItemsetLenToCount.values().intStream().sum();
     }
 
     /**
@@ -236,12 +230,11 @@ public class NumFreqItemsetsSeq {
      * length in the dataset
      */
     public static void updateFreqItemsetLenToCountDist(
-            Map<Integer, List<Integer>> freqItemsetLenToCountDist,
+            Int2ObjectMap<IntArrayList> freqItemsetLenToCountDist,
             Int2IntOpenHashMap freqItemsetLenToCount) {
         for (int freqItemsetLen : freqItemsetLenToCount.keySet()) {
             final int count = freqItemsetLenToCount.get(freqItemsetLen);
-            final List<Integer> countDist
-                    = freqItemsetLenToCountDist.getOrDefault(freqItemsetLen, new ArrayList<>());
+            final IntArrayList countDist = freqItemsetLenToCountDist.getOrDefault(freqItemsetLen, new IntArrayList());
             countDist.add(count);
             freqItemsetLenToCountDist.put(freqItemsetLen, countDist);
         }
@@ -259,13 +252,13 @@ public class NumFreqItemsetsSeq {
      * is the quartiles for the distribution of the total number of frequent
      * itemsets with that length across the sampled datasets.
      */
-    public static Map<Integer, List<Integer>> getFreqItemsetLenToCountQuartiles(
-            Map<Integer, List<Integer>> freqItemsetLenToCountDist) {
-        final Map<Integer, List<Integer>> freqItemsetLenToCountQuartiles = Maps.newHashMap();
-        for (Entry<Integer, List<Integer>> entry : freqItemsetLenToCountDist.entrySet()) {
-            final int freqItemsetLen = entry.getKey();
-            final List<Integer> countDist = entry.getValue();
-            final List<Integer> countQuartiles = getQuartiles(countDist);
+    public static Int2ObjectMap<int[]> getFreqItemsetLenToCountQuartiles(
+            Int2ObjectMap<IntArrayList> freqItemsetLenToCountDist) {
+        
+        final Int2ObjectMap<int[]> freqItemsetLenToCountQuartiles = new Int2ObjectOpenHashMap();
+        for (int freqItemsetLen : freqItemsetLenToCountDist.keySet()) {
+            final IntArrayList countDist = freqItemsetLenToCountDist.get(freqItemsetLen);
+            final int[] countQuartiles = getQuartiles(countDist);
             freqItemsetLenToCountQuartiles.put(freqItemsetLen, countQuartiles);
         }
         return freqItemsetLenToCountQuartiles;
@@ -283,7 +276,7 @@ public class NumFreqItemsetsSeq {
      * @return the p-value of the number of frequent itemsets in the observed
      * dataset
      */
-    public static double getPvalue(int observedNumFreqItemsets, List<Integer> numFreqItemsetsDist) {
+    public static double getPvalue(int observedNumFreqItemsets, IntArrayList numFreqItemsetsDist) {
         int count = 1;
         for (int numFreqItemsets : numFreqItemsetsDist) {
             if (numFreqItemsets >= observedNumFreqItemsets) {
@@ -299,7 +292,7 @@ public class NumFreqItemsetsSeq {
      * @param dist the input distribution
      * @return the quartiles of the distribution
      */
-    public static List<Integer> getQuartiles(List<Integer> dist) {
+    public static int[] getQuartiles(IntArrayList dist) {
         final DescriptiveStatistics stats = new DescriptiveStatistics();
         for (int value : dist) {
             stats.addValue(value);
@@ -309,6 +302,6 @@ public class NumFreqItemsetsSeq {
         final int median = (int) stats.getPercentile(50);
         final int q3 = (int) stats.getPercentile(75);
         final int max = (int) stats.getMax();
-        return Arrays.asList(min, q1, median, q3, max);
+        return new int[]{min, q1, median, q3, max};
     }
 }

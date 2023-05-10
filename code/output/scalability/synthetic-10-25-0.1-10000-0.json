@@ -1,35 +1,35 @@
 {
   "runtimeStats": {
-    "caterpillars.samplers.NaiveBJDMSampler": {
+    "alice.samplers.CurveballBJDMSampler": {
       "c90StepTime": 0,
       "q3StepTime": 0,
-      "setupTime": 266,
-      "maxStepTime": 5,
-      "minStepTime": 0,
-      "q1StepTime": 0,
-      "medianStepTime": 0,
-      "c10StepTime": 0
-    },
-    "caterpillars.samplers.CurveballBJDMSampler": {
-      "c90StepTime": 0,
-      "q3StepTime": 0,
-      "setupTime": 215,
+      "setupTime": 111,
       "maxStepTime": 7,
       "minStepTime": 0,
       "q1StepTime": 0,
       "medianStepTime": 0,
       "c10StepTime": 0
     },
-    "diffusr.samplers.GmmtSampler": {
-      "c90StepTime": 70,
-      "q3StepTime": 55,
-      "setupTime": 52251,
-      "maxStepTime": 554,
-      "minStepTime": 21,
-      "q1StepTime": 38,
-      "medianStepTime": 44,
-      "c10StepTime": 32
+    "alice.samplers.GmmtSampler": {
+      "c90StepTime": 3,
+      "q3StepTime": 3,
+      "setupTime": 201,
+      "maxStepTime": 22,
+      "minStepTime": 1,
+      "q1StepTime": 2,
+      "medianStepTime": 3,
+      "c10StepTime": 2
+    },
+    "alice.samplers.BJDMSampler": {
+      "c90StepTime": 0,
+      "q3StepTime": 0,
+      "setupTime": 174,
+      "maxStepTime": 5,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
     }
   },
-  "runInfo": {"timestamp": "2022-05-19T03:51:59.240"}
+  "runInfo": {"timestamp": "2023-05-10T06:13:07.245089300"}
 }

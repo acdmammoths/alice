@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -28,6 +27,50 @@ public class MultiGraph {
     Object2IntOpenHashMap<RawFastIntCollectionFixedSizeWithOrder> rowToNumEqRows;
     
 
+    public MultiGraph(MultiGraph G) {
+        
+        this.rowIdToNeighbors = new RawFastIntCollectionFixedSizeWithOrder[G.rowIdToNeighbors.length];
+        for (int i = 0; i < this.rowIdToNeighbors.length; i++) {
+            this.rowIdToNeighbors[i] = new RawFastIntCollectionFixedSizeWithOrder(G.rowIdToNeighbors[i]);
+        }
+        this.colIdToNeighbors = new RawFastIntCollectionFixedSizeWithOrder[G.colIdToNeighbors.length];
+        for (int i = 0; i < this.colIdToNeighbors.length; i++) {
+            this.colIdToNeighbors[i] = new RawFastIntCollectionFixedSizeWithOrder(G.colIdToNeighbors[i]);
+        }
+        this.rowSumToVertices = new Int2ObjectOpenHashMap();
+        G.rowSumToVertices.int2ObjectEntrySet().stream().forEach(entry -> {
+            int[] newV = new int[entry.getValue().length];
+            System.arraycopy(entry.getValue(), 0, newV, 0, newV.length);
+            this.rowSumToVertices.put(entry.getIntKey(), newV);
+        });
+        this.colSumToVertices = new Int2ObjectOpenHashMap();
+        G.colSumToVertices.int2ObjectEntrySet().stream().forEach(entry -> {
+            int[] newV = new int[entry.getValue().length];
+            System.arraycopy(entry.getValue(), 0, newV, 0, newV.length);
+            this.colSumToVertices.put(entry.getIntKey(), newV);
+        });
+        this.rowProbabilities = new double[G.rowProbabilities.length];
+        System.arraycopy(G.rowProbabilities, 0, this.rowProbabilities, 0, this.rowProbabilities.length);
+        this.colProbabilities = new double[G.colProbabilities.length];
+        System.arraycopy(G.colProbabilities, 0, this.colProbabilities, 0, this.colProbabilities.length);
+        this.id2rowSum = new int[G.id2rowSum.length];
+        System.arraycopy(G.id2rowSum, 0, this.id2rowSum, 0, this.id2rowSum.length);
+        this.id2colSum = new int[G.id2colSum.length];
+        System.arraycopy(G.id2colSum, 0, this.id2colSum, 0, this.id2colSum.length);
+        this.rowSumToUniqueRows = new Int2ObjectOpenHashMap();
+        G.rowSumToUniqueRows.int2ObjectEntrySet().stream().forEach(entry -> {
+            ObjectOpenHashSet<RawFastIntCollectionFixedSizeWithOrder> uniqueRows = new ObjectOpenHashSet();
+            for (RawFastIntCollectionFixedSizeWithOrder row : entry.getValue()) {
+                uniqueRows.add(new RawFastIntCollectionFixedSizeWithOrder(row));
+            }
+            this.rowSumToUniqueRows.put(entry.getIntKey(), uniqueRows);
+        });
+        this.rowToNumEqRows = new Object2IntOpenHashMap();
+        G.rowToNumEqRows.object2IntEntrySet().forEach(entry -> {
+            this.rowToNumEqRows.put(new RawFastIntCollectionFixedSizeWithOrder(entry.getKey()), entry.getIntValue());
+        });
+    }
+    
     public MultiGraph(RawFastIntCollectionFixedSizeWithOrder[] rowToNeighbors,
             RawFastIntCollectionFixedSizeWithOrder[] colToNeighbors,
             Int2ObjectOpenHashMap<int[]> rowSumToVertices,
@@ -80,6 +123,22 @@ public class MultiGraph {
             P[r] /= total;
         }
         this.colProbabilities = Utils.cumSum(P);
+    }
+    
+    public RawFastIntCollectionFixedSizeWithOrder[] getRowIdToNeighbors() {
+        return this.rowIdToNeighbors;
+    }
+    
+    public RawFastIntCollectionFixedSizeWithOrder[] getColIdToNeighbors() {
+        return this.colIdToNeighbors;
+    }
+
+    public Int2ObjectOpenHashMap<int[]> getRowSumToVertices() {
+        return this.rowSumToVertices;
+    }
+            
+    public Int2ObjectOpenHashMap<int[]> getColSumToVertices() {
+        return this.colSumToVertices;
     }
 
     public double getLogNumEquivMatrices() {
@@ -236,6 +295,10 @@ public class MultiGraph {
     public RawFastIntCollectionFixedSizeWithOrder getRowInstance(int r) {
         return rowIdToNeighbors[r];
     }
+    
+    public RawFastIntCollectionFixedSizeWithOrder getColInstance(int c) {
+        return colIdToNeighbors[c];
+    }
 
     public RawFastIntCollectionFixedSizeWithOrder getRowCopy(int r) {
         return new RawFastIntCollectionFixedSizeWithOrder(rowIdToNeighbors[r]);
@@ -298,23 +361,6 @@ public class MultiGraph {
     }
 
     /**
-     * Overwrites the entries of the map storing the number of equal rows for
-     * each row, with the entries in the input map.
-     *
-     * @param rowsToEqRows number of equal rows for each row
-     */
-    private void replaceNumEqRows(Map<RawFastIntCollectionFixedSizeWithOrder, Integer> rowsToEqRows) {
-        rowsToEqRows.entrySet().stream()
-                .forEach(entry -> {
-                    if (entry.getValue() == 0) {
-                        rowToNumEqRows.remove(entry.getKey());
-                    } else {
-                        rowToNumEqRows.put(entry.getKey(), entry.getValue());
-                    }
-                });
-    }
-
-    /**
      * Transitions to the next state in the chain by updating the current matrix
      * to the adjacent matrix.
      *
@@ -350,6 +396,27 @@ public class MultiGraph {
         this.incNumEqRows(newRow2);
         // update matrix and edges
         this.transition(sne);
+    }
+    
+    public boolean areSwappable(SwappableAndNewEdges sne) {
+        final Edge first = sne.swappableEdge1;
+        final Edge second = sne.swappableEdge2;
+        return !(first.row == second.row || first.col == second.col ||
+                getRowInstance(first.row).contains(second.col) ||
+                getRowInstance(second.row).contains(first.col) ||
+                (getRowInstance(first.row).size() != getRowInstance(second.row).size() && 
+                getColInstance(first.col).size() != getColInstance(second.col).size()));
+    }
+    
+    public SwappableAndNewEdges getRandomSwappables(Random rnd) {
+        
+        final int v1Index = rnd.nextInt(rowIdToNeighbors.length);
+        final int v2Index = rnd.nextInt(rowIdToNeighbors.length);
+        final int n1Index = rowIdToNeighbors[v1Index].getRandomElement(rnd);
+        final int n2Index = rowIdToNeighbors[v2Index].getRandomElement(rnd);
+        final Edge firstEdge = new Edge(v1Index, n1Index);
+        final Edge secondEdge = new Edge(v2Index, n2Index);
+        return new SwappableAndNewEdges(firstEdge, secondEdge, 0, 0);
     }
     
     public int getNumEdges() {

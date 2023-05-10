@@ -330,4 +330,18 @@ public class GmmtMatrix extends Matrix {
 
         return sne;
     }
+    
+    /**
+     * Checks whether two edges are swappable.
+     * 
+     * @param sne candidate swappables
+     * @return True if the two edges are swappable; False otherwise
+     */
+    public boolean areSwappable(SwappableAndNewEdges sne) {
+        final Edge first = sne.swappableEdge1;
+        final Edge second = sne.swappableEdge2;
+        return !(first.row == second.row || first.col == second.col ||
+                getRowInstance(first.row).get(second.col) == 1 || 
+                getRowInstance(second.row).get(first.col) == 1);
+    }
 }

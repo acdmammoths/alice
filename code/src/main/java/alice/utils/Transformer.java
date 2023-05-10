@@ -19,9 +19,7 @@ package alice.utils;
 import alice.structures.SparseMatrix;
 import alice.config.Delimiters;
 import alice.structures.MultiGraph;
-import alice.structures.RawFastIntCollectionFixedSize;
 import alice.structures.RawFastIntCollectionFixedSizeWithOrder;
-import alice.structures.SparseMatrix_;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -46,9 +44,12 @@ import java.util.Set;
  */
 public class Transformer {
 
+    // Transactional Datasets
     public IntArrayList itemsList;
     public Int2IntOpenHashMap itemToColIndex;
+    // Sequential Datasets
     public Map<IntOpenHashSet, Integer> itemsetToIndex;
+    public IntOpenHashSet[] indexToItemset;
 
     /**
      * Creates a {@link SparseMatrix} from the dataset at datasetPath. Rows are
@@ -103,49 +104,6 @@ public class Transformer {
         return matrix;
     }
 
-    public SparseMatrix_ createMatrix_(String datasetPath) throws IOException {
-
-        final Set<Integer> itemsSet = Sets.newHashSet();
-        List<IntArrayList> tmpRows = Lists.newArrayList();
-        Map<Integer, IntArrayList> tmpCols = Maps.newHashMap();
-        
-        int numRows = 0;
-        BufferedReader br = new BufferedReader(new FileReader(datasetPath));
-        String line;
-        while ((line = br.readLine()) != null) {
-            IntArrayList row = new IntArrayList();
-            for (String itemString : line.split(Delimiters.space)) {
-                final int itemInt = Integer.parseInt(itemString);
-                itemsSet.add(itemInt);
-                row.add(itemInt);
-                tmpCols.putIfAbsent(itemInt, new IntArrayList());
-                tmpCols.get(itemInt).add(numRows);
-            }
-            tmpRows.add(row);
-            numRows++;
-        }
-        br.close();
-
-        // Construct matrix such that items are sorted in increasing order of their integer value
-        this.itemToColIndex = new Int2IntOpenHashMap();
-        this.itemsList = new IntArrayList(itemsSet);
-        Collections.sort(this.itemsList);
-
-        for (int i = 0; i < this.itemsList.size(); i++) {
-            this.itemToColIndex.put(this.itemsList.getInt(i), i);
-        }
-        
-        RawFastIntCollectionFixedSize[] rows = new RawFastIntCollectionFixedSize[numRows];
-        for (int r = 0; r < numRows; r++) {
-            rows[r] = new RawFastIntCollectionFixedSize(tmpRows.get(r), itemToColIndex);
-        }
-        RawFastIntCollectionFixedSize[] cols = new RawFastIntCollectionFixedSize[itemsSet.size()];
-        for (int c : tmpCols.keySet()) {
-            cols[this.itemToColIndex.get(c)] = new RawFastIntCollectionFixedSize(tmpCols.get(c));
-        }
-        return new SparseMatrix_(rows, cols);
-    }
-
     public MultiGraph createMultiGraph(String datasetPath) throws FileNotFoundException, IOException {
 
         Int2ObjectOpenHashMap<IntArrayList> rowSumToVertices = new Int2ObjectOpenHashMap();
@@ -165,7 +123,7 @@ public class Transformer {
             pos = 0;
             int[] tmpRow = new int[line.split("-1").length - 1];
             for (String itemsetString : line.split("-1")) {
-                itemsetString = itemsetString.trim();
+                itemsetString = itemsetString.strip();
                 if (itemsetString.equals("-2")) {
                     continue;
                 }
@@ -228,6 +186,11 @@ public class Transformer {
                     }
                     colSumToV.put(i, vals);
                 });
+        // update invertex index
+        this.indexToItemset = new IntOpenHashSet[this.itemsetToIndex.size()];
+        this.itemsetToIndex.entrySet().stream().forEach(entry -> {
+            this.indexToItemset[entry.getValue()] = entry.getKey();
+        });
         return new MultiGraph(rowToNeighbors, colToNeighbors, rowSumToV, colSumToV);
     }
 
@@ -258,37 +221,19 @@ public class Transformer {
         }
     }
 
-    public void createDataset(String datasetPath, SparseMatrix_ matrix) {
-        try {
-            final BufferedWriter bw = new BufferedWriter(new FileWriter(datasetPath));
-            for (int r = 0; r < matrix.getNumRows(); r++) {
-                final StringBuilder line = new StringBuilder();
-                for (int c : matrix.getNonzeroIndices(r)) {
-                    line.append(this.itemsList.getInt(c));
-                    line.append(Delimiters.space);
-                }
-                line.deleteCharAt(line.length() - 1);
-                bw.write(line.toString());
-                bw.newLine();
-            }
-            bw.close();
-        } catch (IOException e) {
-            System.err.println("Error writing to " + datasetPath);
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-    
-    public void createMultiGraph(String datasetPath, MultiGraph graph) {
+    public void createSequenceDataset(String datasetPath, MultiGraph graph) {
         try {
             final BufferedWriter bw = new BufferedWriter(new FileWriter(datasetPath));
             for (int r = 0; r < graph.getNumRows(); r++) {
                 final StringBuilder line = new StringBuilder();
                 for (int c : graph.getRowInstance(r).values) {
-                    line.append(this.itemsList.getInt(c));
-                    line.append(Delimiters.space);
+                    for (int el : this.indexToItemset[c]) {
+                        line.append(el);
+                        line.append(" ");
+                    }
+                    line.append("-1 ");
                 }
-                line.deleteCharAt(line.length() - 1);
+                line.append("-2");
                 bw.write(line.toString());
                 bw.newLine();
             }
