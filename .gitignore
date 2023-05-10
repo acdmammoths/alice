@@ -29,6 +29,7 @@ code/.DS_Store
 code/datasets/.DS_Store
 all_datasets/
 
+<<<<<<< HEAD
 /code/target copy/
 code/helpers/__pycache__/
 code/helpers/datasetgenerator/command.o
@@ -38,3 +39,5 @@ code/helpers/datasetgenerator/main.o
 code/helpers/datasetgenerator/util.o
 code/notebooks/.ipynb_checkpoints/
 /code copy/target/
+=======
+>>>>>>> 5e3876aa9cd9709799bc28b1906b39afe939cf00
