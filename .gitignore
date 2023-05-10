@@ -37,3 +37,4 @@ code/helpers/datasetgenerator/gen.o
 code/helpers/datasetgenerator/main.o
 code/helpers/datasetgenerator/util.o
 code/notebooks/.ipynb_checkpoints/
+/code copy/target/
