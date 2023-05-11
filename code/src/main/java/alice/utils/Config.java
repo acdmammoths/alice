@@ -23,7 +23,7 @@ public class Config {
     // directory where the datasets are placed
     public static String datasetsDir = "datasets";
     // path to the dataset
-    public static String datasetPath = "datasets/retail.txt";
+    public static String datasetPath = "datasets/sequential/FIFA.txt";
     // directory where the output is saved
     public static String resultsDir = "datasets/";
     // number of iterations to perform before returning the sample
@@ -36,7 +36,7 @@ public class Config {
     // number of random samples to generate to compute the adjusted critical values
     public static int numWySamples = 128;
     // minimum frequency for an itemset to be frequent
-    public static double minFreq = 0.002;
+    public static double minFreq = 0.275;
     // family wise error rate
     public static double fwer = 0.05;
     // number of threads

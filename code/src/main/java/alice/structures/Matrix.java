@@ -260,6 +260,8 @@ public class Matrix {
     public void swapEdges(SwappableAndNewEdges sne) {
         final Edge newEdge1 = new Edge(sne.swappableEdge1.row, sne.swappableEdge2.col);
         final Edge newEdge2 = new Edge(sne.swappableEdge2.row, sne.swappableEdge1.col);
+        assert(edges[sne.e1Index].equals(sne.swappableEdge1));
+        assert(edges[sne.e2Index].equals(sne.swappableEdge2));
         this.edges[sne.e1Index] = newEdge1;
         this.edges[sne.e2Index] = newEdge2;
     }

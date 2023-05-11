@@ -61,4 +61,16 @@ public class FreqSequenceMiner {
         }
         return null;
     }
+    
+    public static SequentialPatterns mine(String[][] dataset, double minFreq) {
+        final AlgoPrefixSpan algo = new AlgoPrefixSpan();
+        try {
+            return algo.runAlgorithm(dataset, minFreq);
+        } catch (IOException e) {
+            System.err.println("Error running mining algorithm");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
+    }
 }

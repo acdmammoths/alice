@@ -90,6 +90,34 @@ public class SequenceDatabase {
             e.printStackTrace();
         }
     }
+    
+    public void loadFile(String[][] seqMatrix) {
+        // initialize the variable to calculate the total number of item occurrence
+        itemOccurrenceCount = 0;
+        // initalize the list of arrays for storing sequences
+        List<int[]> tmpSequences = Lists.newArrayList();
+
+        for (int i = 0; i < seqMatrix.length; i++) {
+            // if the line is not a comment, is not empty or is not other
+            // kind of metadata
+            // split this line according to spaces and process the line
+            String[] tokens = seqMatrix[i];
+
+            // we will store the sequence as a list of integers in memory
+            int[] sequence = new int[tokens.length];
+            // we convert each token from the line to an integer and add it
+            // to the array representing the current sequence.
+            for (int j = 0; j < tokens.length; j++) {
+                sequence[j] = Integer.parseInt(tokens[j]);
+            }
+            // add the sequence to the list of sequences
+            tmpSequences.add(sequence);
+        }
+        sequences = new int[tmpSequences.size()][];
+        for (int i = 0; i < sequences.length; i++) {
+            sequences[i] = tmpSequences.get(i);
+        }
+    }
 
     /**
      * Print this sequence database to System.out.

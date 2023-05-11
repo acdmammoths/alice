@@ -24,6 +24,7 @@ import alice.utils.JsonFile;
 import alice.config.Delimiters;
 import alice.samplers.CurveballBJDMSampler;
 import alice.samplers.BJDMSampler;
+import alice.samplers.GmmtSampler;
 import alice.structures.Matrix;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
@@ -39,6 +40,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import org.javatuples.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -135,9 +138,7 @@ public class Convergence {
                 System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
 
                 System.out.println("\t\tGetting sample itemset to support map");
-                final Object2IntOpenHashMap<IntOpenHashSet> sampleFreqItemsetToSup
-                        = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup.keySet());
-
+                Map<IntOpenHashSet, Integer> sampleFreqItemsetToSup = getItemsetToSupMap(sample, transformer, freqItemsetToSup.keySet());
                 // compute convergence statistics
                 final double avgRelFreqDiff = getAvgRelFreqDiff(freqItemsetToSup, sampleFreqItemsetToSup);
                 System.out.println("\t\t" + JsonKeys.avgRelFreqDiff + ": " + avgRelFreqDiff);
@@ -205,6 +206,30 @@ public class Convergence {
         return sampleItemsetToSup;
     }
     
+    public static Map<IntOpenHashSet, Integer> getItemsetToSupMap(
+            SparseMatrix sample, Transformer transformer, ObjectSet<IntOpenHashSet> freqItemsets) {
+        return freqItemsets.parallelStream().map(freqItemset -> 
+                new Pair<IntOpenHashSet, Integer>(freqItemset, getItemsetInSampleCount(sample, transformer.getItemToColIndex(), freqItemset)))
+                .collect(Collectors.toMap(e -> e.getValue0(),e -> e.getValue1()));
+    }
+    
+    public static int getItemsetInSampleCount(SparseMatrix sample,
+            Map<Integer, Integer> itemToColIndex,
+            IntOpenHashSet itemset) {
+
+        final int firstV = itemToColIndex.get(itemset.iterator().nextInt());
+        IntOpenHashSet tmp = new IntOpenHashSet(sample.getNonzeroColIndices(firstV));
+        if (itemset.size() > 1) {
+            for (int item : itemset) {
+                tmp.retainAll(sample.getNonzeroColIndices(itemToColIndex.get(item)));
+                if (tmp.isEmpty()) {
+                    return 0;
+                }
+            }
+        }
+        return tmp.size();
+    }
+    
     /**
      * Determines whether the itemset is in the transaction of the sample
      * specified by rowIndex.
@@ -238,14 +263,15 @@ public class Convergence {
      */
     public static double getAvgRelFreqDiff(
             Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSup,
-            Object2IntOpenHashMap<IntOpenHashSet> sampleItemsetToSup) {
+            Map<IntOpenHashSet, Integer> sampleItemsetToSup) {
 
-        double sumRelFreqDiff = freqItemsetToSup.entrySet()
+        double sumRelFreqDiff = freqItemsetToSup.object2IntEntrySet()
                 .stream()
                 .mapToDouble(entry
-                        -> Math.abs(1. * entry.getValue() - sampleItemsetToSup.getOrDefault(entry.getKey(), 0))
-                / entry.getValue())
+                        -> Math.abs(1. * entry.getIntValue() - sampleItemsetToSup.getOrDefault(entry.getKey(), 0))
+                / entry.getIntValue())
                 .sum();
         return sumRelFreqDiff / freqItemsetToSup.size();
     }
+
 }

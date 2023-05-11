@@ -55,7 +55,7 @@ def get_args_str(result):
 
 def get_sampler_arfds(sampler_stats):
     return [[stats["avgRelFreqDiff"], 
-             stats["setupTime"],
+             stats.get("setupTime", 0),
              stats["medianStepTime"],
              stats["minStepTime"],
              stats["maxStepTime"],

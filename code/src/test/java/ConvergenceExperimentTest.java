@@ -4,15 +4,13 @@ import alice.config.DatasetNames;
 import alice.test.Convergence;
 import alice.utils.Config;
 import alice.utils.Transformer;
+import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -63,12 +61,12 @@ public class ConvergenceExperimentTest {
         freqItemsets.add(new IntOpenHashSet(Arrays.asList(3, 5)));
         freqItemsets.add(new IntOpenHashSet(Arrays.asList(1, 3, 5)));
 
-        final Object2IntOpenHashMap<IntOpenHashSet> expectedSampleItemsetToSup = new Object2IntOpenHashMap();
+        final Map<IntOpenHashSet, Integer> expectedSampleItemsetToSup = Maps.newHashMap();
         expectedSampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(1, 4)), 1);
         expectedSampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 4)), 2);
         expectedSampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 4, 5)), 2);
 
-        final Object2IntOpenHashMap<IntOpenHashSet> actualSampleItemsetToSup
+        final Map<IntOpenHashSet,Integer> actualSampleItemsetToSup
                 = Convergence.getSampleItemsetToSupMap(sample, transformer, freqItemsets);
         Assert.assertEquals(expectedSampleItemsetToSup, actualSampleItemsetToSup);
     }
@@ -81,7 +79,7 @@ public class ConvergenceExperimentTest {
         itemsetToSup.put(new IntOpenHashSet(Arrays.asList(4, 5)), 2);
         itemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 3, 4)), 1);
 
-        final Object2IntOpenHashMap<IntOpenHashSet> sampleItemsetToSup = new Object2IntOpenHashMap();
+        final Map<IntOpenHashSet, Integer> sampleItemsetToSup = Maps.newHashMap();
         sampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(1)), 2);
         sampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2)), 3);
         sampleItemsetToSup.put(new IntOpenHashSet(Arrays.asList(2, 3, 4)), 3);
@@ -95,7 +93,6 @@ public class ConvergenceExperimentTest {
         // = (6/10 + 5/10 + 10/10 + 20/10) / 4
         // = 41/40
         final double expectedAvgRelFreqDiff = (double) 41 / 40;
-
         final double actualAvgRelFreqDiff = Convergence.getAvgRelFreqDiff(itemsetToSup, sampleItemsetToSup);
         Assert.assertEquals(expectedAvgRelFreqDiff, actualAvgRelFreqDiff, 0);
     }

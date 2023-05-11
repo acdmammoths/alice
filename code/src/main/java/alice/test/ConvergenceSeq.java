@@ -31,17 +31,24 @@ import alice.spm.SequentialPatterns;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.structures.MultiGraph;
+import alice.structures.SparseMatrix;
 import alice.utils.Transformer;
 import alice.utils.Timer;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import org.javatuples.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -139,9 +146,10 @@ public class ConvergenceSeq {
                 System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
 
                 System.out.println("\t\tGetting sample itemset to support map");
+                final String[][] dataset = transformer.createSequenceDataset(sample);
+                final SequentialPatterns sampleFreqItemset = FreqSequenceMiner.mine(dataset, Config.minFreq);
                 final Object2IntOpenHashMap<String> sampleFreqItemsetToSup
-                        = getSampleItemsetToSupMap(sample, transformer, freqItemsetToSup);
-
+                        = getSampleItemsetToSupMap(freqItemsetToSup, sampleFreqItemset);
                 // compute convergence statistics
                 final double avgRelFreqDiff = getAvgRelFreqDiff(freqItemsetToSup, sampleFreqItemsetToSup);
                 System.out.println("\t\t" + JsonKeys.avgRelFreqDiff + ": " + avgRelFreqDiff);
@@ -196,47 +204,24 @@ public class ConvergenceSeq {
      * support in the sampled dataset such that the map only contains itemsets
      * that are frequent itemsets of the observed dataset
      */
-    public static Object2IntOpenHashMap<String> getSampleItemsetToSupMap(
-            MultiGraph sample, Transformer transformer, SequentialPatterns freqItemsets) {
+    private static Object2IntOpenHashMap<String> getSampleItemsetToSupMap(
+    		SequentialPatterns freqItemsets, SequentialPatterns sampItemsets) {
+    	
         final Object2IntOpenHashMap<String> sampleItemsetToSup = new Object2IntOpenHashMap();
-        sampleItemsetToSup.defaultReturnValue(0);
-        for (int r = 0; r < sample.getNumRows(); r++) {
-            for (int level = 0; level < freqItemsets.getLevelCount(); level++) {
-                List<SequentialPattern> patterns = freqItemsets.getLevel(level);
-                for (SequentialPattern freqItemset : patterns) {
-                    if (isItemsetInSampleTransaction(freqItemset, sample, r, transformer.itemsetToIndex)) {
-                        sampleItemsetToSup.addTo(freqItemset.toSave(), 1);
-                    }
-                }
+        for (int level = 0; level < freqItemsets.getLevelCount(); level++) {
+            for (SequentialPattern freqItemset : freqItemsets.getLevel(level)) {
+            	sampleItemsetToSup.put(freqItemset.toSave(), 0);
+            }
+        }
+        for (int level = 0; level < sampItemsets.getLevelCount(); level++) {
+            for (SequentialPattern freqItemset : sampItemsets.getLevel(level)) {
+            	String name = freqItemset.toSave();
+            	if (sampleItemsetToSup.containsKey(name)) {
+            		sampleItemsetToSup.replace(name, freqItemset.getAbsoluteSupport());
+            	}
             }
         }
         return sampleItemsetToSup;
-    }
-    
-    /**
-     * Determines whether the itemset is in the transaction of the sample
-     * specified by rowIndex.
-     *
-     * @param seqPattern
-     * @param sample the sample
-     * @param rowIndex the row index that corresponds to the transaction
-     * @param revIndex
-     * @return whether the itemset is in the transaction of the sample
-     */
-    public static boolean isItemsetInSampleTransaction(
-            SequentialPattern seqPattern,
-            MultiGraph sample,
-            int rowIndex,
-            Map<IntOpenHashSet, Integer> revIndex) {
-
-        for (Itemset itemlist : seqPattern.getItemsets()) {
-            IntOpenHashSet itemset = new IntOpenHashSet(itemlist.getItems());
-            int itemId = revIndex.get(itemset);
-            if (!sample.getRowInstance(rowIndex).contains(itemId)) {
-                return false;
-            }
-        }
-        return true;
     }
     
     /**
@@ -249,7 +234,7 @@ public class ConvergenceSeq {
      * only contains itemsets that are frequent itemsets of the observed dataset
      * @return the average relative frequency/support difference
      */
-    public static double getAvgRelFreqDiff(
+    private static double getAvgRelFreqDiff(
             SequentialPatterns freqItemsetToSup,
             Object2IntOpenHashMap<String> sampleItemsetToSup) {
 
@@ -259,7 +244,7 @@ public class ConvergenceSeq {
             for (SequentialPattern freqItemset : patterns) {
                 String patternName = freqItemset.toSave();
                 double count = 1. * freqItemset.getSequenceIDs().size();
-                sumRelFreqDiff += Math.abs(count - sampleItemsetToSup.getOrDefault(patternName, 0)) / count;
+                sumRelFreqDiff += Math.abs(count - sampleItemsetToSup.getInt(patternName)) / count;
             }
         }
         return sumRelFreqDiff / freqItemsetToSup.sequenceCount;

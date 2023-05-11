@@ -153,6 +153,35 @@ public class AlgoPrefixSpan {
         }
         return patterns;
     }
+    
+    public SequentialPatterns runAlgorithm(String[][] input, double minsupRelative) throws IOException {
+        // record start time
+        startTime = System.currentTimeMillis();
+
+        // Load the sequence database
+        sequenceDatabase = new SequenceDatabase();
+        sequenceDatabase.loadFile(input);
+        sequenceCount = sequenceDatabase.size();
+
+        // convert to a absolute minimum support
+        this.minsuppAbsolute = (int) Math.ceil(minsupRelative * sequenceCount);
+        if (this.minsuppAbsolute == 0) { // protection
+            this.minsuppAbsolute = 1;
+        }
+
+        // run the algorithm
+        prefixSpan(sequenceDatabase, null);
+
+        sequenceDatabase = null;
+
+        // record end time
+        endTime = System.currentTimeMillis();
+        // close the output file if the result was saved to a file
+        if (writer != null) {
+            writer.close();
+        }
+        return patterns;
+    }
 
     /**
      * Run the algorithm

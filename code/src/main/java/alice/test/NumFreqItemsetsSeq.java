@@ -193,8 +193,8 @@ public class NumFreqItemsetsSeq {
             final BufferedReader br = new BufferedReader(new FileReader(freqItemsetsFile.getPath()));
             String line = br.readLine();
             while (line != null) {
-                String[] tmp = line.strip().split(" #SUP: ");
-                String[] freqItemsetString = tmp[0].strip().split("-1");
+                String[] tmp = line.trim().split(" #SUP: ");
+                String[] freqItemsetString = tmp[0].trim().split("-1");
                 freqItemsetLenToCount.addTo(freqItemsetString.length, 1);
                 line = br.readLine();
             }

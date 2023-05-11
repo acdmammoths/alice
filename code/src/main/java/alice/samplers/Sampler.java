@@ -1,6 +1,5 @@
 package alice.samplers;
 
-
 import alice.structures.SparseMatrix;
 import alice.utils.Timer;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;

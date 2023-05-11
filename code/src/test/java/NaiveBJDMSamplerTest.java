@@ -1,10 +1,10 @@
-import alice.samplers.BJDMSampler;
 import alice.structures.BJDMMatrix;
 import alice.helpers.SwappableAndNewEdges;
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
 import alice.structures.Vector;
 import alice.config.DatasetNames;
+import alice.samplers.BJDMSampler;
 import alice.structures.Edge;
 import alice.structures.Matrix;
 import alice.structures.SetMatrix;
@@ -264,8 +264,7 @@ public class NaiveBJDMSamplerTest {
         final BJDMMatrix M = new BJDMMatrix(matrix);
         final int numSwaps = 100;
 
-        final SparseMatrix sample
-                = this.sampler.sample(matrix, numSwaps, this.rnd.nextLong(), new Timer(false));
+        final SparseMatrix sample = this.sampler.sample(matrix, numSwaps, this.rnd.nextLong(), new Timer(false));
         final BJDMMatrix SampleM = new BJDMMatrix(sample);
 
         Assert.assertArrayEquals(M.getRowSums(), SampleM.getRowSums());

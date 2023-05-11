@@ -123,7 +123,7 @@ public class Transformer {
             pos = 0;
             int[] tmpRow = new int[line.split("-1").length - 1];
             for (String itemsetString : line.split("-1")) {
-                itemsetString = itemsetString.strip();
+                itemsetString = itemsetString.trim();
                 if (itemsetString.equals("-2")) {
                     continue;
                 }
@@ -206,7 +206,7 @@ public class Transformer {
             for (int r = 0; r < matrix.getNumRows(); r++) {
                 final StringBuilder line = new StringBuilder();
                 for (int c : matrix.getNonzeroIndices(r)) {
-                    line.append(this.itemsList.get(c));
+                    line.append(this.itemsList.getInt(c));
                     line.append(Delimiters.space);
                 }
                 line.deleteCharAt(line.length() - 1);
@@ -244,16 +244,30 @@ public class Transformer {
             System.exit(1);
         }
     }
+    
+    public String[][] createSequenceDataset(MultiGraph graph) {
+    	String[][] dataset = new String[graph.getNumRows()][];
+        for (int r = 0; r < graph.getNumRows(); r++) {
+            final List<String> line = Lists.newArrayList();
+            for (int c : graph.getRowInstance(r).values) {
+                for (int el : this.indexToItemset[c]) {
+                    line.add(String.valueOf(el));
+                }
+                line.add("-1");
+            }
+            line.add("-2");
+            String[] seq = new String[line.size()];
+            for (int i = 0; i < seq.length; i++) {
+            	seq[i] = line.get(i);
+            }
+            dataset[r] = seq;
+        }
+        return dataset;
+    }
 
     public Int2IntOpenHashMap getItemToColIndex() {
         return this.itemToColIndex;
     }
-    
-    public static void main(String[] args) throws IOException {
-        CMDLineParser.parse(args);
-        
-        Transformer transformer = new Transformer();
-        MultiGraph graph = transformer.createMultiGraph(Config.datasetPath); 
-    }
+
 
 }

@@ -73,10 +73,9 @@ public class NumFreqItemsets {
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
 
         final Sampler[] samplers = {
-            new SelfLoopGmmtSampler()
-//                ,
-//            new BJDMSampler(), 
-//            new CurveballBJDMSampler() 
+            new SelfLoopGmmtSampler(),
+            new BJDMSampler(), 
+            new CurveballBJDMSampler() 
         };
 
         // create object for numFreqItemsetsStats
@@ -94,7 +93,8 @@ public class NumFreqItemsets {
                 System.out.println("Sampling and mining");
                 int numSwaps = Config.numSwaps;
                 if (samplerName.contains("SelfLoop")) {
-                    numSwaps *= 2;
+                    numSwaps *= 50;
+                    System.out.println(numSwaps);
                 }
                 SampleAndMiner.sampleAndMine(
                         Config.datasetPath,
