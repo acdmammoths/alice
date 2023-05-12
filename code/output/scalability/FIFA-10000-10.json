@@ -1,0 +1,25 @@
+{
+  "runtimeStats": {
+    "alice.samplers.AliceCSampler": {
+      "c90StepTime": 0,
+      "q3StepTime": 0,
+      "setupTime": 99,
+      "maxStepTime": 5,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
+    },
+    "alice.samplers.GmmtSeqSampler": {
+      "c90StepTime": 0,
+      "q3StepTime": 0,
+      "setupTime": 52,
+      "maxStepTime": 1,
+      "minStepTime": 0,
+      "q1StepTime": 0,
+      "medianStepTime": 0,
+      "c10StepTime": 0
+    }
+  },
+  "runInfo": {"timestamp": "2023-05-09T14:59:29.155085605"}
+}

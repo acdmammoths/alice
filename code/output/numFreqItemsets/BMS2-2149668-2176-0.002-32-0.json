@@ -1,0 +1,43 @@
+{
+  "numFreqItemsetsStats": [{
+    "freqItemsetLenToCountQuartiles": {
+      "1": [
+        573,
+        573,
+        573,
+        573,
+        573
+      ],
+      "2": [
+        20,
+        25,
+        27,
+        29,
+        35
+      ]
+    },
+    "numFreqItemsetsQuartiles": [
+      593,
+      598,
+      600,
+      602,
+      608
+    ],
+    "numSamples": 2176,
+    "pvalue": 4.5934772622875517E-4,
+    "sampler": "alice.samplers.SelfLoopGmmtSampler"
+  }],
+  "runInfo": {
+    "freqItemsetLenToCount": {
+      "1": 573,
+      "2": 482,
+      "3": 714,
+      "4": 938,
+      "5": 664,
+      "6": 270,
+      "7": 42
+    },
+    "numFreqItemsets": 3683,
+    "timestamp": "2023-05-10T19:17:50.608521557"
+  }
+}

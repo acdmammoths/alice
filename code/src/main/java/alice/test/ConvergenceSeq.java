@@ -20,7 +20,7 @@ import alice.config.Paths;
 import alice.config.JsonKeys;
 import alice.utils.JsonFile;
 import alice.config.Delimiters;
-import alice.samplers.AliceCSampler;
+import alice.samplers.AliceSSampler;
 import alice.samplers.GmmtSeqSampler;
 import alice.samplers.SeqSampler;
 import alice.spm.FreqSequenceMiner;
@@ -51,7 +51,7 @@ public class ConvergenceSeq {
 
         CMDLineParser.parse(args);
 
-        final SeqSampler[] samplers = new SeqSampler[]{new AliceCSampler(), new GmmtSeqSampler()};
+        final SeqSampler[] samplers = new SeqSampler[]{new AliceSSampler(), new GmmtSeqSampler()};
 
         System.out.println("Executing convergence experiment for dataset at " + Config.datasetPath);
 

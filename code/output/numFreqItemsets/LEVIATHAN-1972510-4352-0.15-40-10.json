@@ -1,0 +1,107 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          29,
+          29,
+          29,
+          29,
+          29
+        ],
+        "2": [
+          127,
+          133,
+          134,
+          135,
+          140
+        ],
+        "3": [
+          120,
+          125,
+          127,
+          128,
+          135
+        ],
+        "4": [
+          8,
+          11,
+          12,
+          13,
+          17
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        292,
+        300,
+        302,
+        304,
+        315
+      ],
+      "numSamples": 4352,
+      "pvalue": 1,
+      "sampler": "alice.samplers.AliceCSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          27,
+          27,
+          28,
+          28,
+          29
+        ],
+        "2": [
+          106,
+          110,
+          110,
+          111,
+          115
+        ],
+        "3": [
+          95,
+          100,
+          101,
+          103,
+          108
+        ],
+        "4": [
+          26,
+          29,
+          29,
+          30,
+          35
+        ],
+        "5": [
+          1,
+          1,
+          2,
+          2,
+          3
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        260,
+        269,
+        271,
+        273,
+        281
+      ],
+      "numSamples": 4352,
+      "pvalue": 1,
+      "sampler": "alice.samplers.GmmtSeqSampler"
+    }
+  ],
+  "runInfo": {
+    "freqItemsetLenToCount": {
+      "0": 0,
+      "1": 24,
+      "2": 81,
+      "3": 80,
+      "4": 36,
+      "5": 4
+    },
+    "numFreqItemsets": 225,
+    "timestamp": "2023-05-12T00:46:18.090880763"
+  }
+}

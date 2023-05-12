@@ -1,10 +1,12 @@
 package alice.test;
 
 import alice.structures.GmmtMatrix;
+import alice.structures.MultiGraph;
 import alice.structures.SparseMatrix;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.utils.Transformer;
+import java.io.IOException;
 
 /**
  *
@@ -12,10 +14,11 @@ import alice.utils.Transformer;
  */
 public class ComputeNumberOfCaterpillars {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         CMDLineParser.parse(args);
 
-        String[] datasets = new String[]{"edit-iewikibooks.txt", 
+        String[] datasets = new String[]{
+            "edit-iewikibooks.txt", 
             "kosarak_3000.txt", 
             "chess.txt", 
             "foodmart.txt",
@@ -24,14 +27,32 @@ public class ComputeNumberOfCaterpillars {
             "BMS2.txt", 
             "retail.txt"};
         
-        for (String dataset : datasets) {
+        String[] seq_datasets = new String[]{
+            "SIGN.txt", 
+            "FIFA.txt", 
+            "BIKE.txt", 
+            "BIBLE.txt",
+            "LEVIATHAN.txt",
+            "BMS1Seq.txt"};
+        
+//        for (String dataset : datasets) {
+//
+//            System.out.println("Finding number of caterpillars for dataset " + dataset + " at " + Config.datasetsDir);
+//
+//            final Transformer transformer = new Transformer();
+//            final SparseMatrix matrix = transformer.createMatrix(Config.datasetsDir + "/" + dataset);
+//            final GmmtMatrix gmatrix = new GmmtMatrix(matrix);
+//            System.out.println(gmatrix.getNumZstructs());
+//
+//        }
+        
+        for (String dataset : seq_datasets) {
 
-            System.out.println("Finding number of caterpillars for dataset " + dataset + " at " + Config.datasetsDir);
+            System.out.println("Finding number of caterpillars for dataset " + dataset);
 
             final Transformer transformer = new Transformer();
-            final SparseMatrix matrix = transformer.createMatrix(Config.datasetsDir + "/" + dataset);
-            final GmmtMatrix gmatrix = new GmmtMatrix(matrix);
-            System.out.println(gmatrix.getNumZstructs());
+            final MultiGraph matrix = transformer.createMultiGraph(Config.datasetsDir + "/sequential/" + dataset);
+            System.out.println(matrix.getNumZstructs());
 
         }
     }

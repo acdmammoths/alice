@@ -23,7 +23,7 @@ import alice.config.Delimiters;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.spm.SampleAndMinerSeq;
-import alice.samplers.AliceCSampler;
+import alice.samplers.AliceSSampler;
 import alice.samplers.GmmtSeqSampler;
 import alice.samplers.SeqSampler;
 import alice.spm.FreqSequenceMiner;
@@ -65,7 +65,7 @@ public class NumFreqItemsetsSeq {
                 = getFreqItemsetLenToCountMap(observedFreqItemsets);
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
         
-        final SeqSampler[] samplers = new SeqSampler[]{new AliceCSampler(), new GmmtSeqSampler()};
+        final SeqSampler[] samplers = new SeqSampler[]{new AliceSSampler(), new GmmtSeqSampler()};
 
         // create object for numFreqItemsetsStats
         final JSONArray numFreqItemsetsStats = new JSONArray();

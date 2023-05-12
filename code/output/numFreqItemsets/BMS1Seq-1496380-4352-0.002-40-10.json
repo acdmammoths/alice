@@ -1,0 +1,99 @@
+{
+  "numFreqItemsetsStats": [
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          268,
+          268,
+          268,
+          268,
+          268
+        ],
+        "2": [
+          252,
+          261,
+          263,
+          265,
+          273
+        ],
+        "3": [
+          85,
+          93,
+          95,
+          97,
+          105
+        ],
+        "4": [
+          3,
+          4,
+          5,
+          5,
+          8
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        614,
+        628,
+        631,
+        634,
+        647
+      ],
+      "numSamples": 4352,
+      "pvalue": 2.2972662531587412E-4,
+      "sampler": "alice.samplers.AliceCSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          268,
+          268,
+          268,
+          268,
+          268
+        ],
+        "2": [
+          199,
+          208,
+          211,
+          213,
+          223
+        ],
+        "3": [
+          38,
+          45,
+          46,
+          48,
+          55
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        512,
+        523,
+        526,
+        529,
+        541
+      ],
+      "numSamples": 4352,
+      "pvalue": 2.2972662531587412E-4,
+      "sampler": "alice.samplers.GmmtSeqSampler"
+    }
+  ],
+  "runInfo": {
+    "freqItemsetLenToCount": {
+      "0": 0,
+      "1": 268,
+      "2": 362,
+      "3": 148,
+      "4": 20
+    },
+    "numFreqItemsets": 798,
+    "timestamp": "2023-05-12T04:51:21.615332861"
+  }
+}

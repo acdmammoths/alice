@@ -430,6 +430,19 @@ public class MultiGraph {
     public int getNumRows() {
         return rowIdToNeighbors.length;
     }
+    
+    public long getNumZstructs() {
+        return Arrays.stream(rowIdToNeighbors)
+                .parallel()
+                .mapToLong(r -> {
+                    long thisCat = 0;
+                    for (int c : r.values) {
+                        thisCat += (r.size() - 1) * (colIdToNeighbors[c].size() - 1);
+                    }
+                    return thisCat;
+                })
+                .sum();
+    }
 
     @Override
     public String toString() {

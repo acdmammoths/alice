@@ -20,7 +20,7 @@ import alice.config.Paths;
 import alice.utils.JsonFile;
 import alice.config.Delimiters;
 import alice.config.JsonKeys;
-import alice.samplers.AliceCSampler;
+import alice.samplers.AliceSSampler;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.utils.Timer;
@@ -43,7 +43,7 @@ public class ScalabilitySeq {
         
         CMDLineParser.parse(args);
         
-        final SeqSampler[] samplers = new SeqSampler[]{new AliceCSampler(), new GmmtSeqSampler()};
+        final SeqSampler[] samplers = new SeqSampler[]{new AliceSSampler(), new GmmtSeqSampler()};
 
         System.out.println("Executing runtime experiment for dataset at " + Config.datasetPath);
 

@@ -83,7 +83,49 @@
       "numSamples": 2176,
       "pvalue": 4.5934772622875517E-4,
       "sampler": "caterpillars.samplers.CurveballBJDMSampler"
-    }
+    },
+    {
+    "freqItemsetLenToCountQuartiles": {
+      "1": [
+        343,
+        343,
+        343,
+        343,
+        343
+      ],
+      "2": [
+        1199,
+        1253,
+        1266,
+        1281,
+        1336
+      ],
+      "3": [
+        122,
+        184,
+        201,
+        222,
+        296
+      ],
+      "4": [
+        1,
+        1,
+        1,
+        2,
+        11
+      ]
+    },
+    "numFreqItemsetsQuartiles": [
+      1678,
+      1787,
+      1812,
+      1841,
+      1952
+    ],
+    "numSamples": 2176,
+    "pvalue": 4.5934772622875517E-4,
+    "sampler": "alice.samplers.SelfLoopGmmtSampler"
+  }
   ],
   "runInfo": {
     "freqItemsetLenToCount": {
