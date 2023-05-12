@@ -10,24 +10,21 @@ step_time_title = "Step time (ms)"
 algo_title = "Algorithm"
 
 
-def get_scalability_df(results_dir, result_file, samplers):
-    data_dict = get_data_dict(results_dir, result_file, samplers)
+def get_scalability_df(results_dir, result_file):
+    data_dict = get_data_dict(results_dir, result_file)
     return pd.DataFrame(data_dict)
 
 
-def get_step_times_df(result_path, samplers):
+def get_step_times_df(result_path):
     data = []
     with open(result_path) as f:
         result = json.load(f)
-        for sampler_name in samplers:
-            try:
-                data.append(get_sampler_data(sampler_name, result))
-            except:
-                print(f'{sampler_name} not found in file')
+        for sampler_name in result["runtimeStats"].keys():
+            data.append(get_sampler_data(sampler_name, result))
     return pd.DataFrame(data)
 
 
-def get_data_dict(result_path, result_file, samplers):
+def get_data_dict(result_path, result_file):
     data_dict = {num_trans_title: [], step_time_title: [], algo_title: []}
     num_trans = 0
     if 'synthetic' in result_file:
@@ -36,11 +33,8 @@ def get_data_dict(result_path, result_file, samplers):
         )  # number of transactions is saved in 000s
     with open(result_path) as f:
         result = json.load(f)
-        for sampler_name in samplers:
-            try:
-                add_sampler_data(data_dict, sampler_name, num_trans, result)
-            except:
-                print(f'{sampler_name} not found in file')
+        for sampler_name in result["runtimeStats"].keys():
+            add_sampler_data(data_dict, sampler_name, num_trans, result)
     return data_dict
 
 

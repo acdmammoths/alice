@@ -33,11 +33,9 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -369,10 +367,10 @@ public class SigFreqItemsetMiner {
                 = Itemsets.getFreqItemsetToPvalueMap(this.paths, this.freqItemsetToSup, this.numEstSamples);
 
         for (IntOpenHashSet  itemset: freqItemsetToPvalue.keySet()) {
-            final double pvalue = freqItemsetToPvalue.get(itemset);
+            final double pvalue = freqItemsetToPvalue.getDouble(itemset);
             
             if (pvalue <= this.adjustedCriticalValue) {
-                final int sup = this.freqItemsetToSup.get(itemset);
+                final int sup = this.freqItemsetToSup.getInt(itemset);
                 this.sigFreqItemsetToSupAndPvalue.put(itemset, new SupAndPvalue(sup, pvalue));
             } else {
                 System.out.println(itemset.toString() + " := " + pvalue + " > " +  this.adjustedCriticalValue);
@@ -389,7 +387,7 @@ public class SigFreqItemsetMiner {
         // create object for frequent itemsets
         final JSONObject freqItemsetsJson = new JSONObject();
         for (IntOpenHashSet freqItemset : this.freqItemsetToSup.keySet()) {
-            final int sup = this.freqItemsetToSup.get(freqItemset);
+            final int sup = this.freqItemsetToSup.getInt(freqItemset);
 
             final String freqItemsetString = Itemsets.toString(freqItemset);
 

@@ -1,11 +1,8 @@
 package alice.samplers;
 
 import alice.helpers.SwappableAndNewEdges;
-import alice.structures.BJDMMatrix;
-import alice.structures.Edge;
 import alice.structures.GmmtMatrix;
 import alice.structures.SparseMatrix;
-import alice.structures.Vector;
 import alice.utils.Timer;
 import java.util.Random;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -22,7 +19,6 @@ public class SelfLoopGmmtSampler implements Sampler {
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
 
-        int actualSwaps = 0;
         SwappableAndNewEdges sne;
         
         for (int i = 0; i < numSwaps; i++) {
@@ -31,12 +27,10 @@ public class SelfLoopGmmtSampler implements Sampler {
             sne = matrix.getRandomSwappables(rnd);
             
             if (matrix.areSwappable(sne)) {
-                actualSwaps ++;
                 matrix.transition(sne);
             }
             timer.stop();
         }
-//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
     
@@ -51,7 +45,6 @@ public class SelfLoopGmmtSampler implements Sampler {
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
 
-        int actualSwaps = 0;
         SwappableAndNewEdges sne;
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
@@ -59,12 +52,10 @@ public class SelfLoopGmmtSampler implements Sampler {
             sne = matrix.getRandomSwappables(rnd);
             
             if (matrix.areSwappable(sne)) {
-                actualSwaps ++;
                 matrix.transition(sne);
             }
             timer.stop();
         }
-//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
 

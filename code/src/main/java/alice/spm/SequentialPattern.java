@@ -218,17 +218,12 @@ public class SequentialPattern implements Comparable<SequentialPattern> {
         return this.hashCode() - o.hashCode();
     }
 
-    public boolean setIsFound(boolean b) {
-        return isFound;
-
-    }
-
     public boolean isFound() {
         return isFound;
     }
 
-    public void addAdditionalSupport(int additionalSupport) {
-        this.additionalSupport += additionalSupport;
+    public void addAdditionalSupport(int additionalSup) {
+        this.additionalSupport += additionalSup;
     }
 
 }

@@ -163,20 +163,6 @@ public class GmmtMatrix extends Matrix {
      * adjacent matrix
      * @return the change in the number of K22 cliques
      */
-    private int getChangeInNumK22Cliques_old(Edge swappableEdge1, Edge swappableEdge2) {
-        int sum = 0;
-        final int[] swappableRows = {swappableEdge1.row, swappableEdge2.row};
-        for (int swappableRow : swappableRows) {
-            for (int row = 0; row < swappableRow; row++) {
-                sum += this.sqrdDiff(row, swappableRow, swappableEdge1, swappableEdge2);
-            }
-            for (int row = swappableRow + 1; row < this.getNumRows(); row++) {
-                sum += this.sqrdDiff(swappableRow, row, swappableEdge1, swappableEdge2);
-            }
-        }
-        return sum / 2;
-    }
-    
     protected int getChangeInNumK22Cliques(Edge swappableEdge1, Edge swappableEdge2) {
         int output = 0;
         final int[] srcs = {swappableEdge1.row, swappableEdge2.row};
@@ -225,88 +211,6 @@ public class GmmtMatrix extends Matrix {
             output += sumDiff;
         }
         return output;
-    }
-
-    /**
-     * A helper function to help compute the change in the number of K22
-     * cliques. Its returned value does not have much meaning.
-     *
-     * @param rowProdMatrixRow the row index of the row product matrix
-     * @param rowProdMatrixCol the column index of the row product matrix
-     * @param swappableEdge1 the first swappable edge that transitions to the
-     * adjacent matrix
-     * @param swappableEdge2 the second swappable edge that transitions to the
-     * adjacent matrix
-     * @return refer to the return statement
-     */
-    private int sqrdDiff(
-            int rowProdMatrixRow, int rowProdMatrixCol, Edge swappableEdge1, Edge swappableEdge2) {
-        final int rowProdMatrixVal = this.getRowProdMatrixVal(rowProdMatrixRow, rowProdMatrixCol);
-        final int rowProdMatrixValSqrd = rowProdMatrixVal * rowProdMatrixVal;
-
-        final int rowProdAdjMatrixVal
-                = this.getRowProdAdjMatrixVal(
-                        rowProdMatrixRow, rowProdMatrixCol, swappableEdge1, swappableEdge2, rowProdMatrixVal);
-        final int rowProdAdjMatrixValSqrd = rowProdAdjMatrixVal * rowProdAdjMatrixVal;
-
-        return (rowProdAdjMatrixValSqrd - rowProdMatrixValSqrd)
-                - (rowProdAdjMatrixVal - rowProdMatrixVal);
-    }
-
-    /**
-     * Gets the value in (rowProdMatrixRow, rowProdMatrixCol) of the adjacent
-     * matrix's row product matrix, where the adjacent matrix is defined by the
-     * two swappable pairs. Reference: Gionis et al., proof of Corollary 4.4.
-     *
-     * @param rowProdMatrixRow the row index of the row product matrix
-     * @param rowProdMatrixCol the column index of the row product matrix
-     * @param swappableEdge1 the first swappable edge that transitions to the
-     * adjacent matrix
-     * @param swappableEdge2 the second swappable edge that transitions to the
-     * adjacent matrix
-     * @param rowProdMatrixVal the row product matrix value in
-     * (rowProdMatrixRow, rowProdMatrixCol) of the current matrix
-     * @return the value in (rowProdMatrixRow, rowProdMatrixCol) of the adjacent
-     * matrix's row product matrix
-     */
-    private int getRowProdAdjMatrixVal(
-            int rowProdMatrixRow,
-            int rowProdMatrixCol,
-            Edge swappableEdge1,
-            Edge swappableEdge2,
-            int rowProdMatrixVal) {
-        if (rowProdMatrixRow >= rowProdMatrixCol) {
-            throw new IllegalArgumentException(
-                    "Row argument was not less than column argument. This would cause unexpected behavior.");
-        }
-        if ((rowProdMatrixRow != swappableEdge1.row)
-                && (rowProdMatrixRow != swappableEdge2.row)
-                && (rowProdMatrixCol != swappableEdge1.row)
-                && (rowProdMatrixCol != swappableEdge2.row)) {
-            throw new IllegalArgumentException("No row arguments are equal to any of the swapped rows.");
-        }
-
-        if ((rowProdMatrixRow == swappableEdge1.row && rowProdMatrixCol == swappableEdge2.row)
-                || (rowProdMatrixRow == swappableEdge2.row && rowProdMatrixCol == swappableEdge1.row)) {
-            return rowProdMatrixVal;
-        }
-        if (rowProdMatrixRow == swappableEdge1.row) {
-            return rowProdMatrixVal
-                    - this.getVal(rowProdMatrixCol, swappableEdge1.col)
-                    + this.getVal(rowProdMatrixCol, swappableEdge2.col);
-        } else if (rowProdMatrixRow == swappableEdge2.row) {
-            return rowProdMatrixVal
-                    - this.getVal(rowProdMatrixCol, swappableEdge2.col)
-                    + this.getVal(rowProdMatrixCol, swappableEdge1.col);
-        } else if (rowProdMatrixCol == swappableEdge1.row) {
-            return rowProdMatrixVal
-                    - this.getVal(rowProdMatrixRow, swappableEdge1.col)
-                    + this.getVal(rowProdMatrixRow, swappableEdge2.col);
-        } else {
-            return rowProdMatrixVal
-                    - this.getVal(rowProdMatrixRow, swappableEdge2.col)
-                    + this.getVal(rowProdMatrixRow, swappableEdge1.col);
-        }
     }
 
     /**

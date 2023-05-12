@@ -1,17 +1,10 @@
 package alice.samplers;
 
-import alice.config.JsonKeys;
 import alice.helpers.SwappableAndNewEdges;
-import alice.structures.BJDMMatrix;
 import alice.structures.Edge;
 import alice.structures.MultiGraph;
 import alice.structures.RawFastIntCollectionFixedSizeWithOrder;
-import alice.structures.Vector;
-import alice.utils.CMDLineParser;
-import alice.utils.Config;
 import alice.utils.Timer;
-import alice.utils.Transformer;
-import java.io.IOException;
 import java.util.Random;
 
 /*

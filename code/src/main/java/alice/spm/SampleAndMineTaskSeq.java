@@ -1,7 +1,6 @@
 package alice.spm;
 
 
-import alice.samplers.AliceCSampler;
 import alice.samplers.SeqSampler;
 import alice.structures.MultiGraph;
 import alice.utils.Transformer;

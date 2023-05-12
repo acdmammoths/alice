@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.Map.Entry;
 
 /*
  ** The implementation of the "negFIN algorithm", the algorithm presented in:
@@ -86,7 +85,7 @@ public class AlgoNegFIN {
      * @param minSupport
      * @throws IOException
      */
-    public void scanDB(String filename, double minSupport) throws IOException {
+    public void scanDB(String filename, double minSup) throws IOException {
         numOfTrans = 0;
 
         // (1) Scan the database and count the count of each item.
@@ -115,14 +114,14 @@ public class AlgoNegFIN {
             // for each item in the transaction
             for (String itemString : lineSplited) {
                 // increase the count count of the item by 1
-                Integer item = Integer.parseInt(itemString);
-                mapItemCount.addTo(item, 1);
+                Integer it = Integer.parseInt(itemString);
+                mapItemCount.addTo(it, 1);
             }
         }
         // close the input file
         reader.close();
 
-        this.minSupport = (int) Math.ceil(minSupport * numOfTrans);
+        this.minSupport = (int) Math.ceil(minSup * numOfTrans);
 
         numOfFItem = mapItemCount.size();
 

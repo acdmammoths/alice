@@ -17,7 +17,6 @@ package alice.spm;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import alice.config.Paths;
-import alice.samplers.AliceCSampler;
 import alice.samplers.SeqSampler;
 import alice.structures.MultiGraph;
 import alice.utils.Transformer;

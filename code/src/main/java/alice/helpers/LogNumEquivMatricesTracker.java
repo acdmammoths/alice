@@ -16,9 +16,8 @@ package alice.helpers;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import alice.structures.Matrix;
 import alice.structures.SparseMatrix;
-import java.util.HashMap;
+import com.google.common.collect.Maps;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,7 +38,7 @@ public class LogNumEquivMatricesTracker {
      * matrices to have the same hash code, but this doesn't happen in our
      * experiments.
      */
-    private final Map<Double, Set<Integer>> logNumEquivMatricesToMatrixHashes = new HashMap<>();
+    private final Map<Double, Set<Integer>> logNumEquivMatricesToMatrixHashes = Maps.newHashMap();
 
     /**
      * An object to compute the quartiles for the distribution of the log of the

@@ -637,8 +637,9 @@ public class BJDMMatrix extends SetMatrix {
             v2 = cols.get(swappables.swappable2);
             sumToEqSum = colSumToEqColSumCols;
         }
-        Set<Integer> S12 = v1.getNonzeroIndices().stream()
+        Set<Integer> S12 = v1.getNonzeroIndices().intStream()
                 .filter(i -> v2.getNonzeroIndices().contains(i))
+                .boxed()
                 .collect(Collectors.toSet());
         int common = S12.size();
         int union = swappables.new2.size() + swappables.new1.size() - 2 * common;

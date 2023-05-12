@@ -26,11 +26,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * A helper class to mine significant frequent itemsets.
@@ -74,7 +69,7 @@ public class Itemsets {
         final Object2IntOpenHashMap<IntOpenHashSet> freqItemsetToSum
                 = getFreqItemsetToSumMap(paths, freqItemsetToSup, numEstSamples);
         for (IntOpenHashSet freqItemset : freqItemsetToSum.keySet()) {
-            final int sum = freqItemsetToSum.get(freqItemset);
+            final int sum = freqItemsetToSum.getInt(freqItemset);
             final double pvalue = getPvalue(sum, numEstSamples);
             freqItemsetToPvalue.put(freqItemset, pvalue);
         }

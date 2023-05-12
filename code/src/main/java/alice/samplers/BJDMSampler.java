@@ -52,7 +52,6 @@ public class BJDMSampler implements Sampler {
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
 
-        int actualSwaps = 0;
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
@@ -80,7 +79,6 @@ public class BJDMSampler implements Sampler {
             final double acceptanceProb = Math.min(1, frac);
             
             if (rnd.nextDouble() <= acceptanceProb) {
-                actualSwaps ++;
                 matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
@@ -89,7 +87,6 @@ public class BJDMSampler implements Sampler {
             }
             timer.stop();
         }
-//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
     
@@ -105,7 +102,6 @@ public class BJDMSampler implements Sampler {
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
 
-        int actualSwaps = 0;
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
@@ -132,7 +128,6 @@ public class BJDMSampler implements Sampler {
             final double acceptanceProb = Math.min(1, frac);
             
             if (rnd.nextDouble() <= acceptanceProb) {
-                actualSwaps ++;
                 matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);

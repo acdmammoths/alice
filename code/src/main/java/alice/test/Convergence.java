@@ -24,7 +24,6 @@ import alice.utils.JsonFile;
 import alice.config.Delimiters;
 import alice.samplers.CurveballBJDMSampler;
 import alice.samplers.BJDMSampler;
-import alice.samplers.GmmtSampler;
 import alice.structures.Matrix;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;

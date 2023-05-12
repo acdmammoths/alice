@@ -51,7 +51,6 @@ public class BJDMComparison {
         System.out.println("Executing BJDM distance experiment");
         // samplers
         final Sampler[] samplers = {
-            new BJDMSampler(), 
             new GmmtSampler()
         };
          // create object for runtime stats

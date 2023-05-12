@@ -25,7 +25,6 @@ import alice.utils.Config;
 import alice.spm.SampleAndMinerSeq;
 import alice.samplers.AliceCSampler;
 import alice.samplers.GmmtSeqSampler;
-import alice.samplers.Sampler;
 import alice.samplers.SeqSampler;
 import alice.spm.FreqSequenceMiner;
 import alice.spm.SequentialPatterns;
@@ -81,10 +80,15 @@ public class NumFreqItemsetsSeq {
 
             if (Config.sampleAndMine) {
                 System.out.println("Sampling and mining");
+                int numSwaps = Config.numSwaps;
+                if (samplerName.equals(GmmtSeqSampler.class.getName())) {
+                    numSwaps *= 5;
+                    System.out.println(numSwaps);
+                }
                 SampleAndMinerSeq.sampleAndMine(
                         Config.datasetPath,
                         sampler,
-                        Config.numSwaps,
+                        numSwaps,
                         Config.numSamples,
                         Config.minFreq,
                         Config.numThreads,

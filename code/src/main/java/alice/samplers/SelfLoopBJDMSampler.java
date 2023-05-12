@@ -21,7 +21,6 @@ public class SelfLoopBJDMSampler implements Sampler {
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
 
-        int actualSwaps = 0;
         SwappableAndNewEdges sne;
         
         for (int i = 0; i < numSwaps; i++) {
@@ -40,14 +39,12 @@ public class SelfLoopBJDMSampler implements Sampler {
                 final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
                 final Vector newRow1 = newRows[0];
                 final Vector newRow2 = newRows[1];
-                actualSwaps ++;
                 matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
             }
             timer.stop();
         }
-//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
     
@@ -61,7 +58,6 @@ public class SelfLoopBJDMSampler implements Sampler {
         final long setupTime = System.currentTimeMillis() - setupTimeStart;
         timer.save(setupTime);
 
-        int actualSwaps = 0;
         SwappableAndNewEdges sne;
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
@@ -79,14 +75,12 @@ public class SelfLoopBJDMSampler implements Sampler {
                 final Vector[] newRows = matrix.getNewRows(newEdge1, newEdge2);
                 final Vector newRow1 = newRows[0];
                 final Vector newRow2 = newRows[1];
-                actualSwaps ++;
                 matrix.transition(sne,
                         swappableRow1, swappableRow2,
                         newRow1, newRow2);
             }
             timer.stop();
         }
-//        System.out.println("Actual Swaps: " + actualSwaps);
         return matrix.getMatrix();
     }
 

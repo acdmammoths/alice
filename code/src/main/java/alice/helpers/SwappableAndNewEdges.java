@@ -39,7 +39,6 @@ public class SwappableAndNewEdges {
      * adjacent matrix
      * @param index1 first index
      * @param index2 second index
-     * @param rowSwap if the indexes refer to positions in rows or cols
      */
     public SwappableAndNewEdges(Edge swappableEdge1, Edge swappableEdge2, 
             int index1, int index2) {
