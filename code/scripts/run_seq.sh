@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 
 # Loading configurations for experiments
-echo '>> Loading config file config.cfg'
-source config.cfg
+echo '>> Loading config file config_seq.cfg'
+source config_seq.cfg
 
 unset datasets
 declare -A datasets
-datasets[$fifa]=$food_defaults
-datasets[$leviathan]=$chess_defaults
+datasets[$fifa]=$fifa_defaults
+datasets[$leviathan]=$leviathan_defaults
 datasets[$kosarak]=$kosarak_defaults
 datasets[$bms1]=$bms1_defaults
+datasets[$bible]=$bible_defaults
+datasets[$bike]=$bike_defaults
+datasets[$sign]=$sign_defaults
 
 unset flags
 declare -A flags
-flags[$fifa]=$fifa_defaults
-flags[$leviathan]=$leviathan_defaults
+flags[$fifa]=$fifa_flags
+flags[$leviathan]=$leviathan_flags
 flags[$kosarak]=$kosarak_flags
 flags[$bms1]=$bms1_flags
+flags[$bible]=$bible_flags
+flags[$bike]=$bike_flags
+flags[$sign]=$sign_flags
 
 echo -e '\n\n>> Creating directories ...'
 mkdir -p $resultsDir

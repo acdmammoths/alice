@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 
 # Loading configurations for experiments
-echo '>> Loading config file config.cfg'
+echo '>> Loading config file config2.cfg'
 source config.cfg
 
 unset datasets
 declare -A datasets
 datasets[$food]=$food_defaults
 datasets[$chess]=$chess_defaults
-datasets[$kosarak]=$kosarak_defaults
+datasets[$mush]=$mush_defaults
 datasets[$BMS1]=$bms1_defaults
 datasets[$BMS2]=$bms2_defaults
 datasets[$retail]=$retail_defaults
-datasets[$dbocc]=$dbocc_defaults
-datasets[$iewiki]=$iewiki_defaults
+datasets[$sync]=$sync_defaults
 
 unset flags
 declare -A flags
 flags[$food]=$food_flags
 flags[$chess]=$chess_flags
-flags[$kosarak]=$kosarak_flags
+flags[$mush]=$mush_flags
 flags[$BMS1]=$bms1_flags
 flags[$BMS2]=$bms2_flags
 flags[$retail]=$retail_flags
-flags[$dbocc]=$dbocc_flags
-flags[$iewiki]=$iewiki_flags
+flags[$sync]=$sync_flags
 
 echo -e '\n\n>> Creating directories ...'
 mkdir -p $resultsDir
@@ -51,9 +49,9 @@ do
 		mkdir -p $OUTPUT2
 
 		echo "Running command ..."
-		echo "$JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=1$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}"
+		echo "$JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}"
 		echo "---- `date`"
-		$JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=1$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}
+		$JVM $SIGNPM_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} cleanup=$cleanup fwer=$fwer numWySamples=$numWySamples numEstSamples=$numEstSamples minFreq=${defaults[2]}
 	fi
 
 	if [[ ${experiments[1]} -eq "1" ]]; then
@@ -95,10 +93,23 @@ do
 		mkdir -p $OUTPUT2
 
 		echo "Running command ..."
-		echo "$JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=true"
+		echo "$JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=$sampleAndMine"
 		echo "---- `date`"
-		$JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=true
+		$JVM $FREQ_jar datasetPath=$datasetPath resultsDir=$OUTPUT2 seed=$seed numThreads=$numThreads numSwaps=${defaults[0]} numSamples=${defaults[1]} minFreq=${defaults[2]} sampleAndMine=$sampleAndMine
 	fi
 
+        if [[ ${experiments[4]} -eq "1" ]]; then
+                echo '-----------'
+                echo '   BJDM    '
+                echo '-----------'
+
+                OUTPUT="$resultsDir/bdjm/"
+                mkdir -p $OUTPUT
+
+                echo "Running command ..."
+                echo "$JVM $BJDM_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed numSwaps=$numSwaps numSamples=$numEstSamples numThreads=$numThreads"
+                echo "---- `date`"
+                $JVM $BJDM_jar datasetPath=$datasetPath resultsDir=$OUTPUT seed=$seed numSwaps=$numSwaps numSamples=$numEstSamples numThreads=$numThreads
+        fi
 done
 echo 'Terminated.'
