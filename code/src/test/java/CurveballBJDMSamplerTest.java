@@ -1,5 +1,5 @@
 import alice.structures.BJDMMatrix;
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
 import alice.structures.Vector;
@@ -104,17 +104,17 @@ public class CurveballBJDMSamplerTest {
             
 //            final double samplingProb = adjMatrix.curveballSamplingProb(snes, adjMatrix.getRows(), adjMatrix.getCols());
             
-            final List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            final List<Swappables> swappables = matrix.fromListToSwappables(snes);
             if (swappables.isEmpty()) {
                 continue;
             }
             
-            for (SwappableAndNewEdges swappable : swappables) {
+            for (Swappables swappable : swappables) {
                 adjMatrix.transition(swappable);
             }
             adjMatrix = new BJDMMatrix(adjMatrix.getMatrix());
             
-            for (SwappableAndNewEdges swappable : swappables) {
+            for (Swappables swappable : swappables) {
                 final Vector swappableRow1 = matrix.getRowInstance(swappable.swappableEdge1.row);
                 final Vector swappableRow2 = matrix.getRowInstance(swappable.swappableEdge2.row);
                 final Edge newEdge1 = new Edge(swappable.swappableEdge1.row, swappable.swappableEdge2.col);

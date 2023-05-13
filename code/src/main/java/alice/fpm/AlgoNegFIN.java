@@ -82,7 +82,7 @@ public class AlgoNegFIN {
      * Read the input file to find the frequent items
      *
      * @param filename input file name
-     * @param minSupport
+     * @param minSup
      * @throws IOException
      */
     public void scanDB(String filename, double minSup) throws IOException {

@@ -23,12 +23,12 @@ public class Config {
     // directory where the datasets are placed
     public static String datasetsDir = "datasets";
     // path to the dataset
-    public static String datasetPath = "datasets/sequential/LEVIATHAN.txt";
+    public static String datasetPath = "datasets/foodmart.txt";
     // directory where the output is saved
     public static String resultsDir = "datasets/";
     // number of iterations to perform before returning the sample
     public static int numSwaps = 1000;
-    public static double maxNumSwapsFactor = 40;
+    public static double maxNumSwapsFactor = 5;
     // number of random sample to generate
     public static int numSamples = 2;
     // number of random samples to generate to estimate the p-values
@@ -36,7 +36,7 @@ public class Config {
     // number of random samples to generate to compute the adjusted critical values
     public static int numWySamples = 128;
     // minimum frequency for an itemset to be frequent
-    public static double minFreq = 0.15;
+    public static double minFreq = 3.0E-4;
     // family wise error rate
     public static double fwer = 0.05;
     // number of threads

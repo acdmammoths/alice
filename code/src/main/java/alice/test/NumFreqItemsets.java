@@ -28,8 +28,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import alice.fpm.FreqItemsetMiner;
 import alice.fpm.SampleAndMiner;
+import alice.samplers.GmmtSampler;
 import alice.samplers.Sampler;
-import alice.samplers.SelfLoopGmmtSampler;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -71,7 +71,7 @@ public class NumFreqItemsets {
         System.out.println(JsonKeys.freqItemsetLenToCount + ": " + observedFreqItemsetLenToCount);
 
         final Sampler[] samplers = {
-            new SelfLoopGmmtSampler(),
+            new GmmtSampler(),
             new BJDMSampler(), 
             new CurveballBJDMSampler() 
         };

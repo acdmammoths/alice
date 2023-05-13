@@ -1,7 +1,7 @@
 package alice.spm;
 
 /*
- * Copyright (C) 2022 Alexander Lee and Matteo Riondato
+ * Copyright (C) 2023 Giulia Preti
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,26 +27,25 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A class to sample transactional datasets using DiFfuSR or GMMT and then mine
- * sampled datasets for frequent itemsets.
+ * A class to sample sequence datasets and then mine the
+ * sampled datasets for frequent sequence patterns.
  */
 public class SampleAndMinerSeq {
 
     /**
-     * Samples transactional datasets using the sampler and mines the sampled
-     * datasets for frequent itemsets. 
-     * The sampling and mining are done in parallel.
+     * Samples sequence datasets using the sampler and mines the sampled
+     * datasets for frequent sequence patterns.The sampling and mining are done in parallel.
      *
      * @param datasetPath the path to the dataset
      * @param sampler the sampler to use for sampling datasets
      * @param numSwaps the number of swaps to use for sampling
      * @param numSamples the number of samples to obtain
-     * @param minFreq the minimum frequency threshold for mining frequent
-     * itemsets
+     * @param minFreq the minimum frequency threshold
      * @param numThreads
      * @param seed a random seed for replication
      * @param resultsDir the directory to store the resulting sampled datasets
-     * and frequent itemsets
+     * and frequent patterns
+     * @throws java.io.IOException
      */
     public static void sampleAndMine(
             String datasetPath,

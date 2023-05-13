@@ -1,7 +1,7 @@
 package alice.samplers;
 
 import alice.structures.BJDMMatrix;
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.SparseMatrix;
 import alice.helpers.LogNumEquivMatricesTracker;
 import alice.structures.Vector;
@@ -55,7 +55,7 @@ public class BJDMSampler implements Sampler {
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappables(rnd);
             
             if (sne == null) {
                 continue;
@@ -90,6 +90,17 @@ public class BJDMSampler implements Sampler {
         return matrix.getMatrix();
     }
     
+    /**
+     * 
+     * @param inMatrix a {@link SparseMatrix} representation of the dataset
+     * @param degree degree of the matrix in the Markov graph
+     * @param numSwaps the number of swaps to make such that the chain
+     * sufficiently mixes
+     * @param seed the random seed
+     * @param timer a timer
+     * @return the matrix representation of the sampled dataset
+     */
+    @Override
     public SparseMatrix sample(SparseMatrix inMatrix, long degree, int numSwaps, long seed, Timer timer) {
         final long setupTimeStart = System.currentTimeMillis();
 
@@ -105,7 +116,7 @@ public class BJDMSampler implements Sampler {
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappables(rnd);
             
             if (sne == null) {
                 continue;
@@ -169,7 +180,7 @@ public class BJDMSampler implements Sampler {
         for (int i = 0; i < numSwaps; i++) {
             logNumEquivMatricesTracker.save(matrix.getMatrix(), logNumEquivMatrices);
 
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappables(rnd);
             
             if (sne == null) {
                 continue;
@@ -232,7 +243,7 @@ public class BJDMSampler implements Sampler {
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappables(rnd);
             
             if (sne == null) {
                 continue;

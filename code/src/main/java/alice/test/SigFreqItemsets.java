@@ -21,6 +21,8 @@ import alice.samplers.BJDMSampler;
 import alice.utils.CMDLineParser;
 import alice.utils.Config;
 import alice.fpm.SigFreqItemsetMiner;
+import alice.samplers.CurveballBJDMSampler;
+import alice.samplers.GmmtSampler;
 import alice.samplers.Sampler;
 
 /**
@@ -34,8 +36,8 @@ public class SigFreqItemsets {
         
         final Sampler[] samplers = {
             new BJDMSampler(), 
-//            new CurveballBJDMSampler(), 
-//            new GmmtSampler()
+            new CurveballBJDMSampler(), 
+            new GmmtSampler()
         };
 
         for (Sampler sampler : samplers) {

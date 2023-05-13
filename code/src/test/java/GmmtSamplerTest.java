@@ -1,4 +1,4 @@
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.GmmtMatrix;
 import alice.structures.SparseMatrix;
 import alice.samplers.GmmtSampler;
@@ -256,7 +256,7 @@ public class GmmtSamplerTest {
 
         for (int t = 0; t < 1000; t++) {
             GmmtMatrix adjMatrix = new GmmtMatrix(matrix.getMatrix(), matrix.edges);
-            final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
+            final Swappables sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
             
             adjMatrix.transition(sne);
             adjMatrix = new GmmtMatrix(adjMatrix.getMatrix(), adjMatrix.edges);

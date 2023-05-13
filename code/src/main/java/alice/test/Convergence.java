@@ -205,6 +205,18 @@ public class Convergence {
         return sampleItemsetToSup;
     }
     
+    /**
+     * Gets the sample's itemset to support map such that the map only contains
+     * itemsets that are frequent itemsets of the observed dataset.
+     *
+     * @param sample the matrix representation of the sampled dataset
+     * @param transformer the transformer used to create the matrix of the
+     * sample
+     * @param freqItemsets the set of frequent itemsets in the observed dataset
+     * @return a map where each key is an itemset and the value is the itemset's
+     * support in the sampled dataset such that the map only contains itemsets
+     * that are frequent itemsets of the observed dataset
+     */
     public static Map<IntOpenHashSet, Integer> getItemsetToSupMap(
             SparseMatrix sample, Transformer transformer, ObjectSet<IntOpenHashSet> freqItemsets) {
         return freqItemsets.parallelStream().map(freqItemset -> 
@@ -212,6 +224,13 @@ public class Convergence {
                 .collect(Collectors.toMap(e -> e.getValue0(),e -> e.getValue1()));
     }
     
+    /**
+     * 
+     * @param sample the matrix representation of the sampled dataset
+     * @param itemToColIndex map storing the incremental id associated to each item
+     * @param itemset an itemset
+     * @return number of times the itemset appear in the rows of the sample
+     */
     public static int getItemsetInSampleCount(SparseMatrix sample,
             Map<Integer, Integer> itemToColIndex,
             IntOpenHashSet itemset) {
@@ -240,7 +259,7 @@ public class Convergence {
      * the item's column index in the sample matrix
      * @return whether the itemset is in the transaction of the sample
      */
-    public static boolean isItemsetInSampleTransaction(
+    private static boolean isItemsetInSampleTransaction(
             IntOpenHashSet itemset,
             SparseMatrix sample,
             int rowIndex,

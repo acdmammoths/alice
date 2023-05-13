@@ -53,6 +53,12 @@ public class SparseMatrix {
         }
     }
     
+    /**
+     * Initialize a matrix with given rows and cols.
+     *
+     * @param rows the rows to be copied in the matrix
+     * @param cols the columns to be copied in the matrix
+     */
     public SparseMatrix(Vector[] rows, Vector[] cols) {
         this.listOfRows = new Vector[rows.length];
         for (int i = 0; i < rows.length; i++) {
@@ -109,66 +115,145 @@ public class SparseMatrix {
         return Arrays.toString(listOfRows);
     }
 
+    /**
+     * 
+     * @return number of rows in the matrix
+     */
     public int getNumRows() {
         return this.listOfRows.length;
     }
 
+    /**
+     * 
+     * @return number of columns in the matrix
+     */
     public int getNumCols() {
         return this.listOfCols.length;
     }
 
+    /**
+     * 
+     * @param r row id
+     * @param c col id
+     * @return 1 if c is in the row r; 0 otherwise
+     */
     public int isInRow(int r, int c) {
         return this.listOfRows[r].get(c);
     }
     
+    /**
+     * If 0, removes col c from row r; if 1 adds col c to row r.
+     * @param r row id
+     * @param c col id
+     * @param value value (0 or 1)
+     */
     public void setInRow(int r, int c, int value) {
         this.listOfRows[r].set(c, value);
     }
-    
+
+    /**
+     * Replace the r-th row with this row.
+     * @param r row id
+     * @param row new row
+     */
     public void replaceRow(int r, Vector row) {
         this.listOfRows[r] = row;
     }
     
+    /**
+     * Replace the c-th col with this col.
+     * @param c col id
+     * @param col new col
+     */
     public void replaceCol(int c, Vector col) {
         this.listOfCols[c] = col;
     }
     
+    /**
+     * If 0, removes row r from col c; if 1 adds row r to col c.
+     * @param r row id
+     * @param c col id
+     * @param value value (0 or 1)
+     */
     public void setInCol(int r, int c, int value) {
         this.listOfCols[c].set(r, value);
     }
 
+    /**
+     * 
+     * @param r row id
+     * @return non-zero indices in row r
+     */
     public IntOpenHashSet getNonzeroIndices(int r) {
         return this.listOfRows[r].getNonzeroIndices();
     }
     
+    /**
+     * 
+     * @param c col id
+     * @return non-zero indices in col c
+     */
     public IntOpenHashSet getNonzeroColIndices(int c) {
         return this.listOfCols[c].getNonzeroIndices();
     }
 
+    /**
+     * 
+     * @param r row id
+     * @return number of non-zero indices in row r
+     */
     public int getNumNonzeroIndices(int r) {
         return this.listOfRows[r].getNumNonzeroIndices();
     }
 
+    /**
+     * 
+     * @param r row id
+     * @return a copy of row
+     */
     public Vector getRowCopy(int r) {
         return this.listOfRows[r].copy();
     }
 
+    /**
+     * 
+     * @param r row id
+     * @return reference to row
+     */
     public Vector getRowInstance(int r) {
         return this.listOfRows[r];
     }
     
+    /**
+     * 
+     * @param c col id
+     * @return a copy of col
+     */
     public Vector getColCopy(int c) {
         return this.listOfCols[c].copy();
     }
 
+    /**
+     * 
+     * @param c col id
+     * @return reference to col
+     */
     public Vector getColInstance(int c) {
         return this.listOfCols[c];
     }
     
+    /**
+     * 
+     * @return array with the cols in this matrix
+     */
     public Vector[] getCols() {
         return this.listOfCols;
     }
     
+    /**
+     * 
+     * @return array with the rows in this matrix
+     */
     public Vector[] getRows() {
         return this.listOfRows;
     }

@@ -1,15 +1,10 @@
 package alice.samplers;
 
-import alice.config.JsonKeys;
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.Edge;
 import alice.structures.MultiGraph;
 import alice.structures.RawFastIntCollectionFixedSizeWithOrder;
-import alice.utils.CMDLineParser;
-import alice.utils.Config;
 import alice.utils.Timer;
-import alice.utils.Transformer;
-import java.io.IOException;
 import java.util.Random;
 
 /*
@@ -29,17 +24,17 @@ import java.util.Random;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 /**
- * ALICE-C Sampler.
+ * ALICE-S Sampler.
  */
 public class AliceSSampler implements SeqSampler {
 
     /**
-     * @param inGraph
+     * @param inGraph observed graph
      * @param numSwaps the number of swaps to make such that the chain
      * sufficiently mixes
      * @param seed the random seed
      * @param timer a timer
-     * @return the matrix representation of the sampled dataset
+     * @return the graph representation of the sampled dataset
      */
     @Override
     public MultiGraph sample(MultiGraph inGraph, int numSwaps, long seed, Timer timer) {
@@ -59,7 +54,7 @@ public class AliceSSampler implements SeqSampler {
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
-            final SwappableAndNewEdges sne = graph.getSwappableAndNewEdges(rnd);
+            final Swappables sne = graph.getSwappables(rnd);
             
             if (sne == null) {
                 continue;
@@ -89,39 +84,6 @@ public class AliceSSampler implements SeqSampler {
         }
         System.out.println("Actual Swaps: " + actualSwaps);
         return graph;
-    }
-    
-    public static void main(String[] args) throws IOException {
-        CMDLineParser.parse(args);
-
-        System.out.println("Executing runtime experiment for dataset at " + Config.datasetPath);
-
-        final Transformer transformer = new Transformer();
-        final MultiGraph graph = transformer.createMultiGraph(Config.datasetPath);
-        final Random rnd = new Random(Config.seed);
-
-        final Timer timer = new Timer(true);
-        AliceSSampler sampler = new AliceSSampler();
-        sampler.sample(graph, Config.numSwaps, rnd.nextLong(), timer);
-
-        final long setupTime = timer.getSavedTime();
-        final double minStepTime = timer.getMin();
-        final double c10StepTime = timer.getPercentile(10);
-        final double q1StepTime = timer.getPercentile(25);
-        final double medianStepTime = timer.getPercentile(50);
-        final double q3StepTime = timer.getPercentile(75);
-        final double c90StepTime = timer.getPercentile(90);
-        final double maxStepTime = timer.getMax();
-
-        System.out.println("\t" + JsonKeys.runtimeStats + ":");
-        System.out.println("\t\t" + JsonKeys.setupTime + ": " + setupTime);
-        System.out.println("\t\t" + JsonKeys.minStepTime + ": " + minStepTime);
-        System.out.println("\t\t" + JsonKeys.c10StepTime + ": " + c10StepTime);
-        System.out.println("\t\t" + JsonKeys.q1StepTime + ": " + q1StepTime);
-        System.out.println("\t\t" + JsonKeys.medianStepTime + ": " + medianStepTime);
-        System.out.println("\t\t" + JsonKeys.q3StepTime + ": " + q3StepTime);
-        System.out.println("\t\t" + JsonKeys.c90StepTime + ": " + c90StepTime);
-        System.out.println("\t\t" + JsonKeys.maxStepTime + ": " + maxStepTime);
     }
     
 }

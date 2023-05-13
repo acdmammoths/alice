@@ -7,7 +7,7 @@ import alice.utils.Transformer;
 import alice.utils.Timer;
 
 /*
- * Copyright (C) 2022 Alexander Lee and Matteo Riondato
+ * Copyright (C) 2023 Giulia Preti
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,23 +23,23 @@ import alice.utils.Timer;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /**
- * A class that helps sample transactional datasets and mines frequent itemsets
- * from those datasets in parallel.
+ * A class that helps sample sequence datasets and mines frequent sequence
+ * patterns from those datasets in parallel.
  */
 public class SampleAndMineTaskSeq implements Runnable {
 
     /**
-     * The sampler used to sample matrices.
+     * The sampler used to sample multigraphs.
      */
     private final SeqSampler sampler;
 
     /**
-     * The transformer to create the dataset from the matrix.
+     * The transformer to create the dataset from the multigraph.
      */
     private final Transformer transformer;
 
     /**
-     * The matrix of the observed dataset.
+     * The multigraph of the observed dataset.
      */
     private final MultiGraph matrix;
     
@@ -55,17 +55,17 @@ public class SampleAndMineTaskSeq implements Runnable {
 
     /**
      * The minimum frequency threshold used to mine the set of frequent
-     * itemsets.
+     * patterns.
      */
     private final double minFreq;
 
     /**
-     * The path to save the sampled transactional dataset.
+     * The path to save the sampled sequence dataset.
      */
     private final String samplePath;
 
     /**
-     * The path to save the set of frequent itemsets.
+     * The path to save the set of frequent sequence patterns.
      */
     private final String freqItemsetsPath;
 

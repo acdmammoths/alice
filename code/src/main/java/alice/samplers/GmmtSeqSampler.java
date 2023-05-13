@@ -1,6 +1,6 @@
 package alice.samplers;
 
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.Edge;
 import alice.structures.MultiGraph;
 import alice.structures.RawFastIntCollectionFixedSizeWithOrder;
@@ -29,12 +29,12 @@ import java.util.Random;
 public class GmmtSeqSampler implements SeqSampler {
 
     /**
-     * @param inGraph
+     * @param inGraph observed graph
      * @param numSwaps the number of swaps to make such that the chain
      * sufficiently mixes
      * @param seed the random seed
      * @param timer a timer
-     * @return the matrix representation of the sampled dataset
+     * @return the graph representation of the sampled dataset
      */
     @Override
     public MultiGraph sample(MultiGraph inGraph, int numSwaps, long seed, Timer timer) {
@@ -52,7 +52,7 @@ public class GmmtSeqSampler implements SeqSampler {
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
 
-            final SwappableAndNewEdges sne = graph.getRandomSwappables(rnd);
+            final Swappables sne = graph.getRandomSwappables(rnd);
             
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;

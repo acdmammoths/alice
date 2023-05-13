@@ -104,6 +104,13 @@ public class Transformer {
         return matrix;
     }
 
+    /**
+     * 
+     * @param datasetPath the file path for the sequence dataset
+     * @return multigraph representation of the sequence dataset
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public MultiGraph createMultiGraph(String datasetPath) throws FileNotFoundException, IOException {
 
         Int2ObjectOpenHashMap<IntArrayList> rowSumToVertices = new Int2ObjectOpenHashMap();
@@ -221,6 +228,11 @@ public class Transformer {
         }
     }
 
+    /**
+     * 
+     * @param datasetPath the file path for the dataset to be written
+     * @param graph multigraph representation of the dataset
+     */
     public void createSequenceDataset(String datasetPath, MultiGraph graph) {
         try {
             final BufferedWriter bw = new BufferedWriter(new FileWriter(datasetPath));
@@ -245,6 +257,11 @@ public class Transformer {
         }
     }
     
+    /**
+     * 
+     * @param graph multi-graph representation of a sequence dataset
+     * @return the sequence dataset as a list of sequences
+     */
     public String[][] createSequenceDataset(MultiGraph graph) {
     	String[][] dataset = new String[graph.getNumRows()][];
         for (int r = 0; r < graph.getNumRows(); r++) {
@@ -265,6 +282,11 @@ public class Transformer {
         return dataset;
     }
 
+    /**
+     * 
+     * @return map storing the incremental id associated to each itemset in the sequence dataset
+     * when it was transformed into a bipartite multigraph
+     */
     public Int2IntOpenHashMap getItemToColIndex() {
         return this.itemToColIndex;
     }

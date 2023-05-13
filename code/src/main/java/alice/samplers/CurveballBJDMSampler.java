@@ -1,7 +1,7 @@
 package alice.samplers;
 
 import alice.structures.BJDMMatrix;
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.SparseMatrix;
 import alice.helpers.LogNumEquivMatricesTracker;
 import alice.helpers.SwappableLists;
@@ -63,7 +63,7 @@ public class CurveballBJDMSampler implements Sampler {
             if (snes == null) {
                 continue;
             }
-            final List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            final List<Swappables> swappables = matrix.fromListToSwappables(snes);
             // self-loop swap
             if (swappables.isEmpty()) {
                 continue;
@@ -82,7 +82,7 @@ public class CurveballBJDMSampler implements Sampler {
                         new2);
             } else {
                 // incremental update
-                for (SwappableAndNewEdges swappable : swappables) {
+                for (Swappables swappable : swappables) {
                     final Vector[] swappableRows = new Vector[]{
                         matrix.getRowInstance(swappable.swappableEdge1.row), 
                         matrix.getRowInstance(swappable.swappableEdge2.row)};
@@ -122,7 +122,7 @@ public class CurveballBJDMSampler implements Sampler {
                     matrix.setRow(snes.swappable1, new1);
                     matrix.setRow(snes.swappable2, new2);
                     
-                    for (SwappableAndNewEdges swappable : swappables) {
+                    for (Swappables swappable : swappables) {
                         // update cols
                         matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
@@ -141,7 +141,7 @@ public class CurveballBJDMSampler implements Sampler {
                     // update cols
                     matrix.setCol(snes.swappable1, new1);
                     matrix.setCol(snes.swappable2, new2);
-                    for (SwappableAndNewEdges swappable : swappables) {
+                    for (Swappables swappable : swappables) {
                         // update rows
                         matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
@@ -161,6 +161,17 @@ public class CurveballBJDMSampler implements Sampler {
         return matrix.getMatrix();
     }
     
+    /**
+     * 
+     * @param inMatrix a {@link SparseMatrix} representation of the dataset
+     * @param degree degree of the matrix in the Markov graph
+     * @param numSwaps the number of swaps to make such that the chain
+     * sufficiently mixes
+     * @param seed the random seed
+     * @param timer a timer
+     * @return the matrix representation of the sampled dataset
+     */
+    @Override
     public SparseMatrix sample(SparseMatrix inMatrix, long degree, int numSwaps, long seed, Timer timer) {
         final long setupTimeStart = System.currentTimeMillis();
 
@@ -179,7 +190,7 @@ public class CurveballBJDMSampler implements Sampler {
             if (snes == null) {
                 continue;
             }
-            final List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            final List<Swappables> swappables = matrix.fromListToSwappables(snes);
             // self-loop swap
             if (swappables.isEmpty()) {
                 continue;
@@ -198,7 +209,7 @@ public class CurveballBJDMSampler implements Sampler {
                         new2);
             } else {
                 // incremental update
-                for (SwappableAndNewEdges swappable : swappables) {
+                for (Swappables swappable : swappables) {
                     final Vector[] swappableRows = new Vector[]{
                         matrix.getRowInstance(swappable.swappableEdge1.row), 
                         matrix.getRowInstance(swappable.swappableEdge2.row)};
@@ -238,7 +249,7 @@ public class CurveballBJDMSampler implements Sampler {
                     matrix.setRow(snes.swappable1, new1);
                     matrix.setRow(snes.swappable2, new2);
                     
-                    for (SwappableAndNewEdges swappable : swappables) {
+                    for (Swappables swappable : swappables) {
                         // update cols
                         matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
@@ -257,7 +268,7 @@ public class CurveballBJDMSampler implements Sampler {
                     // update cols
                     matrix.setCol(snes.swappable1, new1);
                     matrix.setCol(snes.swappable2, new2);
-                    for (SwappableAndNewEdges swappable : swappables) {
+                    for (Swappables swappable : swappables) {
                         // update rows
                         matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
@@ -314,7 +325,7 @@ public class CurveballBJDMSampler implements Sampler {
                 continue;
             }
 
-            final List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            final List<Swappables> swappables = matrix.fromListToSwappables(snes);
             
             if (swappables.isEmpty()) {
                 continue;
@@ -322,7 +333,7 @@ public class CurveballBJDMSampler implements Sampler {
             
             double logNumEquivAdjMatrices = logNumEquivMatrices;
 
-            for (SwappableAndNewEdges swappable : swappables) {
+            for (Swappables swappable : swappables) {
 
                 final Vector swappableRow1 = matrix.getRowInstance(swappable.swappableEdge1.row);
                 final Vector swappableRow2 = matrix.getRowInstance(swappable.swappableEdge2.row);
@@ -382,7 +393,7 @@ public class CurveballBJDMSampler implements Sampler {
             if (snes == null) {
                 continue;
             }
-            final List<SwappableAndNewEdges> swappables = matrix.fromListToSwappables(snes);
+            final List<Swappables> swappables = matrix.fromListToSwappables(snes);
             // self-loop swap
             if (swappables.isEmpty()) {
                 continue;
@@ -401,7 +412,7 @@ public class CurveballBJDMSampler implements Sampler {
                         new2);
             } else {
                 // incremental update
-                for (SwappableAndNewEdges swappable : swappables) {
+                for (Swappables swappable : swappables) {
                     final Vector[] swappableRows = new Vector[]{
                         matrix.getRowInstance(swappable.swappableEdge1.row), 
                         matrix.getRowInstance(swappable.swappableEdge2.row)};
@@ -440,7 +451,7 @@ public class CurveballBJDMSampler implements Sampler {
                     matrix.setRow(snes.swappable1, new1);
                     matrix.setRow(snes.swappable2, new2);
                     
-                    for (SwappableAndNewEdges swappable : swappables) {
+                    for (Swappables swappable : swappables) {
                         // update cols
                         matrix.setCol(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setCol(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);
@@ -459,7 +470,7 @@ public class CurveballBJDMSampler implements Sampler {
                     // update cols
                     matrix.setCol(snes.swappable1, new1);
                     matrix.setCol(snes.swappable2, new2);
-                    for (SwappableAndNewEdges swappable : swappables) {
+                    for (Swappables swappable : swappables) {
                         // update rows
                         matrix.setRow(swappable.swappableEdge1.row, swappable.swappableEdge1.col, 0);
                         matrix.setRow(swappable.swappableEdge2.row, swappable.swappableEdge2.col, 0);

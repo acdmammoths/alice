@@ -1,6 +1,6 @@
 package alice.structures;
 
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.helpers.SwappableLists;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -295,9 +295,9 @@ public class BJDMMatrix extends SetMatrix {
      * Then, it samples two edges to swap. 
      * 
      * @param rnd random object
-     * @return the two edges to swap and the new edges after the swap
+     * @return the two edges to swap
      */
-    public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd) {
+    public Swappables getSwappables(Random rnd) {
         // sample rows or columns
         boolean rowSwap = rnd.nextBoolean();
         Map<Integer, List<Integer>> sumToEqSumElements;
@@ -341,7 +341,7 @@ public class BJDMMatrix extends SetMatrix {
             sampledEdge1 = new Edge(f1, pair.getValue0());
             sampledEdge2 = new Edge(f2, pair.getValue1());
         }
-        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, 0, 0);
+        return new Swappables(sampledEdge1, sampledEdge2, 0, 0);
     }
     
     /**
@@ -350,7 +350,7 @@ public class BJDMMatrix extends SetMatrix {
      * @param sne candidate swappables
      * @return True if the two edges are swappable; False otherwise
      */
-    public boolean areSwappable(SwappableAndNewEdges sne) {
+    public boolean areSwappable(Swappables sne) {
         final Edge first = sne.swappableEdge1;
         final Edge second = sne.swappableEdge2;
         return !(first.row == second.row || first.col == second.col ||
@@ -363,9 +363,9 @@ public class BJDMMatrix extends SetMatrix {
      * 
      * @param rnd
      * @param rowSwap whether we swap rows or columns
-     * @return the two edges to swap and the new edges after the swap
+     * @return the two edges to swap
      */
-    public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd, boolean rowSwap) {
+    public Swappables getSwappables(Random rnd, boolean rowSwap) {
         // sample rows or columns
         Map<Integer, List<Integer>> sumToEqSumElements;
         int[] samplable;
@@ -410,7 +410,7 @@ public class BJDMMatrix extends SetMatrix {
             sampledEdge1 = new Edge(f1, pair.getValue0());
             sampledEdge2 = new Edge(f2, pair.getValue1());
         }
-        return new SwappableAndNewEdges(sampledEdge1, sampledEdge2, 0, 0);
+        return new Swappables(sampledEdge1, sampledEdge2, 0, 0);
     }
     
     /**
@@ -700,7 +700,7 @@ public class BJDMMatrix extends SetMatrix {
      * @param swappables elements to swap obtained via curveball sampling
      * @return list of edges to swap obtained from the set of elements to swap
      */
-    public List<SwappableAndNewEdges> fromListToSwappables(SwappableLists swappables) {
+    public List<Swappables> fromListToSwappables(SwappableLists swappables) {
         Vector v1, v2;
         if (swappables.rowBased) {
             v1 = getRowInstance(swappables.swappable1);
@@ -716,14 +716,14 @@ public class BJDMMatrix extends SetMatrix {
         assert(U.size()==L.size());
         List<Integer> new1 = Lists.newArrayList(L);
         List<Integer> new2 = Lists.newArrayList(U);
-        List<SwappableAndNewEdges> E = Lists.newArrayList();
+        List<Swappables> E = Lists.newArrayList();
         for (int c = 0; c < new1.size(); c++) {
             if (swappables.rowBased) {
-                E.add(new SwappableAndNewEdges(
+                E.add(new Swappables(
                         new Edge(swappables.swappable1, new2.get(c)), 
                         new Edge(swappables.swappable2, new1.get(c)), 0, 0));
             } else {
-                E.add(new SwappableAndNewEdges(
+                E.add(new Swappables(
                         new Edge(new1.get(c), swappables.swappable2),
                         new Edge(new2.get(c), swappables.swappable1), 0, 0));
             }
@@ -752,6 +752,10 @@ public class BJDMMatrix extends SetMatrix {
         return new Vector[]{newRow1, newRow2};
     }
     
+    /**
+     * 
+     * @return number of paths of length 3 in this graph
+     */
     public long getNumCaterpillars() {
         return edges
                 .parallelStream()

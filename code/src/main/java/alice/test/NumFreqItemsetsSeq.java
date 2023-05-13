@@ -1,7 +1,7 @@
 package alice.test;
 
 /*
- * Copyright (C) 2022 Alexander Lee, Giulia Preti, and Matteo Riondato
+ * Copyright (C) 2023 Giulia Preti
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,10 +43,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * This class runs the number of frequent itemsets experiment by measuring the
- * quartiles for the number of frequent itemsets across the sampled distribution
- * of sets of frequent itemsets as well as measure the p-value for the number of
- * frequent itemsets in the observed dataset.
+ * This class runs the number of frequent sequence patterns experiment by measuring the
+ * quartiles for the number of frequent patterns across the sampled distribution
+ * of sets of frequent patterns as well as measure the p-value for the number of
+ * frequent patterns in the observed dataset.
  */
 public class NumFreqItemsetsSeq {
 
@@ -165,12 +165,12 @@ public class NumFreqItemsetsSeq {
     }
 
     /**
-     * Gets a map where each key is a frequent itemset length and the value is
-     * the total number of frequent itemsets with that length in the dataset.
+     * Gets a map where each key is a frequent pattern length and the value is
+     * the total number of frequent patterns with that length in the dataset.
      *
-     * @param freqItemsets a set of frequent itemsets
-     * @return a map where each key is a frequent itemset length and the value
-     * is the total number of frequent itemsets with that length in the dataset
+     * @param freqItemsets frequent sequence patterns
+     * @return a map where each key is a frequent pattern length and the value is
+     * the total number of frequent patterns with that length in the dataset
      */
     public static Int2IntOpenHashMap getFreqItemsetLenToCountMap(SequentialPatterns freqItemsets) {
         final Int2IntOpenHashMap freqItemsetLenToCount = new Int2IntOpenHashMap();
@@ -181,12 +181,12 @@ public class NumFreqItemsetsSeq {
     }
 
     /**
-     * Gets a map where each key is a frequent itemset length and the value is
-     * the total number of frequent itemsets with that length in the dataset.
+     * Gets a map where each key is a frequent pattern length and the value is
+     * the total number of frequent patterns with that length in the dataset.
      *
-     * @param freqItemsetsFile the file where the frequent itemsets are saved
-     * @return a map where each key is a frequent itemset length and the value
-     * is the total number of frequent itemsets with that length in the dataset
+     * @param freqItemsetsFile the file where the frequent patterns are saved
+     * @return a map where each key is a frequent pattern length and the value
+     * is the total number of frequent patterns with that length in the dataset
      */
     public static Int2IntOpenHashMap getFreqItemsetLenToCountMap(File freqItemsetsFile) {
         
@@ -212,12 +212,12 @@ public class NumFreqItemsetsSeq {
     }
 
     /**
-     * Gets the number of frequent itemsets in the dataset.
+     * Gets the number of frequent patterns in the dataset.
      *
-     * @param freqItemsetLenToCount a map where each key is a frequent itemset
-     * length and the value is the total number of frequent itemsets with that
+     * @param freqItemsetLenToCount a map where each key is a frequent pattern
+     * length and the value is the total number of frequent patterns with that
      * length in the dataset
-     * @return the number of frequent itemsets in the dataset
+     * @return the number of frequent patterns in the sequence dataset
      */
     public static int getNumFreqItemsets(Int2IntOpenHashMap freqItemsetLenToCount) {
         return freqItemsetLenToCount.values().intStream().sum();
@@ -227,10 +227,10 @@ public class NumFreqItemsetsSeq {
      * Updates the freqItemsetLenToCountDist with freqItemsetLenToCount.
      *
      * @param freqItemsetLenToCountDist a map where each key is a frequent
-     * itemset length and the value is the distribution of the total number of
-     * frequent itemsets with that length across the sampled datasets
-     * @param freqItemsetLenToCount a map where each key is a frequent itemset
-     * length and the value is the total number of frequent itemsets with that
+     * pattern length and the value is the distribution of the total number of
+     * frequent patterns with that length across the sampled datasets
+     * @param freqItemsetLenToCount a map where each key is a frequent pattern
+     * length and the value is the total number of frequent patterns with that
      * length in the dataset
      */
     public static void updateFreqItemsetLenToCountDist(
@@ -245,16 +245,16 @@ public class NumFreqItemsetsSeq {
     }
 
     /**
-     * Gets a map where each key is a frequent itemset length and the value is
+     * Gets a map where each key is a frequent pattern length and the value is
      * the quartiles for the distribution of the total number of frequent
-     * itemsets with that length across the sampled datasets.
+     * patterns with that length across the sampled datasets.
      *
      * @param freqItemsetLenToCountDist a map where each key is a frequent
-     * itemset length and the value is the distribution of the total number of
-     * frequent itemsets with that length across the sampled datasets
-     * @return a map where each key is a frequent itemset length and the value
+     * pattern length and the value is the distribution of the total number of
+     * frequent patterns with that length across the sampled datasets
+     * @return a map where each key is a frequent pattern length and the value
      * is the quartiles for the distribution of the total number of frequent
-     * itemsets with that length across the sampled datasets.
+     * patterns with that length across the sampled datasets.
      */
     public static Int2ObjectMap<int[]> getFreqItemsetLenToCountQuartiles(
             Int2ObjectMap<IntArrayList> freqItemsetLenToCountDist) {
@@ -269,15 +269,15 @@ public class NumFreqItemsetsSeq {
     }
 
     /**
-     * Gets the p-value of the number of frequent itemsets in the observed
+     * Gets the p-value of the number of frequent patterns in the observed
      * dataset with respect to the distribution of the number of frequent
-     * itemsets across the sampled datasets.
+     * patterns across the sampled datasets.
      *
-     * @param observedNumFreqItemsets the number of frequent itemsets in the
+     * @param observedNumFreqItemsets the number of frequent patterns in the
      * observed dataset
      * @param numFreqItemsetsDist the distribution of the number of frequent
-     * itemsets across the sampled datasets
-     * @return the p-value of the number of frequent itemsets in the observed
+     * patterns across the sampled datasets
+     * @return the p-value of the number of frequent patterns in the observed
      * dataset
      */
     public static double getPvalue(int observedNumFreqItemsets, IntArrayList numFreqItemsetsDist) {

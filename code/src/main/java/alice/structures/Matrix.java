@@ -16,7 +16,7 @@ package alice.structures;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -87,6 +87,13 @@ public class Matrix {
         }
     }
     
+    /**
+     * Creates an instance of {@link Matrix} from a 0-1 {@link SparseMatrix} by
+     * initializing necessary data structures from the matrix.
+     *
+     * @param inMatrix a 0-1 matrix representation of the dataset
+     * @param edges edges in the graph represented by inMatrix
+     */
     public Matrix(SparseMatrix inMatrix, Edge[] edges) {
         this.matrix = new SparseMatrix(inMatrix.getNumRows(), inMatrix.getNumCols());
         this.rowSums = new int[inMatrix.getNumRows()];
@@ -130,90 +137,194 @@ public class Matrix {
         return this.matrix.toString();
     }
 
+    /**
+     * 
+     * @return this matrix
+     */
     public SparseMatrix getMatrix() {
         return this.matrix;
     }
 
+    /**
+     * 
+     * @param row row id
+     * @param col col id
+     * @return 1 if col is in row; 0 otherwise
+     */
     public int getVal(int row, int col) {
         return this.matrix.isInRow(row, col);
     }
     
+    /**
+     * If 0, removes col from row; if 1 adds col to row.
+     * @param row row id
+     * @param col col id
+     * @param val value (0 or 1)
+     */
     public void setRow(int row, int col, int val) {
         this.matrix.setInRow(row, col, val);
     }
     
+    /**
+     * Replace the id-th row with this row.
+     * @param id row id
+     * @param row new row
+     */
     public void setRow(int id, Vector row) {
         this.matrix.replaceRow(id, row);
     }
     
+    /**
+     * If 0, removes row from col; if 1 adds row to col.
+     * @param row row id
+     * @param col col id
+     * @param val value (0 or 1)
+     */
     public void setCol(int row, int col, int val) {
         this.matrix.setInCol(row, col, val);
     }
     
+    /**
+     * Replace the id-th col with this col.
+     * @param id col id
+     * @param col new col
+     */
     public void setCol(int id, Vector col) {
         this.matrix.replaceCol(id, col);
     }
 
+    /**
+     * 
+     * @param row row id
+     * @return a copy of row
+     */
     public Vector getRowCopy(int row) {
         return this.matrix.getRowCopy(row);
     }
 
+    /**
+     * 
+     * @param row row id
+     * @return reference to row
+     */
     public Vector getRowInstance(int row) {
         return this.matrix.getRowInstance(row);
     }
     
+    /**
+     * 
+     * @return array with the rows in this matrix
+     */
     public Vector[] getRows() {
         return getMatrix().getRows();
     }
     
+    /**
+     * 
+     * @return array with the cols in this matrix
+     */
     public Vector[] getCols() {
         return getMatrix().getCols();
     }
     
+    /**
+     * 
+     * @param col col id
+     * @return a copy of col
+     */
     public Vector getColCopy(int col) {
         return this.matrix.getColCopy(col);
     }
 
+    /**
+     * 
+     * @param col col id
+     * @return reference to col
+     */
     public Vector getColInstance(int col) {
         return this.matrix.getColInstance(col);
     }
 
+    /**
+     * 
+     * @param row row id
+     * @return cols in this row
+     */
     public IntOpenHashSet getNonzeroIndices(int row) {
         return this.matrix.getNonzeroIndices(row);
     }
     
+    /**
+     * 
+     * @param col col id
+     * @return rows in this col
+     */
     public IntOpenHashSet getNonzeroColIndices(int col) {
         return this.matrix.getNonzeroColIndices(col);
     }
 
+    /**
+     * 
+     * @return number of rows in this matrix
+     */
     public int getNumRows() {
         return this.matrix.getNumRows();
     }
     
+    /**
+     * 
+     * @return number of columns in this matrix
+     */
     public int getNumCols() {
         return this.matrix.getNumCols();
     }
 
+    /**
+     * 
+     * @return number of non-zero entries in each row
+     */
     public int[] getRowSums() {
         return this.rowSums;
     }
 
+    /**
+     * 
+     * @param row row id
+     * @return number of non-zero entries in row
+     */
     public int getRowSum(int row) {
         return this.rowSums[row];
     }
 
+    /**
+     * 
+     * @return number of non-zero entries in each col
+     */
     public int[] getColSums() {
         return this.colSums;
     }
 
+    /**
+     * \
+     * @param col col id
+     * @return number of non-zero entries in col
+     */
     public int getColSum(int col) {
         return this.colSums[col];
     }
 
+    /**
+     * 
+     * @return edges in the bipartite graph represented by this matrix
+     */
     public Set<Edge> getEdgesSet() {
         return Sets.newHashSet(this.edges);
     }
 
+    /**
+     * 
+     * @return number of edges in the bipartite graph represented by this matrix
+     */
     public int getNumEdges() {
         return this.edges.length;
     }
@@ -225,14 +336,14 @@ public class Matrix {
      * @param rnd a {@link Random} instance
      * @return the two sampled edges as a length two array of {@link Edge}
      */
-    public SwappableAndNewEdges sampleEdges(Random rnd) {
+    public Swappables sampleEdges(Random rnd) {
         final int edge1Index = rnd.nextInt(this.getNumEdges());
         int edge2Index;
         do {
             edge2Index = rnd.nextInt(this.getNumEdges());
         } while (edge1Index == edge2Index);
 
-        return new SwappableAndNewEdges(edges[edge1Index], edges[edge2Index], edge1Index, edge2Index);
+        return new Swappables(edges[edge1Index], edges[edge2Index], edge1Index, edge2Index);
     }
     
     /**
@@ -240,7 +351,7 @@ public class Matrix {
      *
      * @param sne edges to swap
      */
-    public void swapVals(SwappableAndNewEdges sne) {
+    public void swapVals(Swappables sne) {
         
         this.setRow(sne.swappableEdge1.row, sne.swappableEdge1.col, 0);
         this.setCol(sne.swappableEdge1.row, sne.swappableEdge1.col, 0);
@@ -257,7 +368,7 @@ public class Matrix {
      *
      * @param sne edges to swap and their current position in the edge array
      */
-    public void swapEdges(SwappableAndNewEdges sne) {
+    public void swapEdges(Swappables sne) {
         final Edge newEdge1 = new Edge(sne.swappableEdge1.row, sne.swappableEdge2.col);
         final Edge newEdge2 = new Edge(sne.swappableEdge2.row, sne.swappableEdge1.col);
         assert(edges[sne.e1Index].equals(sne.swappableEdge1));
@@ -310,7 +421,7 @@ public class Matrix {
      * @param sne swappable edges that transition to the
      * adjacent matrix
      */
-    public void transition(SwappableAndNewEdges sne) {
+    public void transition(Swappables sne) {
         this.swapVals(sne);
         this.swapEdges(sne);
     }
@@ -385,6 +496,10 @@ public class Matrix {
         return emd.compute(thisBJDM, otherBJDM);
     }
     
+    /**
+     * 
+     * @return number of k22 cliques in the bipartite graph represented by this matrix
+     */
     public long getNumButterflies() {
         Vector[] vec = matrix.getCols();
         if (matrix.getNumRows() < matrix.getNumCols()) {
@@ -402,10 +517,15 @@ public class Matrix {
         return butt;
     }
     
-    public SwappableAndNewEdges getRandomSwappables(Random rnd) {
+    /**
+     * 
+     * @param rnd a {@link Random} instance
+     * @return a pair of edges extracted uniformly at random from the set of edges of the bipartite graph
+     */
+    public Swappables getRandomSwappables(Random rnd) {
         final int e1Index = rnd.nextInt(edges.length);
         final int e2Index = rnd.nextInt(edges.length);
-        return new SwappableAndNewEdges(edges[e1Index], edges[e2Index], e1Index, e2Index);
+        return new Swappables(edges[e1Index], edges[e2Index], e1Index, e2Index);
     }
     
 }

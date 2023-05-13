@@ -1,7 +1,7 @@
 package alice.test;
 
 /*
- * Copyright (C) 2022 Alexander Lee, Giulia Preti, and Matteo Riondato
+ * Copyright (C) 2023 Giulia Preti
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,16 +181,14 @@ public class ConvergenceSeq {
     }
 
     /**
-     * Gets the sample's itemset to support map such that the map only contains
-     * itemsets that are frequent itemsets of the observed dataset.
+     * Gets the sample's pattern to support map such that the map only contains
+     * sequence patterns that are frequent patterns of the observed sequence dataset.
      *
-     * @param sample the matrix representation of the sampled dataset
-     * @param transformer the transformer used to create the matrix of the
-     * sample
-     * @param freqItemsets the set of frequent itemsets in the observed dataset
-     * @return a map where each key is an itemset and the value is the itemset's
-     * support in the sampled dataset such that the map only contains itemsets
-     * that are frequent itemsets of the observed dataset
+     * @param freqItemsets the frequent sequence patterns in the observed dataset
+     * @param sampItemsets the frequent sequence patterns in the sampled dataset
+     * @return a map where each key is a pattern and the value is the pattern
+     * support in the sampled dataset such that the map only contains patterns
+     * that are frequent patterns of the observed dataset
      */
     private static Object2IntOpenHashMap<String> getSampleItemsetToSupMap(
     		SequentialPatterns freqItemsets, SequentialPatterns sampItemsets) {
@@ -215,11 +213,10 @@ public class ConvergenceSeq {
     /**
      * Gets the average relative frequency/support difference.
      *
-     * @param freqItemsetToSup a map where each key is a frequent itemset in the
-     * observed dataset and the value is the frequent itemset's support
-     * @param sampleItemsetToSup a map where each key is an itemset and the
-     * value is the itemset's support in the sampled dataset such that the map
-     * only contains itemsets that are frequent itemsets of the observed dataset
+     * @param freqItemsetToSup frequent patterns in the observed dataset
+     * @param sampleItemsetToSup a map where each key is a pattern and the
+     * value is the pattern support in the sampled dataset such that the map
+     * only contains patterns that are frequent patterns of the observed dataset
      * @return the average relative frequency/support difference
      */
     private static double getAvgRelFreqDiff(

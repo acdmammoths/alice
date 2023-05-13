@@ -1,5 +1,5 @@
 import alice.structures.BJDMMatrix;
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.SparseMatrix;
 import alice.config.Paths;
 import alice.structures.Vector;
@@ -64,7 +64,7 @@ public class NaiveBJDMSamplerTest {
             BJDMMatrix matrix = (BJDMMatrix) test.matrix;
             for (int t = 0; t < 100; t++) {
                 boolean rowSwap = rnd.nextBoolean();
-                SwappableAndNewEdges swap = matrix.getSwappableAndNewEdges(rnd, rowSwap);
+                Swappables swap = matrix.getSwappables(rnd, rowSwap);
                 
                 if (swap == null) {
                     continue;
@@ -224,7 +224,7 @@ public class NaiveBJDMSamplerTest {
 
         for (int t = 0; t < 1000; t++) {
             BJDMMatrix adjMatrix = new BJDMMatrix(matrix.getMatrix());
-            final SwappableAndNewEdges sne = adjMatrix.getSwappableAndNewEdges(this.rnd);
+            final Swappables sne = adjMatrix.getSwappables(this.rnd);
             
             if (sne == null) {
                 continue;

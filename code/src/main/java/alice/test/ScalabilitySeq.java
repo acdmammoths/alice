@@ -1,7 +1,7 @@
 package alice.test;
 
 /*
- * Copyright (C) 2022 Alexander Lee, Giulia Preti, and Matteo Riondato
+ * Copyright (C) 2023 Giulia Preti
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import org.json.JSONObject;
 
 /**
  * This class runs the scalability experiment, which measures the step times of the
- * samplers.
+ * samplers for sequence datasets.
  */
 public class ScalabilitySeq {
 

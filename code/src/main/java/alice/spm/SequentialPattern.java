@@ -158,6 +158,7 @@ public class SequentialPattern implements Comparable<SequentialPattern> {
 
     /**
      * Get a string representation of this sequential pattern.
+     * @return a string representation of this sequential pattern
      */
     public String itemsetsToString() {
         StringBuilder r = new StringBuilder("");

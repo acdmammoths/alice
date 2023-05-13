@@ -97,12 +97,10 @@ public class SequenceDatabase {
         // initalize the list of arrays for storing sequences
         List<int[]> tmpSequences = Lists.newArrayList();
 
-        for (int i = 0; i < seqMatrix.length; i++) {
+        for (String[] tokens : seqMatrix) {
             // if the line is not a comment, is not empty or is not other
             // kind of metadata
             // split this line according to spaces and process the line
-            String[] tokens = seqMatrix[i];
-
             // we will store the sequence as a list of integers in memory
             int[] sequence = new int[tokens.length];
             // we convert each token from the line to an integer and add it

@@ -17,7 +17,7 @@ package alice.structures;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import alice.helpers.CountingWedges;
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -45,10 +45,6 @@ public class GmmtMatrix extends Matrix {
      */
     public GmmtMatrix(SparseMatrix inMatrix, Edge[] edges) {
         super(inMatrix, edges);
-    }
-
-    public int getRowProdMatrixVal(int row, int col) {
-        return getMatrix().getRowDotProd(row, col);
     }
 
     /**
@@ -100,6 +96,12 @@ public class GmmtMatrix extends Matrix {
         return (numEdges * (numEdges + 1) - sumOfRowSumsSqrd - sumOfColSumsSqrd) / 2;
     }
     
+    /**
+     * Gets the number of disjoint pairs of edges in the graph representation of
+     * the matrix. Reference: Gionis et al., Theorem 4.3, Equation (3).
+     *
+     * @return the number of disjoint pairs of edges
+     */
     public int getNumDisjPairsOfEdges_old() {
         int sumOfRowSumsSqrd = 0;
         int sumOfColSumsSqrd = 0;
@@ -219,10 +221,10 @@ public class GmmtMatrix extends Matrix {
      * al., Algorithm 2 Find_adjacent.
      *
      * @param rnd an instance of a {@link Random} object to sample edges
-     * @return an instance of {@link SwappableAndNewEdges}
+     * @return an instance of {@link Swappables}
      */
-    public SwappableAndNewEdges getSwappableAndNewEdges(Random rnd) {
-        SwappableAndNewEdges sne;
+    public Swappables getSwappableAndNewEdges(Random rnd) {
+        Swappables sne;
         Edge edge1;
         Edge edge2;
         do {
@@ -241,7 +243,7 @@ public class GmmtMatrix extends Matrix {
      * @param sne candidate swappables
      * @return True if the two edges are swappable; False otherwise
      */
-    public boolean areSwappable(SwappableAndNewEdges sne) {
+    public boolean areSwappable(Swappables sne) {
         final Edge first = sne.swappableEdge1;
         final Edge second = sne.swappableEdge2;
         return !(first.row == second.row || first.col == second.col ||

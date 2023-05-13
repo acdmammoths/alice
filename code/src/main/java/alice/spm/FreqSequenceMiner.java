@@ -1,7 +1,7 @@
 package alice.spm;
 
 /*
- * Copyright (C) 2022 Alexander Lee and Matteo Riondato
+ * Copyright (C) 2022 Giulia Preti
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +15,20 @@ package alice.spm;
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+*/
 import java.io.IOException;
 
 /**
- * A wrapper class for mining frequent itemsets.
+ * A wrapper class for mining frequent sequence patterns.
  */
 public class FreqSequenceMiner {
 
     /**
-     * Mines frequent itemsets and saves them to disk.
+     * Mines frequent sequence patterns and saves them to disk.
      *
      * @param datasetPath the path of the dataset
      * @param minFreq the minimum frequency threshold
-     * @param freqItemsetsPath the path to save the frequent itemsets
+     * @param freqItemsetsPath the path to save the frequent patterns
      */
     public static void mine(String datasetPath, double minFreq, String freqItemsetsPath) {
         final AlgoPrefixSpan algo = new AlgoPrefixSpan();
@@ -42,13 +42,12 @@ public class FreqSequenceMiner {
     }
 
     /**
-     * Mines frequent itemsets and returns them as a map where each key is a
-     * frequent itemset and the value is the frequent itemset's support.
+     * Mines frequent sequence patterns and returns them as a map where each key is a
+     * frequent pattern and the value is the frequent pattern support.
      *
-     * @param datasetPath the path of the dataset
+     * @param datasetPath the path of the sequence dataset
      * @param minFreq the minimum frequency threshold
-     * @return a map where each key is a frequent itemset and the value is the
-     * frequent itemset's support
+     * @return a list of frequent sequence itemsets
      */
     public static SequentialPatterns mine(String datasetPath, double minFreq) {
         final AlgoPrefixSpan algo = new AlgoPrefixSpan();
@@ -62,6 +61,14 @@ public class FreqSequenceMiner {
         return null;
     }
     
+    /**
+     * Mines frequent sequence patterns and returns them as a map where each key is a
+     * frequent pattern and the value is the frequent pattern support.
+     *
+     * @param dataset the sequence dataset
+     * @param minFreq the minimum frequency threshold
+     * @return a list of frequent sequence itemsets
+     */
     public static SequentialPatterns mine(String[][] dataset, double minFreq) {
         final AlgoPrefixSpan algo = new AlgoPrefixSpan();
         try {

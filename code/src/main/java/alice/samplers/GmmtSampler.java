@@ -16,7 +16,7 @@ package alice.samplers;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import alice.helpers.SwappableAndNewEdges;
+import alice.helpers.Swappables;
 import alice.structures.GmmtMatrix;
 import alice.structures.SparseMatrix;
 import alice.structures.Edge;
@@ -57,7 +57,7 @@ public class GmmtSampler implements Sampler {
 
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappableAndNewEdges(rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             
@@ -100,7 +100,7 @@ public class GmmtSampler implements Sampler {
         timer.save(setupTime);
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappableAndNewEdges(rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             final long adjMatrixDegree
@@ -151,7 +151,7 @@ public class GmmtSampler implements Sampler {
 
         for (int i = 0; i < numSwaps; i++) {
             timer.start();
-            final SwappableAndNewEdges sne = matrix.getSwappableAndNewEdges(rnd);
+            final Swappables sne = matrix.getSwappableAndNewEdges(rnd);
             final Edge swappableEdge1 = sne.swappableEdge1;
             final Edge swappableEdge2 = sne.swappableEdge2;
             
