@@ -97,56 +97,7 @@
       "numSamples": 4352,
       "pvalue": 2.2972662531587412E-4,
       "sampler": "alice.samplers.CurveballBJDMSampler"
-    },
-    {
-    "freqItemsetLenToCountQuartiles": {
-      "1": [
-        956,
-        956,
-        956,
-        956,
-        956
-      ],
-      "2": [
-        1270,
-        1297,
-        1303,
-        1309,
-        1330
-      ],
-      "3": [
-        596,
-        619,
-        624,
-        630,
-        652
-      ],
-      "4": [
-        90,
-        104,
-        107,
-        110,
-        126
-      ],
-      "5": [
-        1,
-        4,
-        4,
-        5,
-        8
-      ]
-    },
-    "numFreqItemsetsQuartiles": [
-      2943,
-      2986,
-      2995,
-      3005,
-      3045
-    ],
-    "numSamples": 4352,
-    "pvalue": 1,
-    "sampler": "alice.samplers.SelfLoopGmmtSampler"
-  }
+    }
   ],
   "runInfo": {
     "freqItemsetLenToCount": {

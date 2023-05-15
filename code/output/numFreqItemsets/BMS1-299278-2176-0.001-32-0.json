@@ -10,6 +10,48 @@
           343
         ],
         "2": [
+          1176,
+          1243,
+          1257,
+          1271,
+          1331
+        ],
+        "3": [
+          107,
+          180,
+          199,
+          217,
+          308
+        ],
+        "4": [
+          1,
+          1,
+          1,
+          2,
+          10
+        ]
+      },
+      "numFreqItemsetsQuartiles": [
+        1669,
+        1773,
+        1799,
+        1828,
+        1943
+      ],
+      "numSamples": 2176,
+      "pvalue": 4.5934772622875517E-4,
+      "sampler": "alice.samplers.GmmtSampler"
+    },
+    {
+      "freqItemsetLenToCountQuartiles": {
+        "1": [
+          343,
+          343,
+          343,
+          343,
+          343
+        ],
+        "2": [
           1112,
           1143,
           1150,
@@ -40,7 +82,7 @@
       ],
       "numSamples": 2176,
       "pvalue": 4.5934772622875517E-4,
-      "sampler": "caterpillars.samplers.NaiveBJDMSampler"
+      "sampler": "alice.samplers.BJDMSampler"
     },
     {
       "freqItemsetLenToCountQuartiles": {
@@ -82,50 +124,8 @@
       ],
       "numSamples": 2176,
       "pvalue": 4.5934772622875517E-4,
-      "sampler": "caterpillars.samplers.CurveballBJDMSampler"
-    },
-    {
-    "freqItemsetLenToCountQuartiles": {
-      "1": [
-        343,
-        343,
-        343,
-        343,
-        343
-      ],
-      "2": [
-        1199,
-        1253,
-        1266,
-        1281,
-        1336
-      ],
-      "3": [
-        122,
-        184,
-        201,
-        222,
-        296
-      ],
-      "4": [
-        1,
-        1,
-        1,
-        2,
-        11
-      ]
-    },
-    "numFreqItemsetsQuartiles": [
-      1678,
-      1787,
-      1812,
-      1841,
-      1952
-    ],
-    "numSamples": 2176,
-    "pvalue": 4.5934772622875517E-4,
-    "sampler": "alice.samplers.SelfLoopGmmtSampler"
-  }
+      "sampler": "alice.samplers.CurveballBJDMSampler"
+    }
   ],
   "runInfo": {
     "freqItemsetLenToCount": {
@@ -137,6 +137,6 @@
       "6": 2
     },
     "numFreqItemsets": 3991,
-    "timestamp": "2022-05-20T19:30:34.451"
+    "timestamp": "2023-05-15T03:07:36.735902007"
   }
 }
